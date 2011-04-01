@@ -34,8 +34,8 @@ var backgroundView = new timestep.View
 
 var runner = new timestep.Sprite
 ({
-  x:20,
-  y:10,
+  x:100,
+  y:100,
   width:64,
   height:108,
   animations:
@@ -179,22 +179,23 @@ mainView.tick = function(dt)
     for (var i in platforms)
     {
         var floor = platforms[i];
-        if(runner.style.x >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
+        if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
         {
-            if (runner.style.y + runner.style.height + 5 < floor.style.y)
+            if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
             {
-                colliding = false;
-                runner.isFalling = true;
+              colliding = false;
             }
             else
             { 
-                colliding = true;
-                runner.isFalling = false;
+              colliding = true;
+	      if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
             }
+	    break;
         }
+	else continue;
     }
     
-    speedY          = (colliding) ? 0:(speedY+gravity);
-    runner.style.y += speedY;
-    
+    runner.isFalling 	= !colliding;
+    speedY          	= (colliding) ? 0:(speedY+gravity);
+    runner.style.y	+= speedY; 
 };
