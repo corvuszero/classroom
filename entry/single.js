@@ -10,12 +10,9 @@ var mainView = app.getView();
 
 var floorManager;
 
-var speed   = 3;
-var speedX  = 0.5;
-var speedY  = 0;
-var gravity = 0.5;
-var jumpAcc = 0;
-var acceleration = 4;
+var speed   		= 3;
+var gravity 		= 30;
+var acceleration 	= 4;
 
 var scoreView = new timestep.View
 (
@@ -124,7 +121,7 @@ var runner = new timestep.Sprite
 });
 
 runner.startAnimation('run');
-runner.isFalling = false;
+runner.isFalling = true;
 runner.isJumping = false;
 runner.jumpHeight = 0;
 runner.score = 0;
@@ -135,17 +132,16 @@ runner.jump = function()
     {
         this.isFalling  = false;
         this.isJumping  = true;
-        jumpAcc         = 0;
         this.stopAnimation();
         this.startAnimation('jump', { iterations: 5 });
-        
+	gravity = 0;
     }
 };
 
 runner.stopJump = function()
 {
-    this.isJumping = false;
-    this.isFalling = true;
+    runner.isFalling 	= true;
+    runner.isJumping	= false;
     this.stopAnimation();
     this.startAnimation('run');
 };
@@ -194,71 +190,64 @@ floorManager = new FloorManager
 
 runnerView.tick = function(dt) 
 {
-	var events = keyListener.popEvents();
-	for (var i = 0; i < events.length; i++) 
-	{
-		var event = events[i];
-		
-        // SHOOTING
-        if (event.code == keyListener.SPACE && event.lifted)
-        {
-        	runner.shoot();
-        }
-        // JUMPING
-        else if (event.code == keyListener.UP && !event.lifted)
-        {
-            runner.jump();
-        }
-        else if (event.code == keyListener.UP && event.lifted)
-        { 
-            runner.stopJump();
-        }
-		
-	}
-	
-	if ( runner.isJumping && jumpAcc < 1000 )
+  var events = keyListener.popEvents();
+  for (var i = 0; i < events.length; i++) 
+  {
+    var event = events[i];
+	  
+    // SHOOTING
+    if (event.code == keyListener.SPACE && event.lifted)
     {
-        jumpAcc             += 15;
-        runner.jumpHeight   += 15;
-        runner.style.y      -= 15;
-        
-        if (runner.jumpHeight >= 300)
-        {
-            runner.isFalling    = true;
-            runner.jumpHeight   = 0;
-            runner.isJumping    = false;
-        }
+	runner.shoot();
     }
+    // JUMPING
+    else if (event.code == keyListener.UP && !event.lifted)
+    {
+	runner.jump();
+    }
+    else if (event.code == keyListener.UP && event.lifted)
+    { 
+	runner.stopJump();
+    }
+  }
+  
+  if (runner.isJumping && gravity > -24 ) gravity -= 2;
+  if (runner.isJumping && gravity <= -24) runner.stopJump();
+  if (runner.isFalling && gravity < 24)   gravity += 2;
 };
 
 mainView.tick = function(dt)
 {
     var platforms = floorManager.getPlatforms();
     var colliding = false;
-    var jumping   = false;
    
+   if(!runner.isJumping){
     for (var i in platforms)
     {
         var floor = platforms[i];
-        if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
+        if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
         {
             if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
             {
               colliding = false;
+	      if(!runner.isFalling)
+	      {
+		gravity = 30;
+		runner.isFalling = true;
+	      }
             }
             else
             { 
-              colliding = true;
-	      if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
+	      runner.style.y   = floor.style.y - runner.style.height;
+	      runner.isFalling = false;
+	      colliding        = true;
             }
 	    break;
         }
 	else continue;
     }
-    
-    runner.isFalling 	= !colliding;
-    speedY          	= (colliding) ? 0:(speedY+gravity);
-    runner.style.y	+= speedY; 
-    
+   }
+  
+    runner.style.y	+= (colliding) ? 0:(gravity); 
     scoreView.render();
 };
