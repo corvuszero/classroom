@@ -16,6 +16,7 @@ var currentAnimation = "";
 
 var gravity 		= 10;
 var acceleration 	= 8;
+var life		= 3;
 
 var pause = false;
 var gameOver = false;
@@ -42,6 +43,39 @@ scoreView.render = function(ctx)
         ctx.fillText(runner.killingScore+" kills", 30, 60);
     }
 }
+
+
+var livesView = new timestep.View
+({
+  x:		mainview.width-100,
+  y:		10,
+  width:	100,
+  height: 	50,
+  parent:	mainView
+});
+
+livesView.render = function(ctx)
+{
+  if(ctx)
+  {
+    var lifes = life;
+    while(lifes > 0)
+    {
+      lifes--;
+      var lifeinerContainer = new timestep.ImageView
+       	({
+           	x:(lifes*32),
+           	y:0,
+           	width:0,
+           	height:0,
+           	image:'images/heart.png',
+           	parent:this
+       	});
+    }
+  }
+}
+
+
 
 var runnerView = new timestep.View
 ({
@@ -254,7 +288,7 @@ mainView.tick = function(dt)
     //Update Runner Gravity
     if (runner.isJumping && gravity > -26 ) gravity -= 2;
     if (runner.isJumping && gravity <= -26) runner.stopJump();
-    if (runner.isFalling && gravity < 20)   gravity += 2;
+    if (runner.isFalling && !runner.isJumping && gravity < 20)   gravity += 2;
    
    //Check for platform Collission
     if(!runner.isJumping)
@@ -277,7 +311,11 @@ mainView.tick = function(dt)
 
     }
     //Jump or Fall
-    runner.style.y += (colliding) ? 0:(gravity); 
+    
+    //Uncomment next line so yoshi can't fly while falling
+    //runner.isFalling  = !colliding;
+    
+    runner.style.y   += (colliding) ? 0:(gravity); 
   }
    
     
