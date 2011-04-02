@@ -1,4 +1,4 @@
-jsio('import shared.Floor as Floor');
+jsio('import shared.FloorManager as FloorManager');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
@@ -6,7 +6,7 @@ var mainView = app.getView();
 
 var speed = 3;
 var friction = 2;
-var platforms = [];
+var floorManager;
 
 jsio('import timestep.View');
 var runnerView = new timestep.View
@@ -61,7 +61,8 @@ var runner = new timestep.Sprite
     }
   },
   defaultAnimation:'run',
-  parent:runnerView
+  parent:runnerView,
+  zIndex: 1
 });
 
 backgroundView.render = function(ctx)
@@ -70,14 +71,15 @@ backgroundView.render = function(ctx)
 	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
 }
 
+backgroundView.tick = function()
+{
+  floorManager.checkFloors();
+}
+
 runner.startAnimation('run');
-platforms.push
-(
-  new Floor
-  ({
-    originPoint:true,
-    width: 850,
-    height:250,
-    parent:runnerView
-  })
-);
+floorManager = new FloorManager
+({
+  acceleration:this.acceleration,
+  speed:this.speed,
+  platformParent:runnerView,
+});
