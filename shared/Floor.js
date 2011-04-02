@@ -1,7 +1,7 @@
 jsio('import timestep.View');
 
 var originPoint = false;
-var acceleration = 6;
+var acceleration = 4;
 var red;
 var green;
 var blue;
@@ -48,6 +48,7 @@ var Floor = exports = Class(timestep.View, function(supr) {
    	{
        	this.style.x -= acceleration;
    	}
+   	else delete this;
 	}
 		
 });
