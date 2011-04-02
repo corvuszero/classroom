@@ -6,6 +6,7 @@ var Floor = exports = Class(timestep.View, function(supr) {
 	this.init = function(opts) {
 		opts = opts || {};
 		supr(this, 'init', [opts]);
+		this._pause = false;
 		
 		if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
 		if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
@@ -19,9 +20,11 @@ var Floor = exports = Class(timestep.View, function(supr) {
 		this._originPoint = opts.originPoint;
 		this._acceleration = opts.acceleration;
 		
-		if(!this._originPoint) this.style.x = 850 + (50 + Math.random() * 10);
+		var maxDistance = 22 * this._acceleration;
+		if(!this._originPoint) this.style.x = 850 + Math.round(50 + Math.random() * (maxDistance - 50));
 		else this.style.x = 0;
-				
+      
+      logger.log('x es ' + this.style.x);
 		this.style.y = 600 - this.style.height;
 		
 		this.createPlatform();
@@ -68,11 +71,14 @@ var Floor = exports = Class(timestep.View, function(supr) {
 			
 	this.tick = function(dt) 
 	{
-   	if(this.style.x + this.style.width > 0)
+   	if(!this._pause)
    	{
-       	this.style.x -= this._acceleration;
+       	if(this.style.x + this.style.width > 0)
+       	{
+           	this.style.x -= this._acceleration;
+       	}
+       	else this._erase = true;
    	}
-   	else this._erase = true;
 	}
 		
 });

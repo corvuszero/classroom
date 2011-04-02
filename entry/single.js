@@ -3,35 +3,42 @@ jsio('import shared.Missile as Missile');
 jsio('import timestep.Sprite');
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
+jsio('import shared.ParallaxBackground as ParallaxBackground');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
+app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
+var missiles = [];
+var currentAnimation = "";
 
 var speed   		= 3;
-var gravity 		= 30;
+var gravity 		= 10;
 var acceleration 	= 4;
 
+var pause = false;
+
 var scoreView = new timestep.View
-(
-    {
+({
         x:10,
         y:10,
         width:400,
         height:75,
         parent:mainView
-    }
-);
+});
 
 scoreView.render = function(ctx)
 {
     if (ctx)
     {
-        ctx.font        = "20px Times New Roman";
+        ctx.font        = "3em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.score, 5, 30);
+        ctx.fillText(runner.distanceScore+" m", 30, 30);
+        ctx.font        = "2em Arial Black";
+        ctx.fillStyle   = "Yellow";
+        ctx.fillText(runner.killingScore+" kills", 30, 60);
     }
 }
 
@@ -45,7 +52,8 @@ var runnerView = new timestep.View
 });
 runnerView.score = 0;
 
-var backgroundView = new timestep.ImageView({
+var backgroundView = new timestep.ImageView
+({
 	image: "images/background_sky.png",
 	width: 800,
 	height: 600,
@@ -53,16 +61,16 @@ var backgroundView = new timestep.ImageView({
 	zIndex:-3
 });
 
-var backgroundClouds = new timestep.ImageView({
+var backgroundClouds = new ParallaxBackground({
 	image: "images/background_clouds.png",
-	y:150,
+	y:170,
 	width: 800,
 	height: 382,
 	parent: backgroundView,
 	zIndex:-2
 });
 
-var backgroundClouds = new timestep.ImageView({
+var backgroundMountains = new ParallaxBackground({
 	image: "images/background_mountains.png",
 	y:100,
 	width: 800,
@@ -120,21 +128,24 @@ var runner = new timestep.Sprite
   zIndex: 1
 });
 
-runner.startAnimation('run');
-runner.isFalling = true;
-runner.isJumping = false;
-runner.jumpHeight = 0;
-runner.score = 0;
+currentAnimation = 'run';
+runner.startAnimation(currentAnimation);
+runner.isFalling        = true;
+runner.isJumping        = false;
+runner.jumpHeight       = 0;
+runner.distanceScore    = 0;
+runner.killingScore     = 0;
 
 runner.jump = function()
 {
     if ( !this.isJumping && !this.isFalling )
     {
+	gravity 	= 0;
         this.isFalling  = false;
         this.isJumping  = true;
         this.stopAnimation();
-        this.startAnimation('jump', { iterations: 5 });
-	gravity = 0;
+        currentAnimation = 'jump';
+        this.startAnimation(currentAnimation, { iterations: 5 });
     }
 };
 
@@ -143,20 +154,17 @@ runner.stopJump = function()
     runner.isFalling 	= true;
     runner.isJumping	= false;
     this.stopAnimation();
-    this.startAnimation('run');
-};
-
-runner.jumpFinished = function()
-{
-    this.stopAnimation();
-    this.startAnimation('run');
+    currentAnimation = 'run';
+    this.startAnimation(currentAnimation);
 };
 
 runner.shoot = function()
 {
     runner.stopAnimation();
-    runner.startAnimation('shoot', { iterations:1 });
-    runner.score += 5;
+    currentAnimation = 'shoot';
+    runner.startAnimation(currentAnimation, { iterations:1 });
+    runner.killingScore += 1;
+    
     var missile = new Missile
         ({
           acceleration:20,
@@ -167,87 +175,112 @@ runner.shoot = function()
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView
         });
-    missile.fired = true;
+    missile._fired = true;
+    missiles.push(missile);
 };
-
-backgroundView.render = function(ctx)
-{
-	ctx.fillStyle = 'rgb(0, 151, 192)';
-	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
-}
-
-backgroundView.tick = function()
-{
-  floorManager.checkFloors();
-}
 
 floorManager = new FloorManager
 ({
-  acceleration:(acceleration),
+  acceleration:acceleration,
   speed:(this.speed*=2),
   platformParent:runnerView
 });
 
-runnerView.tick = function(dt) 
-{
-  var events = keyListener.popEvents();
-  for (var i = 0; i < events.length; i++) 
-  {
-    var event = events[i];
-	  
-    // SHOOTING
-    if (event.code == keyListener.SPACE && event.lifted)
-    {
-	runner.shoot();
-    }
-    // JUMPING
-    else if (event.code == keyListener.UP && !event.lifted)
-    {
-	runner.jump();
-    }
-    else if (event.code == keyListener.UP && event.lifted)
-    { 
-	runner.stopJump();
-    }
-  }
-  
-  if (runner.isJumping && gravity > -24 ) gravity -= 2;
-  if (runner.isJumping && gravity <= -24) runner.stopJump();
-  if (runner.isFalling && gravity < 24)   gravity += 2;
-};
+
 
 mainView.tick = function(dt)
 {
+  //Runner Logic
+  var events = keyListener.popEvents();
+  for (var i = 0; i < events.length; i++)
+  {
+    var event = events[i];
+    if(!pause)
+    {
+      // SHOOTING
+      if (event.code == keyListener.SPACE && event.lifted)
+      {
+        runner.shoot();
+      }
+      // JUMPING
+      else if (event.code == keyListener.UP && !event.lifted)
+      {
+        runner.jump();
+      }
+      else if (event.code == keyListener.UP && event.lifted)
+      {
+        runner.stopJump();
+      }
+    }
+    
+    //Pause
+    if(event.code == 80 && !event.lifted)
+    {
+        pause = !pause;
+        if (pause) runner.pauseAnimation();
+        else runner.startAnimation(currentAnimation);
+        floorManager.setPause(pause);
+        for (var m in missiles)
+        {
+            var missile = missiles[m];
+            missile._pause = true;
+        }
+    }
+  }
+      
+  if(!pause)
+  {
+    runner.distanceScore += 1;
+    
+    //Update ParallaxScroll
+    backgroundMountains.update(runner.distanceScore);
+    backgroundClouds.update(runner.distanceScore);    
+      
+    //Platform generation
+    floorManager.checkFloors();
+  
+    //Platform Collision
     var platforms = floorManager.getPlatforms();
     var colliding = false;
+    
+    //Update Runner Gravity
+    if (runner.isJumping && gravity > -20 ) gravity -= 2;
+    if (runner.isJumping && gravity <= -20) runner.stopJump();
+    if (runner.isFalling && gravity < 20)   gravity += 2;
    
-   if(!runner.isJumping){
-    for (var i in platforms)
+   //Check for platform Collission
+    if(!runner.isJumping)
     {
-        var floor = platforms[i];
-        if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
-        {
-            if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
-            {
-              colliding = false;
-	      if(!runner.isFalling)
-	      {
-		gravity = 30;
-		runner.isFalling = true;
-	      }
-            }
-            else
-            { 
+      for (var i in platforms)
+      {
+	var floor = platforms[i];
+	if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
+	{
+	  if(runner.style.y + runner.style.height < floor.style.y + 10 && runner.style.y + runner.style.height > floor.style.y -10)
+	  {
 	      runner.style.y   = floor.style.y - runner.style.height;
 	      runner.isFalling = false;
 	      colliding        = true;
-            }
-	    break;
-        }
-	else continue;
+	  }
+	  else 	runner.isFalling = true;
+	  break;
+	}
+      }
     }
-   }
+    //Jump or Fall
+    runner.style.y += (colliding) ? 0:(gravity); 
+  }
+   
+    
+  for (var m in missiles)
+  {
+      var missile = missiles[m];
+      missile._pause = false;
+      if(missile != undefined && missile._erase)
+      {
+	missile.removeFromSuperview();
+	missiles.splice(m, 1);
+      }
+  }
   
-    runner.style.y	+= (colliding) ? 0:(gravity); 
-    scoreView.render();
 };
