@@ -19,6 +19,7 @@ var gravity 		= 10;
 var acceleration 	= 4;
 
 var pause = false;
+var gameOver = false;
 
 var scoreView = new timestep.View
 ({
@@ -84,42 +85,55 @@ var runner = new timestep.Sprite
   x:100,
   y:100,
   width:64,
-  height:108,
+  height:64,
   animations:
   {
     run:
     {
-      width:64,
-      height:108,
-      imageURL: 'images/player.png',
-      frameRate:8,
+      width:32,
+      height:32,
+      imageURL: 'images/player_running.png',
+      frameRate:16,
       frames:
       [
-        [0,0],
-        [192, 0]
+      [0,0],
+      [31,0],
+      [62,0],
+      [93,0],
+      [124,0],
+      [155,0],
+      [186,0],
+      [217,0],
+      [248,0],
+      [279,0],
+      [310,0],
+      [341,0]                                            
       ]
     },
     shoot:
     {
-      width:64,
-      height:108,
-      imageURL: 'images/player.png',
-      frameRate:8,
+      width:32,
+      height:32,
+      imageURL: 'images/player_shooting.png',
+      frameRate:16,
       frames:
       [
-        [64, 0],
-        [128, 0]
+        [31, 0],               
+        [62, 0]
       ]
     },
     jump:
     {
-        width:64,
-        height:108,
-        imageURL: 'images/player.png',
-        frameRate:8,
+        width:32,
+        height:32,
+        imageURL: 'images/player_jumping.png',
+        frameRate:16,
         frames:
-        [
-            [192, 0]
+        [               
+          [0, 0],
+          [32, 0],
+          [64, 0],
+          [32, 0]                        
         ]
     }
   },
@@ -195,7 +209,7 @@ mainView.tick = function(dt)
   for (var i = 0; i < events.length; i++)
   {
     var event = events[i];
-    if(!pause)
+    if(!gameOver && !pause)
     {
       // SHOOTING
       if (event.code == keyListener.SPACE && event.lifted)
@@ -214,38 +228,32 @@ mainView.tick = function(dt)
     }
     
     //Pause
-    if(event.code == 80 && !event.lifted)
+    if(!gameOver && event.code == 80 && !event.lifted)
     {
-        pause = !pause;
-        if (pause) runner.pauseAnimation();
-        else runner.startAnimation(currentAnimation);
-        floorManager.setPause(pause);
-        for (var m in missiles)
-        {
-            var missile = missiles[m];
-            missile._pause = true;
-        }
+        setPause(!pause);
     }
   }
       
-  if(!pause)
+
+  if(!gameOver && !pause)
   {
     runner.distanceScore += 1;
-    
+
     //Update ParallaxScroll
     backgroundMountains.update(runner.distanceScore);
     backgroundClouds.update(runner.distanceScore);    
       
     //Platform generation
     floorManager.checkFloors();
+
   
     //Platform Collision
     var platforms = floorManager.getPlatforms();
     var colliding = false;
     
     //Update Runner Gravity
-    if (runner.isJumping && gravity > -20 ) gravity -= 2;
-    if (runner.isJumping && gravity <= -20) runner.stopJump();
+    if (runner.isJumping && gravity > -26 ) gravity -= 2;
+    if (runner.isJumping && gravity <= -26) runner.stopJump();
     if (runner.isFalling && gravity < 20)   gravity += 2;
    
    //Check for platform Collission
@@ -256,7 +264,7 @@ mainView.tick = function(dt)
 	var floor = platforms[i];
 	if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
 	{
-	  if(runner.style.y + runner.style.height < floor.style.y + 10 && runner.style.y + runner.style.height > floor.style.y -10)
+	  if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
 	  {
 	      runner.style.y   = floor.style.y - runner.style.height;
 	      runner.isFalling = false;
@@ -266,6 +274,7 @@ mainView.tick = function(dt)
 	  break;
 	}
       }
+
     }
     //Jump or Fall
     runner.style.y += (colliding) ? 0:(gravity); 
@@ -283,4 +292,29 @@ mainView.tick = function(dt)
       }
   }
   
+  //Game Over
+  if(runner.style.y >= 600 && !gameOver)
+  {
+    setGameOver();
+  }
+  
 };
+
+function setPause(value)
+{
+  pause = value;
+  if (pause) runner.pauseAnimation();
+  else runner.startAnimation(currentAnimation);
+  floorManager.setPause(pause);
+  for (var m in missiles)
+  {
+      var missile = missiles[m];
+      missile._pause = true;
+  }
+}
+
+function setGameOver()
+{
+  gameOver = true;
+  setPause(true);
+}
