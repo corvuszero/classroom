@@ -128,12 +128,12 @@ runnerView.tick = function(dt)
 		var event = events[i];
 		
 		// SHOOTING
-		if (event.code == keyListener.SPACE && event.lifted) 
+		if (event.code == keyListener.SPACE) 
 		{
 			runner.startAnimation('shoot', { iterations:1 });
 		}
 		// JUMPING
-		else if (event.code == keyListener.UP && event.lifted)
+		else if (event.code == keyListener.UP)
 		{
 		  runner.jump();
 		}
