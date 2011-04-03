@@ -83,20 +83,23 @@ var runner = new timestep.Sprite
 runner.startAnimation('run');
 runner.isFalling = false;
 runner.isJumping = false;
+runner.jumpHeight = 0;
 
 runner.jump = function()
 {
-    if ( !this.isJumping && !this.isFalling)
+    if ( !this.isJumping && !this.isFalling )
     {
+        this.isFalling = false;
         this.isJumping = true;
         this.stopAnimation();
-        this.startAnimation('jump', { iterations: 5, callback: this.jumpFinished } );
+        this.startAnimation('jump', { iterations: 5 });
     }
 }
 
 runner.jumpFinished = function()
 {
-    runner.isJumping = false;
+    this.stopAnimation();
+    this.startAnimation('run');
 }
 
 backgroundView.render = function(ctx)
@@ -135,6 +138,19 @@ runnerView.tick = function(dt)
 		  runner.jump();
 		}
 	}
+	
+	if ( runner.isJumping )
+    {
+        runner.jumpHeight   += 15;
+        runner.style.y      -= 15;
+        
+        if (runner.jumpHeight >= 200)
+        {
+            runner.isFalling    = true;
+            runner.jumpHeight   = 0;
+            runner.isJumping    = false;
+        }
+    }
 };
 
 mainView.tick = function(dt)
@@ -159,11 +175,6 @@ mainView.tick = function(dt)
                 runner.isFalling = false;
             }
         }
-    }
-    
-    if ( runner.isJumping )
-    {
-        runner.style.y -= 10;
     }
     
     speedX        += 0.5;
