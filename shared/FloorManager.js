@@ -19,7 +19,7 @@ var FloorManager = exports = Class(function()
         ({
           originPoint:true,
           width: 850,
-          height:250,
+          height:100,
           parent:this.platformParent
         })
       );
@@ -39,17 +39,18 @@ var FloorManager = exports = Class(function()
        	{
          	if(platforms[i].style.x + platforms[i].style.width <= 800)
          	{
+             	platforms[i]._spawnNewPlatform = true;
              	platforms.push(new Floor
              	({
                 parent:this.platformParent
              	}));
-             	platforms[i]._spawnNewPlatform = true;
          	}
        	}
        	
        	//platform deletion
        	if(platforms[i]._erase)
        	{
+         	logger.log('borrado!');
          	platforms[i].removeFromSuperview();
          	platforms.splice(i, 1);
        	}
