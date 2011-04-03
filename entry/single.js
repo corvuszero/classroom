@@ -177,9 +177,7 @@ mainView.tick = function(dt)
         }
     }
     
-    speedX        += 0.5;
-    speedY        = (colliding) ? 0:(speedY+gravity);
-    runner.style.x += 1;
+    speedY          = (colliding) ? 0:(speedY+gravity);
     runner.style.y += speedY;
     
 };
