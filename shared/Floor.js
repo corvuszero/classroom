@@ -1,4 +1,5 @@
 jsio('import timestep.View');
+jsio('import timestep.ImageView');
 
 var Floor = exports = Class(timestep.View, function(supr) {
 	
@@ -8,14 +9,12 @@ var Floor = exports = Class(timestep.View, function(supr) {
 		
 		if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
 		if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
-		if (typeof opts.width != 'number') 
-		{
-    		this.style.width = 300 + Math.random() * 200;
-		}
-		if (typeof opts.height != 'number') 
-		{ 
-    		this.style.height = 100 + Math.random() * 50;
-    	}
+      
+      this._spawnNewPlatform = false;
+      if(!opts.originPoint) this._middleTiles = 5 + Math.round(Math.random() * 15);
+      else this._middleTiles = 30;
+      this.style.width = 32 * (this._middleTiles + 2);
+    	this.style.height = 192;
 			
 		this._originPoint = opts.originPoint;
 		this._acceleration = opts.acceleration;
@@ -25,17 +24,48 @@ var Floor = exports = Class(timestep.View, function(supr) {
 				
 		this.style.y = 600 - this.style.height;
 		
-		this._red = Math.round(Math.random() * 255);
-		this._green = Math.round(Math.random() * 255);
-		this._blue = Math.round(Math.random() * 255);
+		this.createPlatform();
 	}
 	
-	this.render = function(ctx) 
+	this.createPlatform = function()
 	{
-   	ctx.fillStyle = 'rgb(' + this._red + ',' + this._green + ',' + this._blue + ')';
-   	ctx.fillRect(0, 0, this.style.width, this.style.height);
+   	//Empecemos
+   	var leftSide = new timestep.ImageView
+   	({
+       	x:0,
+       	y:0,
+       	width:32,
+       	height:192,
+       	image:'images/leftPlatform.png',
+       	parent:this,
+       	zIndex:0
+   	});
+   	
+   	for(i = 1; i < this._middleTiles; i++)
+   	{
+       	var middleOfPlatform = new timestep.ImageView
+       	({
+         	x: i * 32,
+         	y: 0,
+         	width:32,
+         	height:192,
+         	parent:this,
+         	image:'images/middlePlatform.png',
+         	zIndex:i
+       	});
+      }
+       	var rightSide = new timestep.ImageView
+       	({
+         	x: this._middleTiles * 32,
+         	y:0,
+         	width:32,
+         	height:192,
+         	parent:this,
+         	image:'images/rightPlatform.png',
+         	zIndex:this._middleTiles
+       	});
 	}
-		
+			
 	this.tick = function(dt) 
 	{
    	if(this.style.x + this.style.width > 0)
