@@ -20,7 +20,7 @@ var Floor = exports = Class(timestep.View, function(supr) {
 		this._originPoint = opts.originPoint;
 		this._acceleration = opts.acceleration;
 		
-		if(!this._originPoint) this.style.x = 850 + (100 + Math.random() * 100);
+		if(!this._originPoint) this.style.x = 850 + (50 + Math.random() * 10);
 		else this.style.x = 0;
 				
 		this.style.y = 600 - this.style.height;
