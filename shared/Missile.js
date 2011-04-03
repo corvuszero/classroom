@@ -39,14 +39,17 @@ var Missile = exports = Class(timestep.View, function(supr)
     this.tick = function(dt) 
     {
     
-    
         if ( this.fired )
         {
-            if (this.style.x + this.style.width > 0)
-                this.style.x -= this._acceleration;
-            else 
+            if (this.style.x + this.style.width > 800)
+            {
+                this.style.x += this._acceleration;
+            }
+            else
+            {
                 this._erase = true;
-                
+            }
+            
             this.style.x += 20;
         }
     }
