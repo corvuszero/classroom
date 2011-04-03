@@ -8,10 +8,11 @@ var mainView = app.getView();
 
 var floorManager;
 
-var speed = 3;
-var speedX = 0.5;
-var speedY = 0;
+var speed   = 3;
+var speedX  = 0.5;
+var speedY  = 0;
 var gravity = 0.5;
+var jumpAcc = 0;
 
 var runnerView = new timestep.View
 ({
@@ -89,11 +90,21 @@ runner.jump = function()
 {
     if ( !this.isJumping && !this.isFalling )
     {
-        this.isFalling = false;
-        this.isJumping = true;
+        this.isFalling  = false;
+        this.isJumping  = true;
+        jumpAcc         = 0;
         this.stopAnimation();
         this.startAnimation('jump', { iterations: 5 });
+        
     }
+}
+
+runner.stopJump = function()
+{
+    this.isJumping = false;
+    this.isFalling = true;
+    this.stopAnimation();
+    this.startAnimation('run');
 }
 
 runner.jumpFinished = function()
@@ -115,8 +126,8 @@ backgroundView.tick = function()
 
 floorManager = new FloorManager
 ({
-  acceleration:this.acceleration,
-  speed:this.speed,
+  acceleration:(this.acceleration*=2),
+  speed:(this.speed*=2),
   platformParent:runnerView
 });
 
@@ -127,24 +138,30 @@ runnerView.tick = function(dt)
 	{
 		var event = events[i];
 		
-		// SHOOTING
-		if (event.code == keyListener.SPACE) 
-		{
-			runner.startAnimation('shoot', { iterations:1 });
-		}
-		// JUMPING
-		else if (event.code == keyListener.UP)
-		{
-		  runner.jump();
-		}
+        // SHOOTING
+        if (event.code == keyListener.SPACE)
+        {
+        	runner.startAnimation('shoot', { iterations:1 });
+        }
+        // JUMPING
+        else if (event.code == keyListener.UP && !event.lifted)
+        {
+            runner.jump();
+        }
+        else if (event.code == keyListener.UP && event.lifted)
+        { 
+            runner.stopJump();
+        }
+		
 	}
 	
-	if ( runner.isJumping )
+	if ( runner.isJumping && jumpAcc < 1000 )
     {
+        jumpAcc             += 15;
         runner.jumpHeight   += 15;
         runner.style.y      -= 15;
         
-        if (runner.jumpHeight >= 200)
+        if (runner.jumpHeight >= 300)
         {
             runner.isFalling    = true;
             runner.jumpHeight   = 0;
