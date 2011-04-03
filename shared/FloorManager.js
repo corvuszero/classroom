@@ -25,10 +25,14 @@ var FloorManager = exports = Class(function()
       );
 	}
 	
+	this.getPlatforms = function()
+	{
+   	return platforms;
+	}
+	
 	this.checkFloors = function()
 	{
-   	var arrayLength = platforms.length;
-   	for(i = 0; i < arrayLength; i++)
+   	for(i = 0; i < platforms.length; i++)
    	{
        	//new platform generation
        	if(!platforms[i]._spawnNewPlatform)
