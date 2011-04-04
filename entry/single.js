@@ -3,6 +3,7 @@ jsio('import shared.Missile as Missile');
 jsio('import timestep.Sprite');
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
+jsio('import shared.ParallaxBackground as ParallaxBackground');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
@@ -62,14 +63,13 @@ var backgroundView = new timestep.ImageView
 	zIndex:-3
 });
 
-var backgroundClouds = new timestep.ImageView
-({
-	image: "images/background_clouds.png",
-	y:150,
+var backgroundClouds = new ParallaxBackground({
+	image: "images/background_mountains.png",
+	y:100,
 	width: 800,
-	height: 382,
+	height: 346,
 	parent: backgroundView,
-	zIndex:-2
+	zIndex:-1
 });
 
 var runner = new timestep.Sprite
