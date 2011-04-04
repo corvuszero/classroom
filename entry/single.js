@@ -187,9 +187,8 @@ runner.shoot = function()
     var missile = new Missile
         ({
           acceleration:20,
-          originPoint:false,
-          width: 30,
-          height:30,
+          width: 38,
+          height:38,
           originX:runner.style.x + (runner.style.width/2),
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView

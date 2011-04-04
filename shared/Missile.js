@@ -10,24 +10,23 @@ var Missile = exports = Class(timestep.View, function(supr)
     this._floorManager  = [];
     this._enemyIndex    = 0;
     this._enemy         = [];
+    this._fireball      = [];
 
     this.init = function(opts) 
     {
         opts = opts || {};
         supr(this, 'init', [opts]);
         
-        if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
         if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
         if (typeof opts.width != 'number') 
         {
-            this.style.width  = 30;
+            this.style.width  = 38;
         }
         if (typeof opts.height != 'number') 
         { 
-            this.style.height = 30;
+            this.style.height = 38;
         }
         
-        this._originPoint = opts.originPoint;
         this._acceleration = opts.acceleration;
          
         this.style.x = 0;
@@ -36,16 +35,16 @@ var Missile = exports = Class(timestep.View, function(supr)
         this._red = Math.round(Math.random() * 255);
         this._green = Math.round(Math.random() * 255);
         this._blue = Math.round(Math.random() * 255);
+        this._fireball = [];
         this.drawMissile(opts);
     }
     
     this.drawMissile = function(opts)
     {
-        var fireball = new timestep.ImageView
+        this._fireball = new timestep.ImageView
        	({
            	x:opts.originX,
            	y:opts.originY,
-           	originPoint:opts.originPoint,
            	width:0,
            	height:0,
            	image:'images/fireball.png',
@@ -74,16 +73,26 @@ var Missile = exports = Class(timestep.View, function(supr)
             var platform    = platforms[i];
             for ( var e in platform.getEnemies() )
             {
-                var enemy = (platform.getEnemies())[e];
-                if ( enemy != undefined && 
-                  this.style.x >= platform.style.x + enemy.style.x + 32 && 
+                var tempEnemy = (platform.getEnemies())[e];
+                
+                if ( tempEnemy != undefined && 
+                    (this.style.x >= platform.style.x + tempEnemy.style.x + 32
+                    && this.style.x <= platform.style.x + tempEnemy.style.x + 32 + tempEnemy.style.width) && 
                   this._erase == false &&
-                  this.style.y <= platform.style.y + enemy.style.y + 96)
+                  (this._fireball.style.y >= platform.style.y + tempEnemy.style.y 
+                  && this._fireball.style.y <= platform.style.y + tempEnemy.style.y + tempEnemy.style.height) )
                 {
-                    this._enemyIndex = e;
-                    this._enemy      = enemy;
-                    enemy.getEnemy().startAnimation('knock_out', { callback:this.removeEnemy, iterations:0 } );
+                    logger.log("HIT!!!");
+                    logger.log(this._fireball.style);
+                    logger.log(platform.style);
+                    logger.log(tempEnemy.style);
+                    this._enemyIndex    = e;
+                    this._enemy         = tempEnemy;
+                    tempEnemy.getEnemy().startAnimation('knock_out', { callback:this.removeEnemy, iterations:0 } );
                     this._erase = true;
+                }
+                else
+                {   
                 }
             }
         }
