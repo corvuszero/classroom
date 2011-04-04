@@ -13,6 +13,7 @@ var FloorManager = exports = Class(function()
       this._platformsToIncreaseLevel = 15;
    	this._acceleration = opts.acceleration;
    	this._originalAcceleration = this._acceleration;
+   	this._pause = false;
      	this.speed = opts.speed;
      	this.platformParent = opts.platformParent;
 
@@ -32,43 +33,55 @@ var FloorManager = exports = Class(function()
    	return platforms;
 	}
 	
+	this.setPause = function(value)
+	{
+   	this._pause = value;
+      for(i = 0; i < platforms.length; i++)
+      {
+        platforms[i]._pause = value;
+      }       	
+	}
+	
 	this.checkFloors = function()
 	{
-   	for(i = 0; i < platforms.length; i++)
-   	{       	
-       	//new platform generation
-       	if(!platforms[i]._spawnNewPlatform)
-       	{
-         	if(platforms[i].style.x + platforms[i].style.width <= 800)
-         	{
-             	platforms[i]._spawnNewPlatform = true;
-             	platforms.push(new Floor
-             	({
-               	acceleration:this._acceleration,
-               	parent:this.platformParent
-             	}));
-             	
-             	//Difficulty Increasing
-             	this._platformCounter++;
-             	this._levelCounter = Math.round(this._platformCounter / this._platformsToIncreaseLevel);
-             	var previousAcceleration = this._acceleration;
-             	this._acceleration = this._originalAcceleration + this._levelCounter;
-             	
-             	if(previousAcceleration != this._acceleration)
+   	if(!this._pause)
+   	{
+       	for(i = 0; i < platforms.length; i++)
+       	{       	
+           	//new platform generation
+           	if(!platforms[i]._spawnNewPlatform)
+           	{
+             	if(platforms[i].style.x + platforms[i].style.width <= 800)
              	{
-               	for(j = 0; j < platforms.length; j++)
-               	{
-                 	platforms[j]._acceleration = this._acceleration;
-               	}
+                 	platforms[i]._spawnNewPlatform = true;
+                 	platforms.push(new Floor
+                 	({
+                   	acceleration:this._acceleration,
+                   	parent:this.platformParent
+                 	}));
+                 	
+                 	//Difficulty Increasing
+                 	this._platformCounter++;
+                 	this._levelCounter = Math.round(this._platformCounter / this._platformsToIncreaseLevel);
+                 	var previousAcceleration = this._acceleration;
+                 	this._acceleration = this._originalAcceleration + this._levelCounter;
+                 	
+                 	if(previousAcceleration != this._acceleration)
+                 	{
+                   	for(j = 0; j < platforms.length; j++)
+                   	{
+                     	platforms[j]._acceleration = this._acceleration;
+                   	}
+                 	}
              	}
-         	}
-       	}
-       	
-       	//platform deletion
-       	if(platforms[i] != undefined && platforms[i]._erase)
-       	{
-         	platforms[i].removeFromSuperview();
-         	platforms.splice(i, 1);
+           	}
+           	
+           	//platform deletion
+           	if(platforms[i] != undefined && platforms[i]._erase)
+           	{
+             	platforms[i].removeFromSuperview();
+             	platforms.splice(i, 1);
+           	}
        	}
    	}
 	}	
