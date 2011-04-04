@@ -45,17 +45,7 @@ var Missile = exports = Class(timestep.View, function(supr)
            	parent:this,
            	zIndex:0
        	});
-       	//this.render();
     }
-
-    /*this.render = function(ctx) 
-    {
-        if(ctx)
-        {
-            ctx.fillStyle = 'rgb(255, 34, 0)';
-            ctx.fillRect(0, 0, this.style.width, this.style.height);
-        }
-    };*/
     
     this.tick = function(dt) 
     {
