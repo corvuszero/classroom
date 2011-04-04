@@ -315,8 +315,9 @@ mainView.tick = function(dt)
       missile._pause = false;
       if(missile != undefined && missile._erase)
       {
-	missile.removeFromSuperview();
-	missiles.splice(m, 1);
+	      missiles.splice(m, 1);        
+	      //missile.removeFromSuperview();
+
       }
   }
   
