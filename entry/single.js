@@ -2,6 +2,7 @@ jsio('import shared.FloorManager as FloorManager');
 jsio('import shared.Missile as Missile');
 jsio('import timestep.Sprite');
 jsio('import timestep.View');
+jsio('import timestep.ImageView');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
@@ -24,13 +25,30 @@ var runnerView = new timestep.View
   parent:mainView
 });
 
-var backgroundView = new timestep.View
-({
-  x:0,
-  y:0,
-  width:800,
-  height:600,
-  parent:runnerView
+var backgroundView = new timestep.ImageView({
+	image: "images/background_sky.png",
+	width: 800,
+	height: 600,
+	parent: mainView,
+	zIndex:-3
+});
+
+var backgroundClouds = new timestep.ImageView({
+	image: "images/background_clouds.png",
+	y:150,
+	width: 800,
+	height: 382,
+	parent: backgroundView,
+	zIndex:-2
+});
+
+var backgroundClouds = new timestep.ImageView({
+	image: "images/background_mountains.png",
+	y:100,
+	width: 800,
+	height: 346,
+	parent: backgroundView,
+	zIndex:-1
 });
 
 var runner = new timestep.Sprite
@@ -129,12 +147,6 @@ runner.shoot = function()
     missile.fired = true;
     missile.render();
 };
-
-backgroundView.render = function(ctx)
-{
-	ctx.fillStyle = 'rgb(185,211,238)';
-	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
-};  
 
 backgroundView.tick = function()
 {
