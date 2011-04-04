@@ -7,6 +7,7 @@ jsio('import shared.ParallaxBackground as ParallaxBackground');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
+app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
@@ -21,6 +22,7 @@ var jumpAcc = 0;
 var acceleration = 4;
 
 var pause = false;
+
 
 var scoreView = new timestep.View
 ({
@@ -37,10 +39,10 @@ scoreView.render = function(ctx)
     {
         ctx.font        = "3em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.distanceScore+" m", 5, 30);
+        ctx.fillText(runner.distanceScore+" m", 30, 30);
         ctx.font        = "2em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.killingScore+" kills", 5, 60);
+        ctx.fillText(runner.killingScore+" kills", 30, 60);
     }
 }
 
