@@ -256,12 +256,15 @@ mainView.tick = function(dt)
     if(cameraShake == -1)
     {
       mainView.style.x += cameraShakeMagnitude;
+      mainView.style.y += cameraShakeMagnitude;
+      
       cameraShake = 0;
     }
         
     if(cameraShake)
     {
       mainView.style.x -= cameraShakeMagnitude;
+      mainView.style.y -= cameraShakeMagnitude;      
       cameraShake = -1;
     }
     
@@ -372,6 +375,24 @@ function setGameOver()
           ctx.fillText(runner.distanceScore+" m", 30, 30);
       }
   }
+  
+  gameOverScoreView.tick = function(dt)
+  {    
+    var events = keyListener.popEvents();
+    for (var i = 0; i < events.length; i++)
+    {
+      var event = events[i];    
+      if (event.code == keyListener.SPACE && event.lifted)
+      {
+        logger.log("REINICIAR");
+      }    
+    }
+  }
+}
+
+function startGame()
+{
+  
 }
 
 //init sound
