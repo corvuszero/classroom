@@ -45,6 +45,12 @@ var ParallaxBackground = exports = Class(timestep.View, function(supr)
 
 
       }
+      
+      this.update = function(scroll)
+      {        
+        if(this.style.x <= -this.style.width/2) this.style.x = 0;
+        else this.style.x += 1/this.style.zIndex;        
+      }
 
   }
 );

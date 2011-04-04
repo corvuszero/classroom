@@ -63,13 +63,22 @@ var backgroundView = new timestep.ImageView
 	zIndex:-3
 });
 
+var backgroundClouds = new ParallaxBackground({
+	image: "images/background_clouds.png",
+	y:170,
+	width: 800,
+	height: 382,
+	parent: backgroundView,
+	zIndex:-2
+});
+
 var backgroundMountains = new ParallaxBackground({
 	image: "images/background_mountains.png",
 	y:100,
 	width: 800,
 	height: 346,
 	parent: backgroundView,
-	zIndex:-2
+	zIndex:-1
 });
 
 var runner = new timestep.Sprite
@@ -192,6 +201,10 @@ runnerView.tick = function(dt)
     {
         runner.distanceScore += 1;
     }
+    
+    //Update ParallaxScroll
+    backgroundMountains.update(runner.distanceScore);
+    backgroundClouds.update(runner.distanceScore);    
 };
 
 mainView.tick = function(dt)
