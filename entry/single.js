@@ -10,7 +10,7 @@ var keyListener = app.getKeyListener();
 var mainView = app.getView();
 
 var floorManager;
-
+var missiles = [];
 var currentAnimation = "";
 
 var speed   = 3;
@@ -37,7 +37,10 @@ scoreView.render = function(ctx)
     {
         ctx.font        = "20px Times New Roman";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.score, 5, 30);
+        ctx.fillText(runner.distanceScore, 5, 30);
+        ctx.font        = "20px Times New Roman";
+        ctx.fillStyle   = "Red";
+        ctx.fillText(runner.killingScore, 5, 60);
     }
 }
 
@@ -120,10 +123,11 @@ var runner = new timestep.Sprite
 
 currentAnimation = 'run';
 runner.startAnimation(currentAnimation);
-runner.isFalling = false;
-runner.isJumping = false;
-runner.jumpHeight = 0;
-runner.score = 0;
+runner.isFalling        = false;
+runner.isJumping        = false;
+runner.jumpHeight       = 0;
+runner.distanceScore    = 0;
+runner.killingScore     = 0;
 
 runner.jump = function()
 {
@@ -159,7 +163,8 @@ runner.shoot = function()
     runner.stopAnimation();
     currentAnimation = 'shoot';
     runner.startAnimation(currentAnimation, { iterations:1 });
-    runner.score += 5;
+    runner.killingScore += 1;
+    
     var missile = new Missile
         ({
           acceleration:20,
@@ -170,7 +175,8 @@ runner.shoot = function()
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView
         });
-    missile.fired = true;
+    missile._fired = true;
+    missiles.push(missile);
 };
 
 floorManager = new FloorManager
@@ -179,6 +185,14 @@ floorManager = new FloorManager
   speed:(this.speed*=2),
   platformParent:runnerView
 });
+
+runnerView.tick = function(dt)
+{
+    if ( !pause )
+    {
+        runner.distanceScore += 1;
+    }
+};
 
 mainView.tick = function(dt)
 {
@@ -208,11 +222,15 @@ mainView.tick = function(dt)
     //Pause
     if(event.code == 80 && !event.lifted)
     {
-      pause = !pause;
-      logger.log("pause es " + pause);
-      if(pause) runner.pauseAnimation();
-      else runner.startAnimation(currentAnimation);
-      floorManager.setPause(pause);
+        pause = !pause;
+        if (pause) runner.pauseAnimation();
+        else runner.startAnimation(currentAnimation);
+        floorManager.setPause(pause);
+        for (var m in missiles)
+        {
+            var missile = missiles[m];
+            missile._pause = true;
+        }
     }
   }
       
@@ -226,24 +244,27 @@ mainView.tick = function(dt)
       var colliding = false;
       var jumping   = false;
      
-      for (var i in platforms)
-      {
-          var floor = platforms[i];
-          if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
-          {
-              if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
-              {
+        for (var i in platforms)
+        {
+            var floor = platforms[i];
+            if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
+            {
+                if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
+                {
                 colliding = false;
-              }
-              else
-              { 
+                }
+                else
+                { 
                 colliding = true;
-  	      if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
-              }
-  	    break;
-          }
-  	else continue;
-      }
+                if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
+                }
+                break;
+            }
+            else 
+            {
+                continue;
+            }
+        }
         	
   	if ( runner.isJumping && jumpAcc < 1000 )
       {
@@ -259,11 +280,20 @@ mainView.tick = function(dt)
           }
       }
       
-      //
-      runner.isFalling 	= !colliding;
-      speedY          	= (colliding) ? 0:(speedY+gravity);
-      runner.style.y	+= speedY; 
+        //
+        runner.isFalling 	 = !colliding;
+        speedY               = (colliding) ? 0:(speedY+gravity);
+        runner.style.y      += speedY; 
+        for (var m in missiles)
+        {
+            var missile = missiles[m];
+            missile._pause = false;
+            if(missile != undefined && missile._erase)
+           	{
+             	missile.removeFromSuperview();
+             	missiles.splice(m, 1);
+           	}
+        }
       
-      scoreView.render();
   }
 };

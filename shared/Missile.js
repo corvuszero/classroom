@@ -4,6 +4,9 @@ jsio('import timestep.ImageView');
 var Missile = exports = Class(timestep.View, function(supr) 
 {
 
+    this._pause = false;
+    this._erase = false;
+
     this.init = function(opts) 
     {
         opts = opts || {};
@@ -49,7 +52,7 @@ var Missile = exports = Class(timestep.View, function(supr)
     
     this.tick = function(dt) 
     {
-        if ( this.fired )
+        if ( this._fired && !this._pause )
         {
             if (this.style.x + this.style.width < 800)
             {
@@ -57,7 +60,7 @@ var Missile = exports = Class(timestep.View, function(supr)
             }
             else
             {
-                this.removeFromSuperview();
+                this._erase = true;
             }            
         }
     }
