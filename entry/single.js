@@ -373,6 +373,10 @@ function setGameOver()
           ctx.font        = "4em Arial Black";
           ctx.fillStyle   = "White";
           ctx.fillText(runner.distanceScore+" m", 30, 30);
+
+          ctx.font        = "3em Arial Black";
+          ctx.fillStyle   = "White";
+          ctx.fillText(runner.killingScore + "", 400, 40);
       }
   }
   
