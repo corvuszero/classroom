@@ -4,6 +4,8 @@ jsio('import timestep.Sprite');
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.ParallaxBackground as ParallaxBackground');
+jsio('import timestep.SoundManager as SoundManager');
+
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
@@ -197,6 +199,12 @@ runner.shoot = function()
     
     //CAMERASHAKE
     cameraShake = 1;
+    
+    SoundManager.play({
+    	src: 'sounds/uzi.mp3',
+    	loop:false,
+    	volume:0.4
+    });
 };
 
 floorManager = new FloorManager
@@ -205,7 +213,6 @@ floorManager = new FloorManager
   speed:(this.speed*=2),
   platformParent:runnerView
 });
-
 
 
 mainView.tick = function(dt)
