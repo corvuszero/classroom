@@ -68,10 +68,10 @@ var FloorManager = exports = Class(function()
                  	
                  	if(previousAcceleration != this._acceleration)
                  	{
-                   	for(j = 0; j < platforms.length; j++)
-                   	{
-                     	platforms[j]._acceleration = this._acceleration;
-                   	}
+                     	for(j = 0; j < platforms.length; j++)
+                     	{
+                       	platforms[j]._acceleration = this._acceleration;
+                     	}
                  	}
              	}
            	}
