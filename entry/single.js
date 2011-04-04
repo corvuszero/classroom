@@ -373,3 +373,11 @@ function setGameOver()
       }
   }
 }
+
+//init sound
+SoundManager.play({
+	src: 'sounds/bgmusic.mp3',
+	loop:true,
+	volume:0.2
+});
+
