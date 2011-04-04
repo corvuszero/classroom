@@ -49,37 +49,54 @@ scoreView.render = function(ctx)
     }
 }
 
-
-var livesView = new timestep.View
+var lifesView = new timestep.View
 ({
-  x:		mainview.width-100,
-  y:		10,
-  width:	100,
-  height: 	50,
-  parent:	mainView
+        x:300,
+        y:10,
+        width:800,
+        height:50,
+        parent:mainView
 });
 
-livesView.render = function(ctx)
+lifesView.render = function(ctx)
 {
-  if(ctx)
-  {
-    var lifes = life;
-    while(lifes > 0)
+    if (ctx)
     {
-      lifes--;
-      var lifeinerContainer = new timestep.ImageView
-       	({
-           	x:(lifes*32),
-           	y:0,
-           	width:0,
-           	height:0,
-           	image:'images/heart.png',
-           	parent:this
-       	});
+      var heart1 = new timestep.ImageView
+      ({
+	x:800 - 32 - 5,
+	y:10,
+	originPoint:0,
+	width:32,
+	height: 28,
+	image:'images/heart.png',
+	parent:this,
+	zIndex:0
+      });
+      var heart3 = new timestep.ImageView
+      ({
+	x:800 - 64 - 5,
+	y:10,
+	originPoint:0,
+	width:32,
+	height: 28,
+	image:'images/heart.png',
+	parent:this,
+	zIndex:0
+      });
+      var heart3 = new timestep.ImageView
+      ({
+	x:800 - 96 - 5,
+	y:10,
+	originPoint:0,
+	width:32,
+	height: 28,
+	image:'images/heart.png',
+	parent:this,
+	zIndex:0
+      });
     }
-  }
 }
-
 
 
 var runnerView = new timestep.View
