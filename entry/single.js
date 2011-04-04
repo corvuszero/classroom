@@ -226,7 +226,6 @@ mainView.tick = function(dt)
 	for (var i = 0; i < events.length; i++) 
 	{
 		var event = events[i];
-    		logger.log(event.code);
         // SHOOTING
         if (event.code == keyListener.SPACE && event.lifted)
         {
