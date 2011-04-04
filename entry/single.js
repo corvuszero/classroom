@@ -203,7 +203,7 @@ runner.shoot = function()
     SoundManager.play({
     	src: 'sounds/uzi.mp3',
     	loop:false,
-    	volume:0.4
+    	volume:0.8
     });
 };
 
@@ -256,8 +256,7 @@ mainView.tick = function(dt)
     if(cameraShake == -1)
     {
       mainView.style.x += cameraShakeMagnitude;
-      mainView.style.y += cameraShakeMagnitude;
-      
+      mainView.style.y += cameraShakeMagnitude;      
       cameraShake = 0;
     }
         
@@ -268,8 +267,6 @@ mainView.tick = function(dt)
       cameraShake = -1;
     }
     
-
-
     //Update ParallaxScroll
     backgroundMountains.update(runner.distanceScore);
     backgroundClouds.update(runner.distanceScore);    
@@ -395,10 +392,10 @@ function startGame()
   
 }
 
-//init sound
+//Init sound
 SoundManager.play({
 	src: 'sounds/bgmusic.mp3',
 	loop:true,
-	volume:0.2
+	volume:0.4
 });
 
