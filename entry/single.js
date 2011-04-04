@@ -19,6 +19,7 @@ var acceleration 	= 8;
 
 var pause = false;
 var gameOver = false;
+var gameOverImage;
 
 var scoreView = new timestep.View
 ({
@@ -316,4 +317,31 @@ function setGameOver()
 {
   gameOver = true;
   setPause(true);
+  gameOverImage = new timestep.ImageView
+  ({
+    	image: "images/gameOverScreen.png",
+    	width: 800,
+    	height: 600,
+    	parent: mainView,
+    	zIndex:5
+  });
+  
+  var gameOverScoreView = new timestep.View
+  ({
+    x:190,
+    y:85,
+    width:400,
+    height:75,
+    parent:gameOverImage
+  });
+  
+  gameOverScoreView.render = function(ctx)
+  {
+      if (ctx)
+      {
+          ctx.font        = "4em Arial Black";
+          ctx.fillStyle   = "White";
+          ctx.fillText(runner.distanceScore+" m", 30, 30);
+      }
+  }
 }
