@@ -32,21 +32,26 @@ var Missile = exports = Class(timestep.View, function(supr)
 
     this.render = function(ctx) 
     {
-        ctx.fillStyle = 'rgb(255, 34, 0)';
-        ctx.fillRect(0, 0, this.style.width, this.style.height);
+        if(ctx){
+            ctx.fillStyle = 'rgb(255, 34, 0)';
+            ctx.fillRect(0, 0, this.style.width, this.style.height);
+        }
     };
     
     this.tick = function(dt) 
     {
     
-    
         if ( this.fired )
         {
-            if (this.style.x + this.style.width > 0)
-                this.style.x -= this._acceleration;
-            else 
+            if (this.style.x + this.style.width > 800)
+            {
+                this.style.x += this._acceleration;
+            }
+            else
+            {
                 this._erase = true;
-                
+            }
+            
             this.style.x += 20;
         }
     }
