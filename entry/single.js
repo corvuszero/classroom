@@ -35,12 +35,12 @@ scoreView.render = function(ctx)
 {
     if (ctx)
     {
-        ctx.font        = "20px Times New Roman";
+        ctx.font        = "3em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.distanceScore, 5, 30);
-        ctx.font        = "20px Times New Roman";
-        ctx.fillStyle   = "Red";
-        ctx.fillText(runner.killingScore, 5, 60);
+        ctx.fillText(runner.distanceScore+" m", 5, 30);
+        ctx.font        = "2em Arial Black";
+        ctx.fillStyle   = "Yellow";
+        ctx.fillText(runner.killingScore+" kills", 5, 60);
     }
 }
 
