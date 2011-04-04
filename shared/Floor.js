@@ -2,6 +2,8 @@ jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.Enemy as Enemy');
 
+var _enemies = [];
+
 var Floor = exports = Class(timestep.View, function(supr) 
 {
 	
@@ -36,6 +38,11 @@ var Floor = exports = Class(timestep.View, function(supr)
         
         this.style.y = 600 - this.style.height;        
         this.createPlatform();
+	}
+	
+	this.getEnemies = function()
+	{
+	   return _enemies;
 	}
 	
 	this.createPlatform = function()
@@ -114,12 +121,10 @@ var Floor = exports = Class(timestep.View, function(supr)
          	});
        	}
        	
-       	var enemies         = [];
        	var numberOfEnemies = Math.floor(Math.random()*2);
        	
        	for (e = 0; e < numberOfEnemies; e++)
        	{
-       	    
        	    var enemy = new Enemy(
            	    {
                     acceleration:this._acceleration,
@@ -129,6 +134,7 @@ var Floor = exports = Class(timestep.View, function(supr)
                     originY:-48,
            	    }
        	    );
+       	    _enemies.push(enemy);
        	}
        	
 	}
