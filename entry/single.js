@@ -21,6 +21,7 @@ var jumpAcc = 0;
 var acceleration = 4;
 
 var pause = false;
+var gameOver = false;
 
 var scoreView = new timestep.View
 ({
@@ -214,7 +215,7 @@ mainView.tick = function(dt)
   for (var i = 0; i < events.length; i++)
   {
     var event = events[i];
-    if(!pause)
+    if(!gameOver && !pause)
     {
       // SHOOTING
       if (event.code == keyListener.SPACE && event.lifted)
@@ -233,21 +234,13 @@ mainView.tick = function(dt)
     }
     
     //Pause
-    if(event.code == 80 && !event.lifted)
+    if(!gameOver && event.code == 80 && !event.lifted)
     {
-        pause = !pause;
-        if (pause) runner.pauseAnimation();
-        else runner.startAnimation(currentAnimation);
-        floorManager.setPause(pause);
-        for (var m in missiles)
-        {
-            var missile = missiles[m];
-            missile._pause = true;
-        }
+        setPause(!pause);
     }
   }
       
-      if(!pause)
+      if(!gameOver && !pause)
       {
       //Platform generation
       floorManager.checkFloors();
@@ -308,5 +301,31 @@ mainView.tick = function(dt)
            	}
         }
       
+        //Game Over
+        if(runner.style.y >= 600 && !gameOver)
+        {
+          gameOver();
+        }
   }
+  
+  
 };
+
+function setPause(value)
+{
+  pause = value;
+  if (pause) runner.pauseAnimation();
+  else runner.startAnimation(currentAnimation);
+  floorManager.setPause(pause);
+  for (var m in missiles)
+  {
+      var missile = missiles[m];
+      missile._pause = true;
+  }
+}
+
+function gameOver()
+{
+  gameOver = true;
+  setPause(true);
+}
