@@ -20,9 +20,11 @@ var Floor = exports = Class(timestep.View, function(supr) {
 		this._originPoint = opts.originPoint;
 		this._acceleration = opts.acceleration;
 		
-		if(!this._originPoint) this.style.x = 850 + (50 + Math.random() * 10);
+		var maxDistance = 22 * this._acceleration;
+		if(!this._originPoint) this.style.x = 850 + Math.round(50 + Math.random() * (maxDistance - 50));
 		else this.style.x = 0;
-				
+      
+      logger.log('x es ' + this.style.x);
 		this.style.y = 600 - this.style.height;
 		
 		this.createPlatform();
