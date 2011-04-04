@@ -35,7 +35,10 @@ scoreView.render = function(ctx)
     {
         ctx.font        = "20px Times New Roman";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.score, 5, 30);
+        ctx.fillText(runner.distanceScore, 5, 30);
+        ctx.font        = "20px Times New Roman";
+        ctx.fillStyle   = "Red";
+        ctx.fillText(runner.killingScore, 5, 60);
     }
 }
 
@@ -125,10 +128,11 @@ var runner = new timestep.Sprite
 });
 
 runner.startAnimation('run');
-runner.isFalling = false;
-runner.isJumping = false;
-runner.jumpHeight = 0;
-runner.score = 0;
+runner.isFalling        = false;
+runner.isJumping        = false;
+runner.jumpHeight       = 0;
+runner.distanceScore    = 0;
+runner.killingScore     = 0;
 
 runner.jump = function()
 {
@@ -139,7 +143,6 @@ runner.jump = function()
         jumpAcc         = 0;
         this.stopAnimation();
         this.startAnimation('jump', { iterations: 5 });
-        
     }
 };
 
@@ -161,7 +164,7 @@ runner.shoot = function()
 {
     runner.stopAnimation();
     runner.startAnimation('shoot', { iterations:1 });
-    runner.score += 5;
+    runner.killingScore += 1;
     var missile = new Missile
         ({
           acceleration:20,
@@ -188,8 +191,9 @@ floorManager = new FloorManager
   platformParent:runnerView
 });
 
-runnerView.tick = function(dt) 
+runnerView.tick = function(dt)
 {
+    runner.distanceScore += 1;
 };
 
 mainView.tick = function(dt)
@@ -213,8 +217,8 @@ mainView.tick = function(dt)
             }
             else
             { 
-              colliding = true;
-	      if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
+                colliding = true;
+	           if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
             }
 	    break;
         }
