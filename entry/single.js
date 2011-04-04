@@ -197,20 +197,20 @@ floorManager = new FloorManager
   platformParent:runnerView
 });
 
-runnerView.tick = function(dt)
-{
-    if ( !pause )
-    {
-        runner.distanceScore += 1;
-    }
-    
-    //Update ParallaxScroll
-    backgroundMountains.update(runner.distanceScore);
-    backgroundClouds.update(runner.distanceScore);    
-};
+
 
 mainView.tick = function(dt)
 {
+  //Update distance
+  if ( !pause )
+  {
+      runner.distanceScore += 1;
+  }
+  
+  //Update ParallaxScroll
+  backgroundMountains.update(runner.distanceScore);
+  backgroundClouds.update(runner.distanceScore);    
+  
   //Runner Logic
   var events = keyListener.popEvents();
   for (var i = 0; i < events.length; i++)
