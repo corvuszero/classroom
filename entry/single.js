@@ -280,5 +280,39 @@ mainView.tick = function(dt)
       
       scoreView.render();
     
+    //Runner Logic
+	var events = keyListener.popEvents();
+	for (var i = 0; i < events.length; i++) 
+	{
+		var event = events[i];
+        // SHOOTING
+        if (event.code == keyListener.SPACE && event.lifted)
+        {
+        	runner.shoot();
+        }
+        // JUMPING
+        else if (event.code == keyListener.UP && !event.lifted)
+        {
+            runner.jump();
+        }
+        else if (event.code == keyListener.UP && event.lifted)
+        { 
+            runner.stopJump();
+        }
+		
+	}
+	
+	if ( runner.isJumping && jumpAcc < 1000 )
+    {
+        jumpAcc             += 15;
+        runner.jumpHeight   += 15;
+        runner.style.y      -= 15;
+        
+        if (runner.jumpHeight >= 300)
+        {
+            runner.isFalling    = true;
+            runner.jumpHeight   = 0;
+            runner.isJumping    = false;
+        }
     }
 };
