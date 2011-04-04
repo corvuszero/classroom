@@ -22,15 +22,13 @@ var acceleration = 4;
 var pause = false;
 
 var scoreView = new timestep.View
-(
-    {
+({
         x:10,
         y:10,
         width:400,
         height:75,
         parent:mainView
-    }
-);
+});
 
 scoreView.render = function(ctx)
 {
@@ -52,7 +50,8 @@ var runnerView = new timestep.View
 });
 runnerView.score = 0;
 
-var backgroundView = new timestep.ImageView({
+var backgroundView = new timestep.ImageView
+({
 	image: "images/background_sky.png",
 	width: 800,
 	height: 600,
@@ -60,22 +59,14 @@ var backgroundView = new timestep.ImageView({
 	zIndex:-3
 });
 
-var backgroundClouds = new timestep.ImageView({
+var backgroundClouds = new timestep.ImageView
+({
 	image: "images/background_clouds.png",
 	y:150,
 	width: 800,
 	height: 382,
 	parent: backgroundView,
 	zIndex:-2
-});
-
-var backgroundClouds = new timestep.ImageView({
-	image: "images/background_mountains.png",
-	y:100,
-	width: 800,
-	height: 346,
-	parent: backgroundView,
-	zIndex:-1
 });
 
 var runner = new timestep.Sprite
@@ -144,7 +135,6 @@ runner.jump = function()
         this.stopAnimation();
         currentAnimation = 'jump';
         this.startAnimation(currentAnimation, { iterations: 5 });
-        
     }
 };
 
@@ -191,47 +181,49 @@ backgroundView.render = function(ctx)
 
 floorManager = new FloorManager
 ({
-  acceleration:(acceleration),
+  acceleration:acceleration,
   speed:(this.speed*=2),
   platformParent:runnerView
 });
 
 mainView.tick = function(dt)
 {
-    //Runner Logic
-    	var events = keyListener.popEvents();
-    	for (var i = 0; i < events.length; i++) 
-    	{
-    		var event = events[i];
-    		if(!pause)
-    		{
-      		// SHOOTING
-           if (event.code == keyListener.SPACE && event.lifted)
-           {
-            	runner.shoot();
-           }
-           // JUMPING
-           else if (event.code == keyListener.UP && !event.lifted)
-           {
-               runner.jump();
-           }
-           else if (event.code == keyListener.UP && event.lifted)
-           { 
-               runner.stopJump();
-           }
-         }
-         if(event.code == 80 && !event.lifted)
-         {
-           pause = !pause;
-           logger.log("pause es " + pause);
-           if(pause) runner.pauseAnimation();
-           else runner.startAnimation(currentAnimation);
-           floorManager.setPause(pause);
-         }
-    	}
-
+  //Runner Logic
+  var events = keyListener.popEvents();
+  for (var i = 0; i < events.length; i++)
+  {
+    var event = events[i];
     if(!pause)
     {
+      // SHOOTING
+      if (event.code == keyListener.SPACE && event.lifted)
+      {
+        runner.shoot();
+      }
+      // JUMPING
+      else if (event.code == keyListener.UP && !event.lifted)
+      {
+        runner.jump();
+      }
+      else if (event.code == keyListener.UP && event.lifted)
+      {
+        runner.stopJump();
+      }
+    }
+    
+    //Pause
+    if(event.code == 80 && !event.lifted)
+    {
+      pause = !pause;
+      logger.log("pause es " + pause);
+      if(pause) runner.pauseAnimation();
+      else runner.startAnimation(currentAnimation);
+      floorManager.setPause(pause);
+    }
+  }
+      
+      if(!pause)
+      {
       //Platform generation
       floorManager.checkFloors();
   
@@ -279,40 +271,5 @@ mainView.tick = function(dt)
       runner.style.y	+= speedY; 
       
       scoreView.render();
-    
-    //Runner Logic
-	var events = keyListener.popEvents();
-	for (var i = 0; i < events.length; i++) 
-	{
-		var event = events[i];
-        // SHOOTING
-        if (event.code == keyListener.SPACE && event.lifted)
-        {
-        	runner.shoot();
-        }
-        // JUMPING
-        else if (event.code == keyListener.UP && !event.lifted)
-        {
-            runner.jump();
-        }
-        else if (event.code == keyListener.UP && event.lifted)
-        { 
-            runner.stopJump();
-        }
-		
-	}
-	
-	if ( runner.isJumping && jumpAcc < 1000 )
-    {
-        jumpAcc             += 15;
-        runner.jumpHeight   += 15;
-        runner.style.y      -= 15;
-        
-        if (runner.jumpHeight >= 300)
-        {
-            runner.isFalling    = true;
-            runner.jumpHeight   = 0;
-            runner.isJumping    = false;
-        }
-    }
+  }
 };
