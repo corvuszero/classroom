@@ -202,8 +202,6 @@ floorManager = new FloorManager
 
 mainView.tick = function(dt)
 {
-
-
   //Runner Logic
   var events = keyListener.popEvents();
   for (var i = 0; i < events.length; i++)
@@ -304,7 +302,7 @@ mainView.tick = function(dt)
         //Game Over
         if(runner.style.y >= 600 && !gameOver)
         {
-          gameOver();
+          setGameOver();
         }
   }
   
@@ -324,7 +322,7 @@ function setPause(value)
   }
 }
 
-function gameOver()
+function setGameOver()
 {
   gameOver = true;
   setPause(true);
