@@ -16,11 +16,14 @@ var Floor = exports = Class(timestep.View, function(supr)
       
         this._spawnNewPlatform = false;
         if(!opts.originPoint) 
-            this._middleTiles = 5 + Math.round(Math.random() * 15);
+            this._middleTiles = 10 + Math.round(Math.random() * 25);
         else 
             this._middleTiles = 30;
+            
+        this._extraRows = Math.round(Math.random() * 4);
+        
         this.style.width = 32 * (this._middleTiles + 2);
-        this.style.height = 192;
+        this.style.height = 192 + (32 * this._extraRows);
         
         this._originPoint = opts.originPoint;
         this._acceleration = opts.acceleration;
@@ -74,6 +77,42 @@ var Floor = exports = Class(timestep.View, function(supr)
             image:'images/rightPlatform.png',
             zIndex:this._middleTiles
        	});
+       	
+       	for(i = 0; i < this._extraRows; i++)
+       	{
+         	var leftTile = new timestep.ImageView
+         	({
+              x: 0,
+              y:192 + (i * 32),
+              width:32,
+              height:32,
+              parent:this,
+              image:'images/leftTile.png',
+         	});
+         	
+         	for(j = 1; j < this._middleTiles; j++)
+         	{
+             	var middleTile = new timestep.ImageView
+             	({
+                  x: j * 32,
+                  y:192 + (i * 32),
+                  width:32,
+                  height:32,
+                  parent:this,
+                  image:'images/middleTile.png',
+             	});
+         	}
+       	
+         	var rightTile = new timestep.ImageView
+         	({
+              x: this._middleTiles * 32,
+              y:192 + (i * 32),
+              width:32,
+              height:32,
+              parent:this,
+              image:'images/rightTile.png',
+         	});
+       	}
        	
        	var enemies         = [];
        	var numberOfEnemies = Math.floor(Math.random()*2);
