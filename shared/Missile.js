@@ -28,6 +28,8 @@ var Missile = exports = Class(timestep.View, function(supr)
         this._red = Math.round(Math.random() * 255);
         this._green = Math.round(Math.random() * 255);
         this._blue = Math.round(Math.random() * 255);
+        
+        logger.log(this);
     }
 
     this.render = function(ctx) 
@@ -43,16 +45,14 @@ var Missile = exports = Class(timestep.View, function(supr)
     
         if ( this.fired )
         {
-            if (this.style.x + this.style.width > 800)
+            if (this.style.x + this.style.width < 800)
             {
                 this.style.x += this._acceleration;
             }
             else
             {
-                this._erase = true;
-            }
-            
-            this.style.x += 20;
+                this.removeFromSuperview();
+            }            
         }
     }
 

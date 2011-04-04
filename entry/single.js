@@ -137,6 +137,7 @@ runner.shoot = function()
     runner.startAnimation('shoot', { iterations:1 });
     var missile = new Missile
         ({
+          acceleration:20,
           originPoint:false,
           width: 30,
           height:30,
