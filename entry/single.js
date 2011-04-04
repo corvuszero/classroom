@@ -4,6 +4,8 @@ jsio('import timestep.Sprite');
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.ParallaxBackground as ParallaxBackground');
+jsio('import timestep.SoundManager as SoundManager');
+
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
@@ -14,9 +16,11 @@ var floorManager;
 var missiles    = [];
 var currentAnimation = "";
 
-var speed   		= 3;
-var gravity 		= 10;
-var acceleration 	= 4;
+var gravity 		  = 10;
+var acceleration 	= 8;
+
+var cameraShake   = 0;
+var cameraShakeMagnitude = 5;
 
 var pause = false;
 var gameOver = false;
@@ -193,6 +197,15 @@ runner.shoot = function()
     missile._floorManager   = floorManager;
     missile._fired          = true;
     missiles.push(missile);
+    
+    //CAMERASHAKE
+    cameraShake = 1;
+    
+    SoundManager.play({
+    	src: 'sounds/uzi.mp3',
+    	loop:false,
+    	volume:0.4
+    });
 };
 
 floorManager = new FloorManager
@@ -238,6 +251,21 @@ mainView.tick = function(dt)
   if(!gameOver && !pause)
   {
     runner.distanceScore += 1;
+
+    //CameraShake
+    if(cameraShake == -1)
+    {
+      mainView.style.x += cameraShakeMagnitude;
+      cameraShake = 0;
+    }
+        
+    if(cameraShake)
+    {
+      mainView.style.x -= cameraShakeMagnitude;
+      cameraShake = -1;
+    }
+    
+
 
     //Update ParallaxScroll
     backgroundMountains.update(runner.distanceScore);
@@ -345,3 +373,11 @@ function setGameOver()
       }
   }
 }
+
+//init sound
+SoundManager.play({
+	src: 'sounds/bgmusic.mp3',
+	loop:true,
+	volume:0.2
+});
+
