@@ -2,6 +2,8 @@ jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import timestep.Sprite');
 
+var enemy = [];
+
 var Enemy = exports = Class(timestep.View, function(supr) 
 {
 
@@ -35,7 +37,7 @@ var Enemy = exports = Class(timestep.View, function(supr)
     
     this.drawEnemy = function(opts)
     {
-        var enemy = new timestep.Sprite
+        enemy = new timestep.Sprite
        	({
            	x:opts.originX,
            	y:opts.originY,
@@ -74,6 +76,11 @@ var Enemy = exports = Class(timestep.View, function(supr)
             zIndex: 1
        	});
        	enemy.startAnimation('rest');
+    }
+    
+    this.getEnemy = function()
+    {
+        return enemy;  
     }
     
     this.tick = function(dt) 

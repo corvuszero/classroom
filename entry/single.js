@@ -11,7 +11,7 @@ app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
-var missiles = [];
+var missiles    = [];
 var currentAnimation = "";
 
 var speed   		= 3;
@@ -190,7 +190,8 @@ runner.shoot = function()
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView
         });
-    missile._fired = true;
+    missile._floorManager   = floorManager;
+    missile._fired          = true;
     missiles.push(missile);
 };
 
@@ -200,8 +201,6 @@ floorManager = new FloorManager
   speed:(this.speed*=2),
   platformParent:runnerView
 });
-
-
 
 mainView.tick = function(dt)
 {
