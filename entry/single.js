@@ -1,4 +1,5 @@
 jsio('import shared.FloorManager as FloorManager');
+jsio('import shared.Missile as Missile');
 jsio('import timestep.Sprite');
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
@@ -16,6 +17,27 @@ var gravity = 0.5;
 var jumpAcc = 0;
 var acceleration = 4;
 
+var scoreView = new timestep.View
+(
+    {
+        x:10,
+        y:10,
+        width:400,
+        height:75,
+        parent:mainView
+    }
+);
+
+scoreView.render = function(ctx)
+{
+    if (ctx)
+    {
+        ctx.font        = "20px Times New Roman";
+        ctx.fillStyle   = "Yellow";
+        ctx.fillText(runner.score, 5, 30);
+    }
+}
+
 var runnerView = new timestep.View
 ({
   x:0,
@@ -24,6 +46,7 @@ var runnerView = new timestep.View
   height:600,
   parent:mainView
 });
+runnerView.score = 0;
 
 var backgroundView = new timestep.ImageView({
 	image: "images/background_sky.png",
@@ -104,6 +127,7 @@ runner.startAnimation('run');
 runner.isFalling = false;
 runner.isJumping = false;
 runner.jumpHeight = 0;
+runner.score = 0;
 
 runner.jump = function()
 {
@@ -116,7 +140,7 @@ runner.jump = function()
         this.startAnimation('jump', { iterations: 5 });
         
     }
-}
+};
 
 runner.stopJump = function()
 {
@@ -124,17 +148,35 @@ runner.stopJump = function()
     this.isFalling = true;
     this.stopAnimation();
     this.startAnimation('run');
-}
+};
 
 runner.jumpFinished = function()
 {
     this.stopAnimation();
     this.startAnimation('run');
-}
+};
+
+runner.shoot = function()
+{
+    runner.stopAnimation();
+    runner.startAnimation('shoot', { iterations:1 });
+    runner.score += 5;
+    var missile = new Missile
+        ({
+          acceleration:20,
+          originPoint:false,
+          width: 30,
+          height:30,
+          originX:runner.style.x + (runner.style.width/2),
+          originY:runner.style.y + (runner.style.height/2),
+          parent:mainView
+        });
+    missile.fired = true;
+};
 
 backgroundView.render = function(ctx)
 {
-	ctx.fillStyle = 'rgb(185,211,238)';
+	ctx.fillStyle = 'rgb(0, 151, 192)';
 	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
 }
 
@@ -158,9 +200,9 @@ runnerView.tick = function(dt)
 		var event = events[i];
 		
         // SHOOTING
-        if (event.code == keyListener.SPACE)
+        if (event.code == keyListener.SPACE && event.lifted)
         {
-        	runner.startAnimation('shoot', { iterations:1 });
+        	runner.shoot();
         }
         // JUMPING
         else if (event.code == keyListener.UP && !event.lifted)
@@ -217,4 +259,6 @@ mainView.tick = function(dt)
     runner.isFalling 	= !colliding;
     speedY          	= (colliding) ? 0:(speedY+gravity);
     runner.style.y	+= speedY; 
+    
+    scoreView.render();
 };

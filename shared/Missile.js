@@ -29,12 +29,12 @@ var Missile = exports = Class(timestep.View, function(supr)
         this._green = Math.round(Math.random() * 255);
         this._blue = Math.round(Math.random() * 255);
         
-        logger.log(this);
     }
 
     this.render = function(ctx) 
     {
-        if(ctx){
+        if(ctx)
+        {
             ctx.fillStyle = 'rgb(255, 34, 0)';
             ctx.fillRect(0, 0, this.style.width, this.style.height);
         }
