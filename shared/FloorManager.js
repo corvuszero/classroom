@@ -11,11 +11,11 @@ var FloorManager = exports = Class(function()
       this._platformCounter = 0;
       this._levelCounter = 0;
       this._platformsToIncreaseLevel = 15;
-   	this._acceleration = opts.acceleration;
-   	this._originalAcceleration = this._acceleration;
-   	this._pause = false;
-     	this.speed = opts.speed;
-     	this.platformParent = opts.platformParent;
+      this._acceleration = opts.acceleration;
+   	  this._originalAcceleration = this._acceleration;
+   	  this._pause = false;
+      this.speed = opts.speed;
+      this.platformParent = opts.platformParent;
 
       platforms.push
       (
@@ -26,6 +26,30 @@ var FloorManager = exports = Class(function()
           parent:this.platformParent
         })
       );
+	}
+	
+	this.restart = function()
+	{
+	   while(platforms.length > 0)
+	   {
+	       platforms[0].removeFromSuperview();
+           platforms.splice(0, 1);
+	   }
+	   
+	   this.platformCounter = 0;
+       this._levelCounter = 0;
+       this._acceleration = this._originalAcceleration;
+   	   this._pause = false;
+
+       platforms.push
+       (
+        new Floor
+        ({
+          acceleration:this._acceleration,
+          originPoint:true,
+          parent:this.platformParent
+        })
+       );
 	}
 	
 	this.getPlatforms = function()

@@ -329,6 +329,15 @@ mainView.tick = function(dt)
   
 };
 
+mainView.onInputSelect = function(evt, pt)
+{
+    if(gameOver)
+    {
+        gameOverImage.removeFromSuperview();
+        startGame();
+    }
+}
+
 function setPause(value)
 {
   pause = value;
@@ -346,6 +355,11 @@ function setGameOver()
 {
   gameOver = true;
   setPause(true);
+
+  //Reset player position so we don't infinitely add more players
+  //when gameOverScreen is clicked
+  runner.style.y = 100;
+  
   gameOverImage = new timestep.ImageView
   ({
     	image: "images/gameOverScreen.png",
@@ -376,25 +390,19 @@ function setGameOver()
           ctx.fillStyle   = "White";
           ctx.fillText(runner.killingScore + "", 400, 40);
       }
-  }
-  
-  gameOverScoreView.tick = function(dt)
-  {    
-    var events = keyListener.popEvents();
-    for (var i = 0; i < events.length; i++)
-    {
-      var event = events[i];    
-      if (event.code == keyListener.SPACE && event.lifted)
-      {
-        logger.log("REINICIAR");
-      }    
-    }
-  }
+  }  
 }
 
 function startGame()
 {
-  
+    gameOver = false;
+
+    currentAnimation = 'run';
+    runner.distanceScore = 0;
+    runner.killingScore = 0;
+    
+    setPause(!pause);
+    floorManager.restart();
 }
 
 //Init sound
