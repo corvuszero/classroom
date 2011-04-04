@@ -1,13 +1,36 @@
+jsio('import timestep.View');
 jsio('import timestep.ImageView');
 
-var ParallaxBackground = exports = Class(timestep.ImageView, function(supr) 
+var ParallaxBackground = exports = Class(timestep.View, function(supr) 
 {
 
       this.init = function(opts) 
       {
     		opts = opts || {};
     		supr(this, 'init', [opts]);
-        
+
+    		//double the size
+    		this.style.width = opts.width*2;
+    		
+    		//Generate both imageviews
+    		var buffer1 = new timestep.ImageView
+        ({
+        	image: opts.image,
+        	width: opts.width,
+        	height: opts.height,
+        	parent: this,
+        	zIndex: opts.zIndex
+        });
+
+    		var buffer2 = new timestep.ImageView
+        ({
+        	image: opts.image,
+        	x:opts.width,
+        	width: opts.width,
+        	height: opts.height,
+        	parent: this,
+        	zIndex: opts.zIndex
+        });    		
       }
 
       this.render = function(ctx) 
@@ -20,17 +43,7 @@ var ParallaxBackground = exports = Class(timestep.ImageView, function(supr)
       this.tick = function(dt) 
       {
 
-          if ( this.fired )
-          {
-              if (this.style.x + this.style.width < 800)
-              {
-                  this.style.x += this._acceleration;
-              }
-              else
-              {
-                  this.removeFromSuperview();
-              }            
-          }
+
       }
 
   }

@@ -60,13 +60,13 @@ var backgroundView = new timestep.ImageView
 	zIndex:-3
 });
 
-var backgroundClouds = new ParallaxBackground({
+var backgroundMountains = new ParallaxBackground({
 	image: "images/background_mountains.png",
 	y:100,
 	width: 800,
 	height: 346,
 	parent: backgroundView,
-	zIndex:-1
+	zIndex:-2
 });
 
 var runner = new timestep.Sprite
@@ -172,12 +172,6 @@ runner.shoot = function()
         });
     missile.fired = true;
 };
-
-backgroundView.render = function(ctx)
-{
-	ctx.fillStyle = 'rgb(0, 151, 192)';
-	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
-}
 
 floorManager = new FloorManager
 ({
