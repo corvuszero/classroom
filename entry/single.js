@@ -88,42 +88,55 @@ var runner = new timestep.Sprite
   x:100,
   y:100,
   width:64,
-  height:108,
+  height:64,
   animations:
   {
     run:
     {
-      width:64,
-      height:108,
-      imageURL: 'images/player.png',
-      frameRate:8,
+      width:32,
+      height:32,
+      imageURL: 'images/player_running.png',
+      frameRate:16,
       frames:
       [
-        [0,0],
-        [192, 0]
+      [0,0],
+      [31,0],
+      [62,0],
+      [93,0],
+      [124,0],
+      [155,0],
+      [186,0],
+      [217,0],
+      [248,0],
+      [279,0],
+      [310,0],
+      [341,0]                                            
       ]
     },
     shoot:
     {
-      width:64,
-      height:108,
-      imageURL: 'images/player.png',
-      frameRate:8,
+      width:32,
+      height:32,
+      imageURL: 'images/player_shooting.png',
+      frameRate:16,
       frames:
       [
-        [64, 0],
-        [128, 0]
+        [31, 0],               
+        [62, 0]
       ]
     },
     jump:
     {
-        width:64,
-        height:108,
-        imageURL: 'images/player.png',
-        frameRate:8,
+        width:32,
+        height:32,
+        imageURL: 'images/player_jumping.png',
+        frameRate:16,
         frames:
-        [
-            [192, 0]
+        [               
+          [0, 0],
+          [32, 0],
+          [64, 0],
+          [32, 0]                        
         ]
     }
   },
