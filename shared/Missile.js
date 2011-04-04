@@ -75,7 +75,10 @@ var Missile = exports = Class(timestep.View, function(supr)
             for ( var e in platform.getEnemies() )
             {
                 var enemy = (platform.getEnemies())[e];
-                if ( enemy != undefined && this.style.x >= platform.style.x + enemy.style.x + 32 )
+                if ( enemy != undefined && 
+                  this.style.x >= platform.style.x + enemy.style.x + 32 && 
+                  this._erase == false &&
+                  this.style.y <= platform.style.y + enemy.style.y + 96)
                 {
                     this._enemyIndex = e;
                     this._enemy      = enemy;
