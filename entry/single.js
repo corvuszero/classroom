@@ -14,9 +14,8 @@ var floorManager;
 var missiles = [];
 var currentAnimation = "";
 
-var speed   		= 3;
 var gravity 		= 10;
-var acceleration 	= 4;
+var acceleration 	= 8;
 
 var pause = false;
 var gameOver = false;
