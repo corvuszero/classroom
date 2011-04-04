@@ -16,6 +16,7 @@ var speedY  = 0;
 var gravity = 0.5;
 var jumpAcc = 0;
 var acceleration = 4;
+var pause = false;
 
 var scoreView = new timestep.View
 (
@@ -180,11 +181,6 @@ backgroundView.render = function(ctx)
 	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
 }
 
-backgroundView.tick = function()
-{
-  floorManager.checkFloors();
-}
-
 floorManager = new FloorManager
 ({
   acceleration:(acceleration),
@@ -194,11 +190,43 @@ floorManager = new FloorManager
 
 runnerView.tick = function(dt) 
 {
+};
+
+mainView.tick = function(dt)
+{
+    //Platform generation
+    floorManager.checkFloors();
+
+    //Platform Collision
+    var platforms = floorManager.getPlatforms();
+    var colliding = false;
+    var jumping   = false;
+   
+    for (var i in platforms)
+    {
+        var floor = platforms[i];
+        if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
+        {
+            if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
+            {
+              colliding = false;
+            }
+            else
+            { 
+              colliding = true;
+	      if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
+            }
+	    break;
+        }
+	else continue;
+    }
+    
+    //Runner Logic
 	var events = keyListener.popEvents();
 	for (var i = 0; i < events.length; i++) 
 	{
 		var event = events[i];
-		
+    		logger.log(event.code);
         // SHOOTING
         if (event.code == keyListener.SPACE && event.lifted)
         {
@@ -229,33 +257,8 @@ runnerView.tick = function(dt)
             runner.isJumping    = false;
         }
     }
-};
-
-mainView.tick = function(dt)
-{
-    var platforms = floorManager.getPlatforms();
-    var colliding = false;
-    var jumping   = false;
-   
-    for (var i in platforms)
-    {
-        var floor = platforms[i];
-        if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
-        {
-            if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
-            {
-              colliding = false;
-            }
-            else
-            { 
-              colliding = true;
-	      if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
-            }
-	    break;
-        }
-	else continue;
-    }
     
+    //
     runner.isFalling 	= !colliding;
     speedY          	= (colliding) ? 0:(speedY+gravity);
     runner.style.y	+= speedY; 
