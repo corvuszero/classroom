@@ -14,12 +14,9 @@ var floorManager;
 var missiles = [];
 var currentAnimation = "";
 
-var speed   = 3;
-var speedX  = 0.5;
-var speedY  = 0;
-var gravity = 0.5;
-var jumpAcc = 0;
-var acceleration = 4;
+var speed   		= 3;
+var gravity 		= 10;
+var acceleration 	= 4;
 
 var pause = false;
 var gameOver = false;
@@ -89,42 +86,55 @@ var runner = new timestep.Sprite
   x:100,
   y:100,
   width:64,
-  height:108,
+  height:64,
   animations:
   {
     run:
     {
-      width:64,
-      height:108,
-      imageURL: 'images/player.png',
-      frameRate:8,
+      width:32,
+      height:32,
+      imageURL: 'images/player_running.png',
+      frameRate:16,
       frames:
       [
-        [0,0],
-        [192, 0]
+      [0,0],
+      [31,0],
+      [62,0],
+      [93,0],
+      [124,0],
+      [155,0],
+      [186,0],
+      [217,0],
+      [248,0],
+      [279,0],
+      [310,0],
+      [341,0]                                            
       ]
     },
     shoot:
     {
-      width:64,
-      height:108,
-      imageURL: 'images/player.png',
-      frameRate:8,
+      width:32,
+      height:32,
+      imageURL: 'images/player_shooting.png',
+      frameRate:16,
       frames:
       [
-        [64, 0],
-        [128, 0]
+        [31, 0],               
+        [62, 0]
       ]
     },
     jump:
     {
-        width:64,
-        height:108,
-        imageURL: 'images/player.png',
-        frameRate:8,
+        width:32,
+        height:32,
+        imageURL: 'images/player_jumping.png',
+        frameRate:16,
         frames:
-        [
-            [192, 0]
+        [               
+          [0, 0],
+          [32, 0],
+          [64, 0],
+          [32, 0]                        
         ]
     }
   },
@@ -135,7 +145,7 @@ var runner = new timestep.Sprite
 
 currentAnimation = 'run';
 runner.startAnimation(currentAnimation);
-runner.isFalling        = false;
+runner.isFalling        = true;
 runner.isJumping        = false;
 runner.jumpHeight       = 0;
 runner.distanceScore    = 0;
@@ -145,9 +155,9 @@ runner.jump = function()
 {
     if ( !this.isJumping && !this.isFalling )
     {
+	gravity 	= 0;
         this.isFalling  = false;
         this.isJumping  = true;
-        jumpAcc         = 0;
         this.stopAnimation();
         currentAnimation = 'jump';
         this.startAnimation(currentAnimation, { iterations: 5 });
@@ -156,15 +166,8 @@ runner.jump = function()
 
 runner.stopJump = function()
 {
-    this.isJumping = false;
-    this.isFalling = true;
-    this.stopAnimation();
-    currentAnimation = 'run';
-    this.startAnimation(currentAnimation);
-};
-
-runner.jumpFinished = function()
-{
+    runner.isFalling 	= true;
+    runner.isJumping	= false;
     this.stopAnimation();
     currentAnimation = 'run';
     this.startAnimation(currentAnimation);
@@ -232,80 +235,69 @@ mainView.tick = function(dt)
     }
   }
       
-      if(!gameOver && !pause)
-      {
-      runner.distanceScore += 1;
 
-      //Update ParallaxScroll
-      backgroundMountains.update(runner.distanceScore);
-      backgroundClouds.update(runner.distanceScore);    
-        
-      //Platform generation
-      floorManager.checkFloors();
+  if(!gameOver && !pause)
+  {
+    runner.distanceScore += 1;
+
+    //Update ParallaxScroll
+    backgroundMountains.update(runner.distanceScore);
+    backgroundClouds.update(runner.distanceScore);    
+      
+    //Platform generation
+    floorManager.checkFloors();
+
   
-      //Platform Collision
-      var platforms = floorManager.getPlatforms();
-      var colliding = false;
-      var jumping   = false;
-     
-        for (var i in platforms)
-        {
-            var floor = platforms[i];
-            if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x < (floor.style.x+floor.style.width))
-            {
-                if ((runner.style.y + runner.style.height < floor.style.y - 15) || (runner.style.y + runner.style.height > floor.style.y + 15))
-                {
-                colliding = false;
-                }
-                else
-                { 
-                colliding = true;
-                if(!runner.isJumping)runner.style.y = floor.style.y - runner.style.height;
-                }
-                break;
-            }
-            else 
-            {
-                continue;
-            }
-        }
-        	
-  	if ( runner.isJumping && jumpAcc < 1000 )
+    //Platform Collision
+    var platforms = floorManager.getPlatforms();
+    var colliding = false;
+    
+    //Update Runner Gravity
+    if (runner.isJumping && gravity > -26 ) gravity -= 2;
+    if (runner.isJumping && gravity <= -26) runner.stopJump();
+    if (runner.isFalling && gravity < 20)   gravity += 2;
+   
+   //Check for platform Collission
+    if(!runner.isJumping)
+    {
+      for (var i in platforms)
       {
-          jumpAcc             += 15;
-          runner.jumpHeight   += 15;
-          runner.style.y      -= 15;
-          
-          if (runner.jumpHeight >= 300)
-          {
-              runner.isFalling    = true;
-              runner.jumpHeight   = 0;
-              runner.isJumping    = false;
-          }
+	var floor = platforms[i];
+	if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
+	{
+	  if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
+	  {
+	      runner.style.y   = floor.style.y - runner.style.height;
+	      runner.isFalling = false;
+	      colliding        = true;
+	  }
+	  else 	runner.isFalling = true;
+	  break;
+	}
       }
-      
-        //
-        runner.isFalling 	 = !colliding;
-        speedY               = (colliding) ? 0:(speedY+gravity);
-        runner.style.y      += speedY; 
-        for (var m in missiles)
-        {
-            var missile = missiles[m];
-            missile._pause = false;
-            if(missile != undefined && missile._erase)
-           	{
-             	missile.removeFromSuperview();
-             	missiles.splice(m, 1);
-           	}
-        }
-      
-        //Game Over
-        if(runner.style.y >= 600 && !gameOver)
-        {
-          setGameOver();
-        }
+
+    }
+    //Jump or Fall
+    runner.style.y += (colliding) ? 0:(gravity); 
+  }
+   
+    
+  for (var m in missiles)
+  {
+      var missile = missiles[m];
+      missile._pause = false;
+      if(missile != undefined && missile._erase)
+      {
+	missile.removeFromSuperview();
+	missiles.splice(m, 1);
+      }
   }
   
+  //Game Over
+  if(runner.style.y >= 600 && !gameOver)
+  {
+    setGameOver();
+  }
   
 };
 
