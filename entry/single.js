@@ -7,6 +7,7 @@ jsio('import shared.ParallaxBackground as ParallaxBackground');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
+app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
@@ -23,6 +24,7 @@ var acceleration = 4;
 var pause = false;
 var gameOver = false;
 
+
 var scoreView = new timestep.View
 ({
         x:10,
@@ -38,10 +40,10 @@ scoreView.render = function(ctx)
     {
         ctx.font        = "3em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.distanceScore+" m", 5, 30);
+        ctx.fillText(runner.distanceScore+" m", 30, 30);
         ctx.font        = "2em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.killingScore+" kills", 5, 60);
+        ctx.fillText(runner.killingScore+" kills", 30, 60);
     }
 }
 
@@ -196,20 +198,12 @@ floorManager = new FloorManager
   platformParent:runnerView
 });
 
-runnerView.tick = function(dt)
-{
-    if ( !pause )
-    {
-        runner.distanceScore += 1;
-    }
-    
-    //Update ParallaxScroll
-    backgroundMountains.update(runner.distanceScore);
-    backgroundClouds.update(runner.distanceScore);    
-};
+
 
 mainView.tick = function(dt)
 {
+
+
   //Runner Logic
   var events = keyListener.popEvents();
   for (var i = 0; i < events.length; i++)
@@ -242,6 +236,12 @@ mainView.tick = function(dt)
       
       if(!gameOver && !pause)
       {
+      runner.distanceScore += 1;
+
+      //Update ParallaxScroll
+      backgroundMountains.update(runner.distanceScore);
+      backgroundClouds.update(runner.distanceScore);    
+        
       //Platform generation
       floorManager.checkFloors();
   
