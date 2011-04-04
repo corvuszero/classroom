@@ -1,5 +1,4 @@
 jsio('import shared.FloorManager as FloorManager');
-jsio('import shared.Missile as Missile');
 jsio('import timestep.Sprite');
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
@@ -15,6 +14,7 @@ var speedX  = 0.5;
 var speedY  = 0;
 var gravity = 0.5;
 var jumpAcc = 0;
+var acceleration = 4;
 
 var runnerView = new timestep.View
 ({
@@ -116,7 +116,7 @@ runner.jump = function()
         this.startAnimation('jump', { iterations: 5 });
         
     }
-};
+}
 
 runner.stopJump = function()
 {
@@ -124,39 +124,28 @@ runner.stopJump = function()
     this.isFalling = true;
     this.stopAnimation();
     this.startAnimation('run');
-};
+}
 
 runner.jumpFinished = function()
 {
     this.stopAnimation();
     this.startAnimation('run');
-};
+}
 
-runner.shoot = function()
+backgroundView.render = function(ctx)
 {
-    runner.startAnimation('shoot', { iterations:1 });
-    var missile = new Missile
-        ({
-          acceleration:20,
-          originPoint:false,
-          width: 30,
-          height:30,
-          originX:runner.style.x + (runner.style.width/2),
-          originY:runner.style.y + (runner.style.height/2),
-          parent:mainView
-        });
-    missile.fired = true;
-    missile.render();
-};
+	ctx.fillStyle = 'rgb(185,211,238)';
+	ctx.fillRect(0, 0, backgroundView.style.width, backgroundView.style.height);
+}
 
 backgroundView.tick = function()
 {
-    floorManager.checkFloors();
-};
+  floorManager.checkFloors();
+}
 
 floorManager = new FloorManager
 ({
-  acceleration:(this.acceleration*=2),
+  acceleration:(acceleration),
   speed:(this.speed*=2),
   platformParent:runnerView
 });
@@ -169,9 +158,9 @@ runnerView.tick = function(dt)
 		var event = events[i];
 		
         // SHOOTING
-        if (event.code == keyListener.SPACE && event.lifted)
+        if (event.code == keyListener.SPACE)
         {
-            runner.shoot();
+        	runner.startAnimation('shoot', { iterations:1 });
         }
         // JUMPING
         else if (event.code == keyListener.UP && !event.lifted)
