@@ -6,6 +6,7 @@ var Floor = exports = Class(timestep.View, function(supr) {
 	this.init = function(opts) {
 		opts = opts || {};
 		supr(this, 'init', [opts]);
+		this._pause = false;
 		
 		if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
 		if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
@@ -68,11 +69,14 @@ var Floor = exports = Class(timestep.View, function(supr) {
 			
 	this.tick = function(dt) 
 	{
-   	if(this.style.x + this.style.width > 0)
+   	if(!this._pause)
    	{
-       	this.style.x -= this._acceleration;
+       	if(this.style.x + this.style.width > 0)
+       	{
+           	this.style.x -= this._acceleration;
+       	}
+       	else this._erase = true;
    	}
-   	else this._erase = true;
 	}
 		
 });
