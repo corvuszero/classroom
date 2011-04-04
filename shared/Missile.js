@@ -1,11 +1,15 @@
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
+jsio('import shared.FloorManager as FloorManager');
 
 var Missile = exports = Class(timestep.View, function(supr) 
 {
 
-    this._pause = false;
-    this._erase = false;
+    this._pause         = false;
+    this._erase         = false;
+    this._floorManager  = [];
+    this._enemyIndex    = 0;
+    this._enemy         = [];
 
     this.init = function(opts) 
     {
@@ -63,6 +67,39 @@ var Missile = exports = Class(timestep.View, function(supr)
                 this._erase = true;
             }            
         }
+        
+        var platforms = this._floorManager.getPlatforms();
+        for ( var i in platforms )
+        {
+            var platform    = platforms[i];
+            for ( var e in platform.getEnemies() )
+            {
+                var enemy = (platform.getEnemies())[e];
+                if ( enemy != undefined && 
+                  this.style.x >= platform.style.x + enemy.style.x + 32 && 
+                  this._erase == false &&
+                  this.style.y <= platform.style.y + enemy.style.y + 96)
+                {
+                    this._enemyIndex = e;
+                    this._enemy      = enemy;
+                    enemy.getEnemy().startAnimation('knock_out', { callback:this.removeEnemy, iterations:0 } );
+                    this._erase = true;
+                }
+            }
+        }
+        
+    }
+    
+    this.removeEnemy = function()
+    {
+        if ( this._enemy != undefined )
+        {
+            logger.log("Removing Enemy");
+            this._enemy.removeFromSuperview();
+            platform.getEnemies().splice(this._enemyIndex, 1);
+            
+        }
+        this._erase = true;
     }
 
 }

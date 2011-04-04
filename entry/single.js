@@ -13,7 +13,7 @@ app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
-var missiles = [];
+var missiles    = [];
 var currentAnimation = "";
 
 var gravity 		  = 10;
@@ -245,7 +245,8 @@ runner.shoot = function()
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView
         });
-    missile._fired = true;
+    missile._floorManager   = floorManager;
+    missile._fired          = true;
     missiles.push(missile);
     
     //CAMERASHAKE
@@ -254,7 +255,7 @@ runner.shoot = function()
     SoundManager.play({
     	src: 'sounds/uzi.mp3',
     	loop:false,
-    	volume:0.4
+    	volume:0.8
     });
 };
 
@@ -264,7 +265,6 @@ floorManager = new FloorManager
   speed:(this.speed*=2),
   platformParent:runnerView
 });
-
 
 mainView.tick = function(dt)
 {
@@ -307,17 +307,17 @@ mainView.tick = function(dt)
     if(cameraShake == -1)
     {
       mainView.style.x += cameraShakeMagnitude;
+      mainView.style.y += cameraShakeMagnitude;      
       cameraShake = 0;
     }
         
     if(cameraShake)
     {
       mainView.style.x -= cameraShakeMagnitude;
+      mainView.style.y -= cameraShakeMagnitude;      
       cameraShake = -1;
     }
     
-
-
     //Update ParallaxScroll
     backgroundMountains.update(runner.distanceScore);
     backgroundClouds.update(runner.distanceScore);    
@@ -370,8 +370,9 @@ mainView.tick = function(dt)
       missile._pause = false;
       if(missile != undefined && missile._erase)
       {
-	missile.removeFromSuperview();
-	missiles.splice(m, 1);
+	      missiles.splice(m, 1);        
+	      //missile.removeFromSuperview();
+
       }
   }
   
@@ -425,14 +426,36 @@ function setGameOver()
           ctx.font        = "4em Arial Black";
           ctx.fillStyle   = "White";
           ctx.fillText(runner.distanceScore+" m", 30, 30);
+
+          ctx.font        = "3em Arial Black";
+          ctx.fillStyle   = "White";
+          ctx.fillText(runner.killingScore + "", 400, 40);
       }
+  }
+  
+  gameOverScoreView.tick = function(dt)
+  {    
+    var events = keyListener.popEvents();
+    for (var i = 0; i < events.length; i++)
+    {
+      var event = events[i];    
+      if (event.code == keyListener.SPACE && event.lifted)
+      {
+        logger.log("REINICIAR");
+      }    
+    }
   }
 }
 
-//init sound
+function startGame()
+{
+  
+}
+
+//Init sound
 SoundManager.play({
 	src: 'sounds/bgmusic.mp3',
 	loop:true,
-	volume:0.2
+	volume:0.4
 });
 
