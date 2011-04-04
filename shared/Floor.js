@@ -86,12 +86,10 @@ var Floor = exports = Class(timestep.View, function(supr)
                     acceleration:this._acceleration,
                     originPoint:false,
                     parent:this,
-                    originX:(this.style.x + ( Math.floor( Math.random() * this._middleTiles * 32 ) ) ),
-                    originY:this.style.y
+                    originX:32,
+                    originY:-48,
            	    }
        	    );
-       	    logger.log("Enemy spawned.");
-
        	}
        	
 	}
