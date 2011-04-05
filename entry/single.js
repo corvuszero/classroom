@@ -216,9 +216,8 @@ runner.shoot = function()
     var missile = new Missile
         ({
           acceleration:20,
-          originPoint:false,
-          width: 30,
-          height:30,
+          width: 38,
+          height:38,
           originX:runner.style.x + (runner.style.width/2),
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView
@@ -333,7 +332,26 @@ mainView.tick = function(dt)
 	  
 	  for(var i in enemies)
 	  {
-	    
+	    var enemy = enemies[i].getPosition(mainView);
+	    if(runner.style.y + runner.style.height >= enemy.y + 3)
+	    {
+	      if(runner.style.x + runner.style.width >= enemy.x && runner.style.x < enemy.x + enemy.width )
+	      {
+		runner.stopAnimation();
+		currentAnimation = 'hit';
+		runner.startAnimation(currentAnimation, { iterations: 3 });
+		logger.log("HIT ME BITCH!");
+	      }
+	      else
+	      {
+		if(currentAnimation != 'run')
+		{
+		  currentAnimation = 'run';
+		  runner.startAnimation(currentAnimation);
+		}
+	      }
+	      break;
+	    }
 	  }
 	  
 	  break;
@@ -357,7 +375,7 @@ mainView.tick = function(dt)
       if(missile != undefined && missile._erase)
       {
 	      missiles.splice(m, 1);        
-	      //missile.removeFromSuperview();
+	      missile.removeFromSuperview();
 
       }
   }
@@ -369,6 +387,15 @@ mainView.tick = function(dt)
   }
   
 };
+
+mainView.onInputSelect = function(evt, pt)
+{
+    if(gameOver)
+    {
+        gameOverImage.removeFromSuperview();
+        startGame();
+    }
+}
 
 function setPause(value)
 {
@@ -387,6 +414,11 @@ function setGameOver()
 {
   gameOver = true;
   setPause(true);
+
+  //Reset player position so we don't infinitely add more players
+  //when gameOverScreen is clicked
+  runner.style.y = 100;
+  
   gameOverImage = new timestep.ImageView
   ({
     	image: "images/gameOverScreen.png",
@@ -417,25 +449,19 @@ function setGameOver()
           ctx.fillStyle   = "White";
           ctx.fillText(runner.killingScore + "", 400, 40);
       }
-  }
-  
-  gameOverScoreView.tick = function(dt)
-  {    
-    var events = keyListener.popEvents();
-    for (var i = 0; i < events.length; i++)
-    {
-      var event = events[i];    
-      if (event.code == keyListener.SPACE && event.lifted)
-      {
-        logger.log("REINICIAR");
-      }    
-    }
-  }
+  }  
 }
 
 function startGame()
 {
-  
+    gameOver = false;
+
+    currentAnimation = 'run';
+    runner.distanceScore = 0;
+    runner.killingScore = 0;
+    
+    setPause(!pause);
+    floorManager.restart();
 }
 
 //Init sound

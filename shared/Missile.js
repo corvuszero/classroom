@@ -9,25 +9,23 @@ var Missile = exports = Class(timestep.View, function(supr)
     this._erase         = false;
     this._floorManager  = [];
     this._enemyIndex    = 0;
-    this._enemy         = [];
+    this._fireball      = [];
 
     this.init = function(opts) 
     {
         opts = opts || {};
         supr(this, 'init', [opts]);
         
-        if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
         if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
         if (typeof opts.width != 'number') 
         {
-            this.style.width  = 30;
+            this.style.width  = 38;
         }
         if (typeof opts.height != 'number') 
         { 
-            this.style.height = 30;
+            this.style.height = 38;
         }
         
-        this._originPoint = opts.originPoint;
         this._acceleration = opts.acceleration;
          
         this.style.x = 0;
@@ -36,16 +34,16 @@ var Missile = exports = Class(timestep.View, function(supr)
         this._red = Math.round(Math.random() * 255);
         this._green = Math.round(Math.random() * 255);
         this._blue = Math.round(Math.random() * 255);
+        this._fireball = [];
         this.drawMissile(opts);
     }
     
     this.drawMissile = function(opts)
     {
-        var fireball = new timestep.ImageView
+        this._fireball = new timestep.ImageView
        	({
            	x:opts.originX,
            	y:opts.originY,
-           	originPoint:opts.originPoint,
            	width:0,
            	height:0,
            	image:'images/fireball.png',
@@ -74,32 +72,21 @@ var Missile = exports = Class(timestep.View, function(supr)
             var platform    = platforms[i];
             for ( var e in platform.getEnemies() )
             {
-                var enemy = (platform.getEnemies())[e];
-                if ( enemy != undefined && 
-                  this.style.x >= platform.style.x + enemy.style.x + 32 && 
+                
+                if ( (platform.getEnemies())[e] != undefined && 
+                    (this.style.x >= platform.style.x + (platform.getEnemies())[e].style.x + 32
+                    && this.style.x <= platform.style.x + (platform.getEnemies())[e].style.x + 32 + (platform.getEnemies())[e].style.width) && 
                   this._erase == false &&
-                  this.style.y <= platform.style.y + enemy.style.y + 96)
+                  (this._fireball.style.y >= platform.style.y + (platform.getEnemies())[e].style.y 
+                  && this._fireball.style.y <= platform.style.y + (platform.getEnemies())[e].style.y + (platform.getEnemies())[e].style.height) )
                 {
-                    this._enemyIndex = e;
-                    this._enemy      = enemy;
-                    enemy.getEnemy().startAnimation('knock_out', { callback:this.removeEnemy, iterations:0 } );
+                    (platform.getEnemies())[e].destroy();
+                    platform.getEnemies().splice(e, 1);
                     this._erase = true;
                 }
             }
         }
         
-    }
-    
-    this.removeEnemy = function()
-    {
-        if ( this._enemy != undefined )
-        {
-            logger.log("Removing Enemy");
-            this._enemy.removeFromSuperview();
-            platform.getEnemies().splice(this._enemyIndex, 1);
-            
-        }
-        this._erase = true;
     }
 
 }
