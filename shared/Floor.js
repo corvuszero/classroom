@@ -91,13 +91,13 @@ var Floor = exports = Class(timestep.View, function(supr)
        	for (e = 0; e < numberOfEnemies; e++)
        	{
        	    var enemy = new Enemy(
-           	    {
-                    acceleration:this._acceleration,
-                    originPoint:false,
-                    parent:this,
-                    originX:(32 * (Math.random()*(this._middleTiles/2))),
-                    originY:-48,
-           	    }
+		{
+			acceleration:this._acceleration,
+			originPoint:false,
+			parent:this,
+			originX:(32 * (Math.random()*(this._middleTiles/2))),
+			originY:-48
+		}
        	    );
        	    _enemies.push(enemy);
        	}

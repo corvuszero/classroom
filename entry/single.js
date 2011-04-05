@@ -13,7 +13,7 @@ app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
-var missiles    = [];
+var missiles         = [];
 var currentAnimation = "";
 
 var gravity 		  = 10;
@@ -49,55 +49,22 @@ scoreView.render = function(ctx)
     }
 }
 
-var lifesView = new timestep.View
-({
-        x:300,
-        y:10,
-        width:800,
-        height:50,
-        parent:mainView
-});
-
-lifesView.render = function(ctx)
+var hearts = [];
+for(var i = 1; i <= life; i++)
 {
-    if (ctx)
-    {
-      var heart1 = new timestep.ImageView
-      ({
-	x:800 - 32 - 5,
-	y:10,
-	originPoint:0,
-	width:32,
-	height: 28,
-	image:'images/heart.png',
-	parent:this,
-	zIndex:0
-      });
-      var heart3 = new timestep.ImageView
-      ({
-	x:800 - 64 - 5,
-	y:10,
-	originPoint:0,
-	width:32,
-	height: 28,
-	image:'images/heart.png',
-	parent:this,
-	zIndex:0
-      });
-      var heart3 = new timestep.ImageView
-      ({
-	x:800 - 96 - 5,
-	y:10,
-	originPoint:0,
-	width:32,
-	height: 28,
-	image:'images/heart.png',
-	parent:this,
-	zIndex:0
-      });
-    }
+  var heart = new timestep.ImageView
+  ({
+    x:800 - (i*32) - (i*5),
+    y:10,
+    width:32,
+    height: 28,
+    originPoint:false,
+    image:'images/heart.png',
+    parent:mainView,
+    zIndex:0
+  });
+  hearts.push(heart);
 }
-
 
 var runnerView = new timestep.View
 ({
@@ -191,6 +158,17 @@ var runner = new timestep.Sprite
           [64, 0],
           [32, 0]                        
         ]
+    },
+    hit:
+    {
+      width:32,
+      height:32,
+      imageURL: 'images/player_jumping.png',
+      frameRate:4,
+      frames:
+      [               
+	[0, 0]                      
+      ]
     }
   },
   defaultAnimation:'run',
@@ -350,6 +328,14 @@ mainView.tick = function(dt)
 	      colliding        = true;
 	  }
 	  else 	runner.isFalling = true;
+	  
+	  var enemies = floor.getEnemies();
+	  
+	  for(var i in enemies)
+	  {
+	    
+	  }
+	  
 	  break;
 	}
       }
