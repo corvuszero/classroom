@@ -315,7 +315,7 @@ mainView.tick = function(dt)
       if(missile != undefined && missile._erase)
       {
 	      missiles.splice(m, 1);        
-	      //missile.removeFromSuperview();
+	      missile.removeFromSuperview();
 
       }
   }

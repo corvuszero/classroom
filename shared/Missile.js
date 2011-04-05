@@ -9,7 +9,6 @@ var Missile = exports = Class(timestep.View, function(supr)
     this._erase         = false;
     this._floorManager  = [];
     this._enemyIndex    = 0;
-    this._enemy         = [];
     this._fireball      = [];
 
     this.init = function(opts) 
@@ -73,42 +72,21 @@ var Missile = exports = Class(timestep.View, function(supr)
             var platform    = platforms[i];
             for ( var e in platform.getEnemies() )
             {
-                var tempEnemy = (platform.getEnemies())[e];
                 
-                if ( tempEnemy != undefined && 
-                    (this.style.x >= platform.style.x + tempEnemy.style.x + 32
-                    && this.style.x <= platform.style.x + tempEnemy.style.x + 32 + tempEnemy.style.width) && 
+                if ( (platform.getEnemies())[e] != undefined && 
+                    (this.style.x >= platform.style.x + (platform.getEnemies())[e].style.x + 32
+                    && this.style.x <= platform.style.x + (platform.getEnemies())[e].style.x + 32 + (platform.getEnemies())[e].style.width) && 
                   this._erase == false &&
-                  (this._fireball.style.y >= platform.style.y + tempEnemy.style.y 
-                  && this._fireball.style.y <= platform.style.y + tempEnemy.style.y + tempEnemy.style.height) )
+                  (this._fireball.style.y >= platform.style.y + (platform.getEnemies())[e].style.y 
+                  && this._fireball.style.y <= platform.style.y + (platform.getEnemies())[e].style.y + (platform.getEnemies())[e].style.height) )
                 {
-                    logger.log("HIT!!!");
-                    logger.log(this._fireball.style);
-                    logger.log(platform.style);
-                    logger.log(tempEnemy.style);
-                    this._enemyIndex    = e;
-                    this._enemy         = tempEnemy;
-                    tempEnemy.getEnemy().startAnimation('knock_out', { callback:this.removeEnemy, iterations:0 } );
+                    (platform.getEnemies())[e].destroy();
+                    platform.getEnemies().splice(e, 1);
                     this._erase = true;
-                }
-                else
-                {   
                 }
             }
         }
         
-    }
-    
-    this.removeEnemy = function()
-    {
-        if ( this._enemy != undefined )
-        {
-            logger.log("Removing Enemy");
-            this._enemy.removeFromSuperview();
-            platform.getEnemies().splice(this._enemyIndex, 1);
-            
-        }
-        this._erase = true;
     }
 
 }

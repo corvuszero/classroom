@@ -95,7 +95,7 @@ var Floor = exports = Class(timestep.View, function(supr)
                     acceleration:this._acceleration,
                     originPoint:false,
                     parent:this,
-                    originX:(32 * Math.floor((Math.random()*(this._middleTiles/3)))),
+                    originX:(32 * Math.floor( ( Math.random() * (e+1) * (this._middleTiles/5) ) ) ),
                     originY:-48,
            	    }
        	    );

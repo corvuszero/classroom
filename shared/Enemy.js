@@ -3,6 +3,7 @@ jsio('import timestep.ImageView');
 jsio('import timestep.Sprite');
 
 var enemy = [];
+var deleteEnemy = false;
 
 var Enemy = exports = Class(timestep.View, function(supr) 
 {
@@ -83,9 +84,22 @@ var Enemy = exports = Class(timestep.View, function(supr)
         return enemy;  
     }
     
+    this.destroy = function()
+    {
+        enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:1 } );
+    }
+    
+    this.readyToDelete = function()
+    {
+        deleteEnemy = true;
+    }
+    
     this.tick = function(dt) 
     {
-             
+        if ( deleteEnemy )
+        {
+            // this.removeFromSuperview();
+        } 
     }
 
 }
