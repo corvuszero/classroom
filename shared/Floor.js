@@ -49,7 +49,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	
 	this.createPlatform = function()
 	{
-       	//Empecemos
+       	//Start
        	var leftSide = new timestep.ImageView
        	({
             x:0,
