@@ -341,35 +341,39 @@ mainView.tick = function(dt)
 	  
 	  if(!hit)
 	  {
-	    for(var i in enemies)
-	    {
-	      var enemy = enemies[i].getPosition(mainView);
-	      if(runner.style.y + runner.style.height >= enemy.y + 3)
-	      {
-		if(runner.style.x + runner.style.width/2 > enemy.x + 5 && runner.style.x < enemy.x + enemy.width - 5 )
-		{
-		  hit = true;
-		  hitCounter = 30;
-		  runner.stopAnimation();
-		  currentAnimation = 'hit';
-		  runner.startAnimation(currentAnimation, { iterations: 3 });
-		  hearts.pop().removeFromSuperview();
-		  life--;
-		  if(life == 0) setGameOver();
-		}
-		else
-		{
-		  if(currentAnimation != 'run')
-		  {
-		    currentAnimation = 'run';
-		    runner.startAnimation(currentAnimation);
-		  }
-		}
-		break;
-	      }
-	    }
-	    
-	    break;
+        for(var i in enemies)
+        {
+            var enemy = enemies[i].getPosition(mainView);
+            
+            if(runner.style.y + runner.style.height >= enemy.y + 3)
+            {
+                if(runner.style.x + runner.style.width/2 > enemy.x + 5 && runner.style.x < enemy.x + enemy.width - 5 )
+                {
+                    if ( !enemies[i].deleteEnemy )
+                    {
+                        hit = true;
+                        hitCounter = 30;
+                        runner.stopAnimation();
+                        currentAnimation = 'hit';
+                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                        hearts.pop().removeFromSuperview();
+                        life--;
+                        if(life == 0) setGameOver();
+                    }
+                }
+                else
+                {
+                    if(currentAnimation != 'run')
+                    {
+                        currentAnimation = 'run';
+                        runner.startAnimation(currentAnimation);
+                    }
+                }
+                break;
+            }
+        }
+        
+        break;
 	  }
 	  else if(hitCounter > 0) hitCounter--;
 	  else
