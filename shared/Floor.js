@@ -86,7 +86,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             zIndex:this._middleTiles
        	});
        	       	
-       	var numberOfEnemies = Math.floor(Math.random()*3);
+       	var numberOfEnemies = Math.floor(Math.random()*2);
        	
        	for (e = 0; e < numberOfEnemies; e++)
        	{
@@ -95,7 +95,7 @@ var Floor = exports = Class(timestep.View, function(supr)
                     acceleration:this._acceleration,
                     originPoint:false,
                     parent:this,
-                    originX:(32 * Math.floor( ( Math.random() * (e+1) * (this._middleTiles/5) ) ) ),
+                    originX:(32 * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
                     originY:-48,
            	    }
        	    );
