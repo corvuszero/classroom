@@ -87,22 +87,24 @@ var Floor = exports = Class(timestep.View, function(supr)
             zIndex:this._middleTiles
        	});
        	       	
-       	var numberOfEnemies = Math.floor(Math.random()*2);
-       	
-       	for (e = 0; e < numberOfEnemies; e++)
+       	if(!this._originPoint)
        	{
-       	    var enemy = new Enemy(
-           	    {
-                    acceleration:this._acceleration,
-                    originPoint:false,
-                    parent:this,
-                    originX:(32 * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
-                    originY:-48,
-           	    }
-       	    );
-       	    this._enemies.push(enemy);
-       	}
-       	
+           	var numberOfEnemies = Math.floor(Math.random()*2);
+           	
+           	for (e = 0; e < numberOfEnemies; e++)
+           	{
+           	    var enemy = new Enemy(
+               	    {
+                        acceleration:this._acceleration,
+                        originPoint:false,
+                        parent:this,
+                        originX:(32 * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
+                        originY:-48,
+               	    }
+           	    );
+           	    this._enemies.push(enemy);
+           	}
+       	}       	
 	}
 	
 	this.tick = function(dt) 
