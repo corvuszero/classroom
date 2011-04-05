@@ -4,11 +4,16 @@ jsio('import timestep.Sprite');
 
 var enemy = [];
 
-
 var Enemy = exports = Class(timestep.View, function(supr) 
 {
 
     this.deleteEnemy = false;
+    
+    // Animation
+    this.leftLimit      = false;
+    this.rightLimit     = false;
+    this.movingLeft     = true;
+    this.movingRight    = false;
 
     this.init = function(opts) 
     {
@@ -32,6 +37,9 @@ var Enemy = exports = Class(timestep.View, function(supr)
         this.style.x = opts.originX;
         this.style.y = opts.originY;
         this.deleteEnemy = false;
+        this.leftLimit      = false;
+        this.rightLimit     = false;
+        this.movingLeft     = true;
         
         this._red = Math.round(Math.random() * 255);
         this._green = Math.round(Math.random() * 255);
@@ -106,6 +114,35 @@ var Enemy = exports = Class(timestep.View, function(supr)
         {
             this.removeFromSuperview();
         } 
+        
+        if ( this.movingLeft )
+        {
+            if ( enemy.style.x > enemy.getSuperView().style.x )
+            {
+                this.style.y    -= 2;
+                enemy.style.x   -= 2;
+            }
+            else
+            {
+                this.movingLeft  = false;
+                this.movintRight = true;
+            }
+        }
+        
+        if ( this.movingRight )
+        {
+            if ( enemy.style.x < enemy.getSuperView().style.x + enemy.getSuperView().style.width )
+            {
+                enemy.style.x   += 2;
+                this.style.x    += 2;
+            }
+            else
+            {
+                this.movingLeft  = true;
+                this.movintRight = false;
+            }
+        }
+        
     }
 
 }
