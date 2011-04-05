@@ -49,7 +49,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	
 	this.createPlatform = function()
 	{
-       	//Empecemos
+       	//Start
        	var leftSide = new timestep.ImageView
        	({
             x:0,
@@ -97,7 +97,7 @@ var Floor = exports = Class(timestep.View, function(supr)
                     originPoint:false,
                     parent:this,
                     originX:(32 * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
-                    originY:-48,
+                    originY:-48
            	    }
        	    );
        	    this._enemies.push(enemy);

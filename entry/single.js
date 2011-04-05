@@ -13,11 +13,15 @@ app._opts.showFPS = true;
 var mainView = app.getView();
 
 var floorManager;
-var missiles    = [];
+var missiles         = [];
 var currentAnimation = "";
 
-var gravity 		  = 10;
+var gravity 		= 10;
 var acceleration 	= 8;
+var life		= 3;
+
+var hit			= false;
+var hitCounter		= 0;
 
 var cameraShake   = 0;
 var cameraShakeMagnitude = 5;
@@ -47,6 +51,29 @@ scoreView.render = function(ctx)
         ctx.fillText(runner.killingScore+" kills", 30, 60);
     }
 }
+
+var hearts = [];
+
+function resetLife(){
+  life = 3;
+  for(var i = 1; i <= life; i++)
+  {
+    var heart = new timestep.ImageView
+    ({
+      x:800 - (i*32) - (i*5),
+      y:10,
+      width:32,
+      height: 28,
+      originPoint:false,
+      image:'images/heart.png',
+      parent:mainView,
+      zIndex:0
+    });
+    hearts.push(heart);
+  }
+}
+
+resetLife();
 
 var runnerView = new timestep.View
 ({
@@ -140,6 +167,17 @@ var runner = new timestep.Sprite
           [64, 0],
           [32, 0]                        
         ]
+    },
+    hit:
+    {
+      width:32,
+      height:32,
+      imageURL: 'images/player_jumping.png',
+      frameRate:4,
+      frames:
+      [               
+	[0, 0]                      
+      ]
     }
   },
   defaultAnimation:'run',
@@ -281,7 +319,7 @@ mainView.tick = function(dt)
     //Update Runner Gravity
     if (runner.isJumping && gravity > -26 ) gravity -= 2;
     if (runner.isJumping && gravity <= -26) runner.stopJump();
-    if (runner.isFalling && gravity < 20)   gravity += 2;
+    if (runner.isFalling && !runner.isJumping && gravity < 20)   gravity += 2;
    
    //Check for platform Collission
     if(!runner.isJumping)
@@ -298,13 +336,57 @@ mainView.tick = function(dt)
 	      colliding        = true;
 	  }
 	  else 	runner.isFalling = true;
-	  break;
+	  
+	  var enemies = floor.getEnemies();
+	  
+	  if(!hit)
+	  {
+	    for(var i in enemies)
+	    {
+	      var enemy = enemies[i].getPosition(mainView);
+	      if(runner.style.y + runner.style.height >= enemy.y + 3)
+	      {
+		if(runner.style.x + runner.style.width/2 > enemy.x + 5 && runner.style.x < enemy.x + enemy.width - 5 )
+		{
+		  hit = true;
+		  hitCounter = 30;
+		  runner.stopAnimation();
+		  currentAnimation = 'hit';
+		  runner.startAnimation(currentAnimation, { iterations: 3 });
+		  hearts.pop().removeFromSuperview();
+		  life--;
+		  if(life == 0) setGameOver();
+		}
+		else
+		{
+		  if(currentAnimation != 'run')
+		  {
+		    currentAnimation = 'run';
+		    runner.startAnimation(currentAnimation);
+		  }
+		}
+		break;
+	      }
+	    }
+	    
+	    break;
+	  }
+	  else if(hitCounter > 0) hitCounter--;
+	  else
+	  {
+	    hitCounter = 0;
+	    hit = false;
+	  }
 	}
       }
 
     }
     //Jump or Fall
-    runner.style.y += (colliding) ? 0:(gravity); 
+    
+    //Uncomment next line so yoshi can't fly while falling
+    //runner.isFalling  = !colliding;
+    
+    runner.style.y   += (colliding) ? 0:(gravity); 
   }
    
     
@@ -354,6 +436,7 @@ function setGameOver()
 {
   gameOver = true;
   setPause(true);
+  resetLife();
 
   //Reset player position so we don't infinitely add more players
   //when gameOverScreen is clicked
