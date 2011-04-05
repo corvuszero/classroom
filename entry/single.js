@@ -16,9 +16,12 @@ var floorManager;
 var missiles         = [];
 var currentAnimation = "";
 
-var gravity 		  = 10;
+var gravity 		= 10;
 var acceleration 	= 8;
 var life		= 3;
+
+var hit			= false;
+var hitCounter		= 0;
 
 var cameraShake   = 0;
 var cameraShakeMagnitude = 5;
@@ -50,21 +53,27 @@ scoreView.render = function(ctx)
 }
 
 var hearts = [];
-for(var i = 1; i <= life; i++)
-{
-  var heart = new timestep.ImageView
-  ({
-    x:800 - (i*32) - (i*5),
-    y:10,
-    width:32,
-    height: 28,
-    originPoint:false,
-    image:'images/heart.png',
-    parent:mainView,
-    zIndex:0
-  });
-  hearts.push(heart);
+
+function resetLife(){
+  life = 3;
+  for(var i = 1; i <= life; i++)
+  {
+    var heart = new timestep.ImageView
+    ({
+      x:800 - (i*32) - (i*5),
+      y:10,
+      width:32,
+      height: 28,
+      originPoint:false,
+      image:'images/heart.png',
+      parent:mainView,
+      zIndex:0
+    });
+    hearts.push(heart);
+  }
 }
+
+resetLife();
 
 var runnerView = new timestep.View
 ({
@@ -330,31 +339,44 @@ mainView.tick = function(dt)
 	  
 	  var enemies = floor.getEnemies();
 	  
-	  for(var i in enemies)
+	  if(!hit)
 	  {
-	    var enemy = enemies[i].getPosition(mainView);
-	    if(runner.style.y + runner.style.height >= enemy.y + 3)
+	    for(var i in enemies)
 	    {
-	      if(runner.style.x + runner.style.width >= enemy.x && runner.style.x < enemy.x + enemy.width )
+	      var enemy = enemies[i].getPosition(mainView);
+	      if(runner.style.y + runner.style.height >= enemy.y + 3)
 	      {
-		runner.stopAnimation();
-		currentAnimation = 'hit';
-		runner.startAnimation(currentAnimation, { iterations: 3 });
-		logger.log("HIT ME BITCH!");
-	      }
-	      else
-	      {
-		if(currentAnimation != 'run')
+		if(runner.style.x + runner.style.width/2 > enemy.x + 5 && runner.style.x < enemy.x + enemy.width - 5 )
 		{
-		  currentAnimation = 'run';
-		  runner.startAnimation(currentAnimation);
+		  hit = true;
+		  hitCounter = 30;
+		  runner.stopAnimation();
+		  currentAnimation = 'hit';
+		  runner.startAnimation(currentAnimation, { iterations: 3 });
+		  hearts.pop().removeFromSuperview();
+		  life--;
+		  if(life == 0) setGameOver();
 		}
+		else
+		{
+		  if(currentAnimation != 'run')
+		  {
+		    currentAnimation = 'run';
+		    runner.startAnimation(currentAnimation);
+		  }
+		}
+		break;
 	      }
-	      break;
 	    }
+	    
+	    break;
 	  }
-	  
-	  break;
+	  else if(hitCounter > 0) hitCounter--;
+	  else
+	  {
+	    hitCounter = 0;
+	    hit = false;
+	  }
 	}
       }
 
@@ -414,6 +436,7 @@ function setGameOver()
 {
   gameOver = true;
   setPause(true);
+  resetLife();
 
   //Reset player position so we don't infinitely add more players
   //when gameOverScreen is clicked
