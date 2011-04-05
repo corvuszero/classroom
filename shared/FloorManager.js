@@ -16,6 +16,7 @@ var FloorManager = exports = Class(function()
    	  this._pause = false;
       this.speed = opts.speed;
       this.platformParent = opts.platformParent;
+      this._gameConfig = opts.gameConfig;
 
       platforms.push
       (
@@ -23,7 +24,10 @@ var FloorManager = exports = Class(function()
         ({
           acceleration:this._acceleration,
           originPoint:true,
-          parent:this.platformParent
+          parent:this.platformParent,
+          spriteScale:(this._gameConfig)._spriteScale,
+          screenWidth:(this._gameConfig)._deviceWidth,
+          screenHeight:(this._gameConfig)._deviceHeight
         })
       );
 	}
@@ -47,7 +51,10 @@ var FloorManager = exports = Class(function()
         ({
           acceleration:this._acceleration,
           originPoint:true,
-          parent:this.platformParent
+          parent:this.platformParent,
+          spriteScale:(this._gameConfig)._spriteScale,
+          screenWidth:(this._gameConfig)._deviceWidth,
+          screenHeight:(this._gameConfig)._deviceHeight
         })
        );
 	}
@@ -75,13 +82,16 @@ var FloorManager = exports = Class(function()
            	//new platform generation
            	if(!platforms[i]._spawnNewPlatform)
            	{
-             	if(platforms[i].style.x + platforms[i].style.width <= 800)
+             	if(platforms[i].style.x + platforms[i].style.width <= this._gameConfig._deviceWidth)
              	{
                  	platforms[i]._spawnNewPlatform = true;
                  	platforms.push(new Floor
                  	({
-                   	acceleration:this._acceleration,
-                   	parent:this.platformParent
+                      acceleration:this._acceleration,
+                      parent:this.platformParent,
+                      spriteScale:(this._gameConfig)._spriteScale,
+                      screenWidth:(this._gameConfig)._deviceWidth,
+                      screenHeight:(this._gameConfig)._deviceHeight
                  	}));
                  	
                  	//Difficulty Increasing

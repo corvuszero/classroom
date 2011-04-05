@@ -17,6 +17,10 @@ var Floor = exports = Class(timestep.View, function(supr)
 		if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
 		if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
       
+        this._screenWidth = opts.screenWidth;
+        this._screenHeight = opts.screenHeight;
+        this._spriteScale = opts.spriteScale;
+
         this._spawnNewPlatform = false;
         if(!opts.originPoint) 
             this._middleTiles = 10 + Math.round(Math.random() * 25);
@@ -26,19 +30,19 @@ var Floor = exports = Class(timestep.View, function(supr)
         this._defaultRows = 3;
         this._extraRows = Math.round(Math.random() * 10);
         
-        this.style.width = 32 * (this._middleTiles + 2);
+        this.style.width = 32 * this._spriteScale * (this._middleTiles + 2);
         this.style.height = 416;
         
         this._originPoint = opts.originPoint;
         this._acceleration = opts.acceleration;
         
-        var maxDistance = 22 * this._acceleration;
+        var maxDistance = 22 * this._spriteScale * this._acceleration;
         if(!this._originPoint)
-            this.style.x = 850 + Math.round(50 + Math.random() * (maxDistance - 50));
+            this.style.x = this._screenWidth + 50 + Math.round(50 + Math.random() * (maxDistance - 50));
         else 
             this.style.x = 0;
         
-        this.style.y = 600 - (32 * (this._defaultRows + this._extraRows));
+        this.style.y = this._screenHeight - (32 * this._spriteScale * (this._defaultRows + this._extraRows));
         this.createPlatform();
 	}
 	
@@ -54,8 +58,8 @@ var Floor = exports = Class(timestep.View, function(supr)
        	({
             x:0,
             y:0,
-            width:32,
-            height:416,
+            width:32 * this._spriteScale,
+            height:416 * this._spriteScale,
             image:'images/leftPlatform.png',
             parent:this,
             zIndex:0
@@ -66,10 +70,10 @@ var Floor = exports = Class(timestep.View, function(supr)
        	{
            	middleOfPlatform = new timestep.ImageView
            	({
-             	x: i * 32,
+             	x: i * 32 * this._spriteScale,
              	y: 0,
-             	width:32,
-             	height:416,
+             	width:32 * this._spriteScale,
+             	height:416 * this._spriteScale,
              	parent:this,
              	image:'images/middlePlatform.png',
              	zIndex:i
@@ -78,10 +82,10 @@ var Floor = exports = Class(timestep.View, function(supr)
         
        	var rightSide = new timestep.ImageView
        	({
-            x: this._middleTiles * 32,
+            x: this._middleTiles * 32 * this._spriteScale,
             y:0,
-            width:32,
-            height:416,
+            width:32 * this._spriteScale,
+            height:416 * this._spriteScale,
             parent:this,
             image:'images/rightPlatform.png',
             zIndex:this._middleTiles
@@ -96,10 +100,11 @@ var Floor = exports = Class(timestep.View, function(supr)
            	    var enemy = new Enemy(
                	    {
                         acceleration:this._acceleration,
+                        spriteScale:this._spriteScale,
                         originPoint:false,
                         parent:this,
-                        originX:(32 * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
-                        originY:-48,
+                        originX:(32 * this._spriteScale * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
+                        originY:-48 * this._spriteScale,
                	    }
            	    );
            	    this._enemies.push(enemy);

@@ -19,12 +19,14 @@ var Enemy = exports = Class(timestep.View, function(supr)
         if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
         if (typeof opts.width != 'number') 
         {
-            this.style.width  = 86;
+            this.style.width  = 86 * opts.spriteScale;
         }
         if (typeof opts.height != 'number') 
         { 
-            this.style.height = 96;
+            this.style.height = 96 * opts.spriteScale;
         }
+        
+        this._spriteScale = opts.spriteScale;
         
         this._originPoint = opts.originPoint;
         this._acceleration = opts.acceleration;
@@ -45,8 +47,8 @@ var Enemy = exports = Class(timestep.View, function(supr)
        	({
            	x:opts.originX,
            	y:opts.originY,
-           	width:86,
-           	height:96,
+           	width:86 * this._spriteScale,
+           	height:96 * this._spriteScale,
            	animations:
             {
                 rest:

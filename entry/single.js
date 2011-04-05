@@ -5,10 +5,11 @@ jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.ParallaxBackground as ParallaxBackground');
 jsio('import timestep.SoundManager as SoundManager');
-
+jsio('import shared.GameConfig as GameConfig');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
+var gameConfig = new GameConfig();
 app._opts.showFPS = true;
 var mainView = app.getView();
 
@@ -16,15 +17,16 @@ var floorManager;
 var missiles         = [];
 var currentAnimation = "";
 
-var gravity 		= 10;
-var acceleration 	= 8;
-var life		= 3;
+var gravity 		= gameConfig._gravity;
+var acceleration 	= gameConfig._acceleration;
+var life = gameConfig._life;
+var hearts = [];
 
 var hit			= false;
 var hitCounter		= 0;
 
 var cameraShake   = 0;
-var cameraShakeMagnitude = 5;
+var cameraShakeMagnitude = gameConfig._cameraShakeMagnitude;
 
 var pause = false;
 var gameOver = false;
@@ -32,10 +34,10 @@ var gameOverImage;
 
 var scoreView = new timestep.View
 ({
-        x:10,
-        y:10,
-        width:400,
-        height:75,
+        x:0,
+        y:0,
+        width: gameConfig._deviceWidth / 2,
+        height:gameConfig._deviceHeight / 4,
         parent:mainView
 });
 
@@ -43,27 +45,26 @@ scoreView.render = function(ctx)
 {
     if (ctx)
     {
-        ctx.font        = "3em Arial Black";
+        ctx.font        = gameConfig._largeFontSize + "em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.distanceScore+" m", 30, 30);
-        ctx.font        = "2em Arial Black";
+        ctx.fillText(runner.distanceScore+" m", gameConfig._scoreX, gameConfig._scoreY);
+        ctx.font        = gameConfig._smallFontSize + "em Arial Black";
         ctx.fillStyle   = "Yellow";
-        ctx.fillText(runner.killingScore+" kills", 30, 60);
+        ctx.fillText(runner.killingScore+" kills", gameConfig._killsX, gameConfig._killsY);
     }
 }
 
-var hearts = [];
 
 function resetLife(){
-  life = 3;
+  life = gameConfig._life;
   for(var i = 1; i <= life; i++)
   {
     var heart = new timestep.ImageView
     ({
-      x:800 - (i*32) - (i*5),
+      x:gameConfig._deviceWidth - (i * 32 * gameConfig._spriteScale) - (i*5),
       y:10,
-      width:32,
-      height: 28,
+      width:32 * gameConfig._spriteScale,
+      height: 28 * gameConfig._spriteScale,
       originPoint:false,
       image:'images/heart.png',
       parent:mainView,
@@ -79,8 +80,8 @@ var runnerView = new timestep.View
 ({
   x:0,
   y:0,
-  width:800,
-  height:600,
+  width:gameConfig._deviceWidth,
+  height:gameConfig._deviceHeight,
   parent:mainView
 });
 runnerView.score = 0;
@@ -88,8 +89,8 @@ runnerView.score = 0;
 var backgroundView = new timestep.ImageView
 ({
 	image: "images/background_sky.png",
-	width: 800,
-	height: 600,
+	width: gameConfig._deviceWidth,
+	height: gameConfig._deviceHeight,
 	parent: mainView,
 	zIndex:-3
 });
@@ -97,8 +98,8 @@ var backgroundView = new timestep.ImageView
 var backgroundClouds = new ParallaxBackground({
 	image: "images/background_clouds.png",
 	y:170,
-	width: 800,
-	height: 382,
+	width: gameConfig._deviceWidth,
+	height: Math.round((382 * gameConfig._deviceHeight) / 600),
 	parent: backgroundView,
 	zIndex:-2
 });
@@ -106,8 +107,8 @@ var backgroundClouds = new ParallaxBackground({
 var backgroundMountains = new ParallaxBackground({
 	image: "images/background_mountains.png",
 	y:100,
-	width: 800,
-	height: 346,
+	width: gameConfig._deviceWidth,
+	height: Math.round((346 * gameConfig._deviceHeight) / 600),
 	parent: backgroundView,
 	zIndex:-1
 });
@@ -116,8 +117,8 @@ var runner = new timestep.Sprite
 ({
   x:100,
   y:100,
-  width:64,
-  height:64,
+  width:64 * gameConfig._spriteScale,
+  height:64 * gameConfig._spriteScale,
   animations:
   {
     run:
@@ -249,7 +250,8 @@ floorManager = new FloorManager
 ({
   acceleration:acceleration,
   speed:(this.speed*=2),
-  platformParent:runnerView
+  platformParent:runnerView,
+  gameConfig:gameConfig
 });
 
 mainView.tick = function(dt)
@@ -407,7 +409,7 @@ mainView.tick = function(dt)
   }
   
   //Game Over
-  if(runner.style.y >= 600 && !gameOver)
+  if(runner.style.y >= gameConfig._deviceHeight && !gameOver)
   {
     setGameOver();
   }
@@ -449,18 +451,18 @@ function setGameOver()
   gameOverImage = new timestep.ImageView
   ({
     	image: "images/gameOverScreen.png",
-    	width: 800,
-    	height: 600,
+    	width: gameConfig._deviceWidth,
+    	height: gameConfig._deviceHeight,
     	parent: mainView,
     	zIndex:5
   });
   
   var gameOverScoreView = new timestep.View
   ({
-    x:190,
-    y:85,
-    width:400,
-    height:75,
+    x:Math.round((190 * gameConfig._deviceWidth) / 800),
+    y:Math.round((85 * gameConfig._deviceHeight) / 600),
+    width:400 * gameConfig._spriteScale,
+    height:75 * gameConfig._spriteScale,
     parent:gameOverImage
   });
   
@@ -468,13 +470,13 @@ function setGameOver()
   {
       if (ctx)
       {
-          ctx.font        = "4em Arial Black";
+          ctx.font        = gameConfig._xlFontSize + "em Arial Black";
           ctx.fillStyle   = "White";
-          ctx.fillText(runner.distanceScore+" m", 30, 30);
+          ctx.fillText(runner.distanceScore+" m", Math.round((30 * gameConfig._deviceWidth) / 800), 30);
 
-          ctx.font        = "3em Arial Black";
+          ctx.font        = gameConfig._largeFontSize + "em Arial Black";
           ctx.fillStyle   = "White";
-          ctx.fillText(runner.killingScore + "", 400, 40);
+          ctx.fillText(runner.killingScore + "", Math.round((400 * gameConfig._deviceWidth) / 800), 40);
       }
   }  
 }
