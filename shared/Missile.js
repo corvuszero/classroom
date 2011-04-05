@@ -2,6 +2,8 @@ jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.FloorManager as FloorManager');
 
+var _runner;
+
 var Missile = exports = Class(timestep.View, function(supr) 
 {
 
@@ -35,7 +37,13 @@ var Missile = exports = Class(timestep.View, function(supr)
         this._green = Math.round(Math.random() * 255);
         this._blue = Math.round(Math.random() * 255);
         this._fireball = [];
+        _runner = [];
         this.drawMissile(opts);
+    }
+    
+    this.getRunner = function()
+    {
+        return _runner;
     }
     
     this.drawMissile = function(opts)
@@ -83,6 +91,7 @@ var Missile = exports = Class(timestep.View, function(supr)
                     (platform.getEnemies())[e].destroy();
                     platform.getEnemies().splice(e, 1);
                     this._erase = true;
+                    this._runner.killingScore += 1;
                 }
             }
         }

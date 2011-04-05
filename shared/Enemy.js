@@ -86,12 +86,14 @@ var Enemy = exports = Class(timestep.View, function(supr)
     
     this.destroy = function()
     {
+        // enemy.defaultAnimation = 'knock_out';
         enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:1 } );
     }
     
     this.readyToDelete = function()
     {
         deleteEnemy = true;
+        enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
     }
     
     this.tick = function(dt) 

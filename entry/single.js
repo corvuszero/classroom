@@ -182,7 +182,6 @@ runner.shoot = function()
     runner.stopAnimation();
     currentAnimation = 'shoot';
     runner.startAnimation(currentAnimation, { iterations:1 });
-    runner.killingScore += 1;
     
     var missile = new Missile
         ({
@@ -194,6 +193,7 @@ runner.shoot = function()
           parent:mainView
         });
     missile._floorManager   = floorManager;
+    missile._runner         = runner;         
     missile._fired          = true;
     missiles.push(missile);
     
