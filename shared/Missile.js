@@ -32,6 +32,7 @@ var Missile = exports = Class(timestep.View, function(supr)
          
         this.style.x = 0;
         this.style.y = 0;
+        this._screenWidth = opts.screenWidth;
         
         this._red = Math.round(Math.random() * 255);
         this._green = Math.round(Math.random() * 255);
@@ -64,7 +65,7 @@ var Missile = exports = Class(timestep.View, function(supr)
     {
         if ( this._fired && !this._pause )
         {
-            if (this.style.x + this.style.width < 800)
+            if (this.style.x + this.style.width < this._screenWidth)
             {
                 this.style.x += this._acceleration;
             }
