@@ -2,21 +2,17 @@ jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import timestep.Sprite');
 
-var enemy = [];
-
 
 var Enemy = exports = Class(timestep.View, function(supr) 
 {
-
+	this.enemy = null;
     this.deleteEnemy = false;
 
     this.init = function(opts) 
     {
         opts = opts || {};
         supr(this, 'init', [opts]);
-        
-        if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
-        if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
+		
         if (typeof opts.width != 'number') 
         {
             this.style.width  = 86;
@@ -25,26 +21,21 @@ var Enemy = exports = Class(timestep.View, function(supr)
         { 
             this.style.height = 96;
         }
-        
-        this._originPoint = opts.originPoint;
-        this._acceleration = opts.acceleration;
          
         this.style.x = opts.originX;
         this.style.y = opts.originY;
         this.deleteEnemy = false;
-        
-        this._red = Math.round(Math.random() * 255);
-        this._green = Math.round(Math.random() * 255);
-        this._blue = Math.round(Math.random() * 255);
         this.drawEnemy(opts);
-    }
+		logger.log(this);
+		logger.log(this.getBoundingShape());
+    };
     
     this.drawEnemy = function(opts)
     {
-        enemy = new timestep.Sprite
+        this.enemy = new timestep.Sprite
        	({
-           	x:opts.originX,
-           	y:opts.originY,
+           	x:0,
+           	y:0,
            	width:86,
            	height:96,
            	animations:
@@ -79,26 +70,49 @@ var Enemy = exports = Class(timestep.View, function(supr)
             parent:this,
             zIndex: 1
        	});
-       	enemy.startAnimation('rest');
-    }
+       	this.enemy.startAnimation('rest');
+		
+		var block = new timestep.View({
+			x:opts.originX,
+           	y:opts.originY,
+           	width:86,
+           	height:96,
+			zIndex: 2,
+			parent: this
+		});
+		
+		block.render = function(ctx)
+		{
+			if(ctx)
+			{
+				ctx.fillStyle   = "#FF0000";
+				ctx.beginPath();
+				ctx.moveTo(86,0);
+				ctx.moveTo(86,96);
+				ctx.moveTo(0,96);
+				ctx.closePath();
+				ctx.fill();
+			}
+		};
+    };
     
     this.getEnemy = function()
     {
-        return enemy;  
-    }
+        return this.enemy;  
+    };
     
     this.destroy = function()
     {
         // enemy.defaultAnimation = 'knock_out';
         this.deleteEnemy = true;
-        enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:1 } );
-    }
+        this.enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:1 } );
+    };
     
     this.readyToDelete = function()
     {
         this.deleteEnemy = true;
-        enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
-    }
+        this.enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
+    };
     
     this.tick = function(dt) 
     {
@@ -106,7 +120,6 @@ var Enemy = exports = Class(timestep.View, function(supr)
         {
             this.removeFromSuperview();
         } 
-    }
-
+    };
 }
 );

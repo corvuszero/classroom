@@ -95,11 +95,9 @@ var Floor = exports = Class(timestep.View, function(supr)
            	{
            	    var enemy = new Enemy(
                	    {
-                        acceleration:this._acceleration,
-                        originPoint:false,
                         parent:this,
                         originX:(32 * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
-                        originY:-48,
+                        originY:-96
                	    }
            	    );
            	    this._enemies.push(enemy);
