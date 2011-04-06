@@ -56,8 +56,8 @@ var Enemy = exports = Class(timestep.View, function(supr)
        	({
            	x:0,
            	y:0,
-           	width:72 * this._spriteScale,
-           	height:84 * this._spriteScale,
+           	width:36 * this._spriteScale,
+           	height:42 * this._spriteScale,
            	animations:
             {
                 rest:
@@ -95,8 +95,8 @@ var Enemy = exports = Class(timestep.View, function(supr)
 		var block = new timestep.View({
 			x:opts.originX,
            	y:opts.originY,
-           	width:86,
-           	height:96,
+           	width:72,
+           	height:84,
 			zIndex: 2,
 			parent: this
 		});
