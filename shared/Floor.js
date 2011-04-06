@@ -1,7 +1,7 @@
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.Enemy as Enemy');
-
+jsio('import shared.Obstacle as Obstacle');
 
 var Floor = exports = Class(timestep.View, function(supr) 
 {
@@ -9,6 +9,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	this.init = function(opts) 
 	{
         this._enemies       = [];
+        this._obstacles     = [];
         this._totalWidth    = 0;
            
 		opts = opts || {};
@@ -111,6 +112,18 @@ var Floor = exports = Class(timestep.View, function(supr)
            	    );
            	    this._enemies.push(enemy);
            	}
+           	
+           	var spikeSize       = Math.floor(Math.random() * 7);
+           	var numberOfSpikes  = Math.floor(Math.random() * 3);
+            var obstacle = new Obstacle(
+                {
+                    parent:this,
+                    originX:((this.style.width/3 * this._spriteScale) + Math.floor( Math.random() * this.style.width/3 )),
+                    originY:-42 * this._spriteScale,
+                    spriteScale:this._spriteScale
+                }
+            );
+            this._obstacles.push(obstacle);  	
        	}       	
 	}
 	

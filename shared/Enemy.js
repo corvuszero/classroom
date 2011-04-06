@@ -160,7 +160,6 @@ var Enemy = exports = Class(timestep.View, function(supr)
                     {
                         this.movingLeft  = false;
                         this.movingRight = true;
-                        this.scale *= -1;
                     }
                 }
                 
@@ -174,7 +173,6 @@ var Enemy = exports = Class(timestep.View, function(supr)
                     {
                         this.movingLeft  = true;
                         this.movingRight = false;
-                        this.scale *= -1;
                     }
                 }
             }
