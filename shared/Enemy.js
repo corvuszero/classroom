@@ -5,6 +5,8 @@ jsio('import timestep.Sprite');
 
 var Enemy = exports = Class(timestep.View, function(supr) 
 {
+
+    this._pause = false;
 	this.enemy = null;
     this.deleteEnemy = false;
     
@@ -38,12 +40,10 @@ var Enemy = exports = Class(timestep.View, function(supr)
         var direction = Math.random() * 10;
         if ( direction > 3 )
         {
-            logger.log("RIGHT");
             this.movingRight    = true;
         }
         else
         {
-            logger.log("LEFT");
             this.movingLeft     = true;
         }
         
@@ -131,41 +131,56 @@ var Enemy = exports = Class(timestep.View, function(supr)
     this.readyToDelete = function()
     {
         this.deleteEnemy = true;
-        this.enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
+        if ( this.enemy )
+        {
+            this.enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
+        }
     };
     
     this.tick = function(dt) 
     {
-        if ( this.deleteEnemy )
+        if ( !this._pause )
         {
-            this.removeFromSuperview();
-        }
-        
-        var relativePosition = this.getPosition(this.getSuperView());
-        
-        if ( this.movingLeft )
-        {
-            if ( this.style.x > relativePosition.x )
+            if ( this.deleteEnemy )
             {
-                this.style.x   -= 4;
+                this.removeFromSuperview();
+            }
+            
+            var relativePosition = this.getPosition(this.getSuperView());
+                        
+            if ( this.getSuperView() != undefined )
+            {
+                if ( this.movingLeft )
+                {
+                    if ( this.style.x > 0 )
+                    {
+                        this.style.x   -= 3;
+                    }
+                    else
+                    {
+                        this.movingLeft  = false;
+                        this.movingRight = true;
+                        this.scale *= -1;
+                    }
+                }
+                
+                if ( this.movingRight )
+                {
+                    if ( this.style.x < this.getSuperView()._totalWidth )
+                    {
+                        this.style.x    += 3;
+                    }
+                    else
+                    {
+                        this.movingLeft  = true;
+                        this.movingRight = false;
+                        this.scale *= -1;
+                    }
+                }
             }
             else
             {
-                this.movingLeft  = false;
-                this.movingRight = true;
-            }
-        }
-        
-        if ( this.movingRight )
-        {
-            if ( this.style.x < relativePosition.x + this.getSuperView().style.width )
-            {
-                this.style.x    += 4;
-            }
-            else
-            {
-                this.movingLeft  = true;
-                this.movingRight = false;
+                //logger.log("No SuperView");
             }
         }
  
