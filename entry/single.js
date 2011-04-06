@@ -349,9 +349,9 @@ mainView.tick = function(dt)
         {
             var enemy = enemies[i].getPosition(mainView);
             
-            if(runner.style.y + runner.style.height > enemy.y)
+            if(colliding)
             {
-                if(runner.style.x + runner.style.width > enemy.x && runner.style.x < enemy.x + enemy.width )
+                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
                 {
                     if ( !enemies[i].deleteEnemy )
                     {
@@ -374,6 +374,32 @@ mainView.tick = function(dt)
                     }
                 }
                 break;
+            }
+            else
+            {
+                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
+                {
+                    if(runner.style.y + runner.style.height >= enemy.y && runner.style.y + runner.style.height < enemy.y + enemy.width/2)
+                    {
+                        //enemy dies!
+                        enemies[i].destroy();
+                        enemies.splice(i, 1);
+                        runner.killingScore += 1;
+                        gravity = -10;
+                    }
+                    else if(runner.style.y + runner.style.height >= enemy.y + enemy.width/2 && runner.style.y + runner.style.height < enemy.y + enemy.width)
+                    {
+                        //hit!
+                        hit = true;
+                        hitCounter = 30;
+                        runner.stopAnimation();
+                        currentAnimation = 'hit';
+                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                        hearts.pop().removeFromSuperview();
+                        life--;
+                        if(life == 0) setGameOver();
+                    }
+                }
             }
         }
         
