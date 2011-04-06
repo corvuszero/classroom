@@ -33,5 +33,11 @@ var GameConfig = exports = Class(function()
         this._defaultRunnerPosition = 100;
         
         this._cameraShakeMagnitude = 5;
+
+        this._defaultPlatformRows = 3;
+        this._defaultExtraRows = 3;
+        this._defaultMiddleTiles = 30;
+        this._minimumPlatformTiles = 10;
+        this._maximumPlatformTiles = 35;
     }
 });

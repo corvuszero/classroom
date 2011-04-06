@@ -24,6 +24,11 @@ var FloorManager = exports = Class(function()
         ({
           acceleration:this._acceleration,
           originPoint:true,
+          defaultRows:(this._gameConfig)._defaultPlatformRows,
+          defaultExtraRows:(this._gameConfig)._defaultExtraRows,
+          defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
+          minimumTiles:(this._gameConfig)._minimumPlatformTiles,
+          maximumTiles:(this._gameConfig)._maximumPlatformTiles,
           parent:this.platformParent,
           spriteScale:(this._gameConfig)._spriteScale,
           screenWidth:(this._gameConfig)._deviceWidth,
@@ -51,6 +56,11 @@ var FloorManager = exports = Class(function()
         ({
           acceleration:this._acceleration,
           originPoint:true,
+          defaultRows:(this._gameConfig)._defaultPlatformRows,
+          defaultExtraRows:(this._gameConfig)._defaultExtraRows,
+          defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
+          minimumTiles:(this._gameConfig)._minimumPlatformTiles,
+          maximumTiles:(this._gameConfig)._maximumPlatformTiles,
           parent:this.platformParent,
           spriteScale:(this._gameConfig)._spriteScale,
           screenWidth:(this._gameConfig)._deviceWidth,
@@ -88,6 +98,11 @@ var FloorManager = exports = Class(function()
                  	platforms.push(new Floor
                  	({
                       acceleration:this._acceleration,
+                      defaultRows:(this._gameConfig)._defaultPlatformRows,
+                      defaultExtraRows:(this._gameConfig)._defaultExtraRows,
+                      defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
+                      minimumTiles:(this._gameConfig)._minimumPlatformTiles,
+                      maximumTiles:(this._gameConfig)._maximumPlatformTiles,
                       parent:this.platformParent,
                       spriteScale:(this._gameConfig)._spriteScale,
                       screenWidth:(this._gameConfig)._deviceWidth,

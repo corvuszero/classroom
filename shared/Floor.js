@@ -23,13 +23,20 @@ var Floor = exports = Class(timestep.View, function(supr)
         this._spriteScale = opts.spriteScale;
 
         this._spawnNewPlatform = false;
+        this._defaultRows = opts.defaultRows;
+        this._tileDifference = opts.maximumTiles - opts.minimumTiles;
+        
         if(!opts.originPoint) 
-            this._middleTiles = 10 + Math.round(Math.random() * 25);
+        {
+            this._middleTiles = opts.minimumTiles + Math.round(Math.random() * this._tileDifference);
+            this._extraRows = Math.round(Math.random() * 10);
+        }
         else 
-            this._middleTiles = 30;
+        {
+            this._middleTiles = opts.defaultMiddleTiles;
+            this._extraRows = opts.defaultExtraRows;
+        }
             
-        this._defaultRows = 3;
-        this._extraRows = Math.round(Math.random() * 10);
         
         this.style.width = 32 * this._spriteScale * (this._middleTiles + 2);
         this.style.height = 416;
