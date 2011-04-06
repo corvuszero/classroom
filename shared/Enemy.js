@@ -5,13 +5,13 @@ jsio('import timestep.Sprite');
 
 var Enemy = exports = Class(timestep.View, function(supr) 
 {
+
+    this._pause = false;
 	this.enemy = null;
     this.deleteEnemy = false;
     
     // Animation
-    this.leftLimit      = false;
-    this.rightLimit     = false;
-    this.movingLeft     = true;
+    this.movingLeft     = false;
     this.movingRight    = false;
 
     this.init = function(opts) 
@@ -33,9 +33,19 @@ var Enemy = exports = Class(timestep.View, function(supr)
         this.style.x 		= opts.originX;
         this.style.y 		= opts.originY;
         this.deleteEnemy 	= false;
-        this.leftLimit      = false;
-        this.rightLimit     = false;
-        this.movingLeft     = true;
+        
+        this.movingLeft     = false;
+        this.movingRight    = false;
+        
+        var direction = Math.random() * 10;
+        if ( direction > 3 )
+        {
+            this.movingRight    = true;
+        }
+        else
+        {
+            this.movingLeft     = true;
+        }
         
         this.drawEnemy(opts);
     };
@@ -121,14 +131,58 @@ var Enemy = exports = Class(timestep.View, function(supr)
     this.readyToDelete = function()
     {
         this.deleteEnemy = true;
-        this.enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
+        if ( this.enemy )
+        {
+            this.enemy.startAnimation('knock_out', { callback:this.readyToDelete, iterations:0 } );
+        }
     };
     
     this.tick = function(dt) 
     {
-        if ( this.deleteEnemy )
+        if ( !this._pause )
         {
-            this.removeFromSuperview();
-        } 
+            if ( this.deleteEnemy )
+            {
+                this.removeFromSuperview();
+            }
+            
+            var relativePosition = this.getPosition(this.getSuperView());
+                        
+            if ( this.getSuperView() != undefined )
+            {
+                if ( this.movingLeft )
+                {
+                    if ( this.style.x > 0 )
+                    {
+                        this.style.x   -= 3;
+                    }
+                    else
+                    {
+                        this.movingLeft  = false;
+                        this.movingRight = true;
+                        this.scale *= -1;
+                    }
+                }
+                
+                if ( this.movingRight )
+                {
+                    if ( this.style.x < this.getSuperView()._totalWidth )
+                    {
+                        this.style.x    += 3;
+                    }
+                    else
+                    {
+                        this.movingLeft  = true;
+                        this.movingRight = false;
+                        this.scale *= -1;
+                    }
+                }
+            }
+            else
+            {
+                //logger.log("No SuperView");
+            }
+        }
+ 
     }
 });

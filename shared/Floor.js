@@ -8,8 +8,9 @@ var Floor = exports = Class(timestep.View, function(supr)
 	
 	this.init = function(opts) 
 	{
-        this._enemies = [];
-        
+        this._enemies       = [];
+        this._totalWidth    = 0;
+           
 		opts = opts || {};
 		supr(this, 'init', [opts]);
 		this._pause = false;
@@ -64,6 +65,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             parent:this,
             zIndex:0
        	});
+       	this._totalWidth += this._spriteScale;
        	
        	var middleOfPlatform;
        	for(i = 1; i < this._middleTiles; i++)
@@ -79,6 +81,7 @@ var Floor = exports = Class(timestep.View, function(supr)
              	zIndex:i
            	});
         }
+        this._totalWidth += 32 * this._middleTiles * this._spriteScale;
         
        	var rightSide = new timestep.ImageView
        	({
@@ -90,6 +93,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             image:'images/rightPlatform.png',
             zIndex:this._middleTiles
        	});
+       	this._totalWidth += this._spriteScale;
        	       	
        	if(!this._originPoint)
        	{
@@ -100,7 +104,7 @@ var Floor = exports = Class(timestep.View, function(supr)
            	    var enemy = new Enemy(
                	    {
                         parent:this,
-                        originX:(32 * this._spriteScale * Math.floor( ( Math.random() * (e+1) * (this._middleTiles/5) ) ) ),
+                        originX:((this.style.width/2 * this._spriteScale) + Math.floor( ( Math.random() * (e+1) * (this._middleTiles/6) ) ) ),
                         originY:-42 * this._spriteScale,
                         spriteScale:this._spriteScale
                	    }

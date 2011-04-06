@@ -224,15 +224,16 @@ runner.shoot = function()
     runner.startAnimation(currentAnimation, { iterations:1 });
     
     var missile = new Missile
-        ({
-          acceleration:gameConfig._missileAcceleration,
-          width: 38 * gameConfig._spriteScale,
-          height:38 * gameConfig._spriteScale,
-          screenWidth:gameConfig._deviceWidth,
-          originX:runner.style.x + (runner.style.width/2),
-          originY:runner.style.y + (runner.style.height/2),
-          parent:mainView
-        });
+    ({
+        acceleration:gameConfig._missileAcceleration,
+        width: 38 * gameConfig._spriteScale,
+        height:38 * gameConfig._spriteScale,
+        screenWidth:gameConfig._deviceWidth,
+        originX:runner.style.x + (runner.style.width/2),
+        originY:runner.style.y + (runner.style.height/2),
+        parent:mainView
+    });
+    
     missile._floorManager   = floorManager;
     missile._runner         = runner;         
     missile._fired          = true;
@@ -349,9 +350,9 @@ mainView.tick = function(dt)
         {
             var enemy = enemies[i].getPosition(mainView);
             
-            if(runner.style.y + runner.style.height >= enemy.y + 3)
+            if(runner.style.y + runner.style.height > enemy.y)
             {
-                if(runner.style.x + runner.style.width/2 > enemy.x + 5 && runner.style.x < enemy.x + enemy.width - 5 )
+                if(runner.style.x + runner.style.width > enemy.x && runner.style.x < enemy.x + enemy.width )
                 {
                     if ( !enemies[i].deleteEnemy )
                     {
@@ -408,7 +409,7 @@ mainView.tick = function(dt)
 	      missile.removeFromSuperview();
 
       }
-  }
+  }  
   
   //Game Over
   if(runner.style.y >= gameConfig._deviceHeight && !gameOver)
@@ -429,15 +430,40 @@ mainView.onInputSelect = function(evt, pt)
 
 function setPause(value)
 {
-  pause = value;
-  if (pause) runner.pauseAnimation();
-  else runner.startAnimation(currentAnimation);
-  floorManager.setPause(pause);
-  for (var m in missiles)
-  {
-      var missile = missiles[m];
-      missile._pause = true;
-  }
+    pause = value;
+    
+    if (pause) 
+        runner.pauseAnimation();
+    else 
+        runner.startAnimation(currentAnimation);
+    
+    floorManager.setPause(pause);
+    
+    for (var m in missiles)
+    {
+        var missile = missiles[m];
+        missile._pause = true;
+    }
+    
+    var platforms = floorManager.getPlatforms();
+    for (var i in platforms)
+    {
+        var floor = platforms[i];
+        var enemies = floor.getEnemies();
+        for (var e in enemies)
+        {
+            enemies[e]._pause = value;
+            if ( enemies[e]._pause )
+            {
+                enemies[e].enemy.pauseAnimation();
+            }
+            else
+            {
+                enemies[e].enemy.startAnimation('rest');
+            }
+        }
+    }
+
 }
 
 function setGameOver()
