@@ -47,33 +47,33 @@ var Enemy = exports = Class(timestep.View, function(supr)
        	({
            	x:opts.originX,
            	y:opts.originY,
-           	width:86 * this._spriteScale,
-           	height:96 * this._spriteScale,
+           	width:72 * this._spriteScale,
+           	height:84 * this._spriteScale,
            	animations:
             {
                 rest:
                 {
-                    width:86,
-                    height:96,
+                    width:18,
+                    height:21,
                     imageURL: 'images/enemy.png',
-                    frameRate:4,
+                    frameRate:16,
                     frames:
                     [
                         [0, 0],
-                        [86, 0],
-                        [172, 0]
+                        [18, 0],
+                        [36, 0],
+                        [18, 0]                        
                     ]
                 },
                 knock_out:
                 {
-                    width:86,
-                    height:96,
+                    width:18,
+                    height:21,
                     imageURL: 'images/enemy.png',
                     frameRate:4,
                     frames:
                     [
-                        [258, 0],
-                        [344, 0]
+                        [59, 0]                    
                     ]
                 }
             },

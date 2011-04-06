@@ -93,7 +93,7 @@ var Floor = exports = Class(timestep.View, function(supr)
        	       	
        	if(!this._originPoint)
        	{
-           	var numberOfEnemies = Math.floor(Math.random()*2);
+           	var numberOfEnemies = Math.floor(Math.random() * 3);
            	
            	for (e = 0; e < numberOfEnemies; e++)
            	{
@@ -103,8 +103,8 @@ var Floor = exports = Class(timestep.View, function(supr)
                         spriteScale:this._spriteScale,
                         originPoint:false,
                         parent:this,
-                        originX:(32 * this._spriteScale * Math.floor( ( Math.random() * (1) * (this._middleTiles/5) ) ) ),
-                        originY:-48 * this._spriteScale,
+                        originX:(32 * this._spriteScale * Math.floor( ( Math.random() * (e+1) * (this._middleTiles/5) ) ) ),
+                        originY:-42 * this._spriteScale,
                	    }
            	    );
            	    this._enemies.push(enemy);
