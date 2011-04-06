@@ -544,7 +544,7 @@ function startGame()
     runner.killingScore = 0;
     
     setPause(!pause);
-    floorManager.restart();
+    floorManager.restart();    
 }
 
 //Init sound
