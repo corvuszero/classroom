@@ -27,8 +27,8 @@ var Missile = exports = Class(timestep.View, function(supr)
         { 
             this.style.height = 38;
         }
-        
-        this._acceleration = opts.acceleration;
+        this.zIndex         = 4;    
+        this._acceleration  = opts.acceleration;
          
         this.style.x = opts.originX;
         this.style.y = opts.originY;
@@ -53,7 +53,7 @@ var Missile = exports = Class(timestep.View, function(supr)
            	height:38,
            	image:'images/fireball.png',
            	parent:this,
-           	zIndex:0
+           	zIndex:1
        	});
     }
     
