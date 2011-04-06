@@ -9,9 +9,7 @@ var Enemy = exports = Class(timestep.View, function(supr)
     this.deleteEnemy = false;
     
     // Animation
-    this.leftLimit      = false;
-    this.rightLimit     = false;
-    this.movingLeft     = true;
+    this.movingLeft     = false;
     this.movingRight    = false;
 
     this.init = function(opts) 
@@ -33,9 +31,21 @@ var Enemy = exports = Class(timestep.View, function(supr)
         this.style.x 		= opts.originX;
         this.style.y 		= opts.originY;
         this.deleteEnemy 	= false;
-        this.leftLimit      = false;
-        this.rightLimit     = false;
-        this.movingLeft     = true;
+        
+        this.movingLeft     = false;
+        this.movingRight    = false;
+        
+        var direction = Math.random() * 10;
+        if ( direction > 3 )
+        {
+            logger.log("RIGHT");
+            this.movingRight    = true;
+        }
+        else
+        {
+            logger.log("LEFT");
+            this.movingLeft     = true;
+        }
         
         this.drawEnemy(opts);
     };
@@ -129,6 +139,35 @@ var Enemy = exports = Class(timestep.View, function(supr)
         if ( this.deleteEnemy )
         {
             this.removeFromSuperview();
-        } 
+        }
+        
+        var relativePosition = this.getPosition(this.getSuperView());
+        
+        if ( this.movingLeft )
+        {
+            if ( this.style.x > relativePosition.x )
+            {
+                this.style.x   -= 4;
+            }
+            else
+            {
+                this.movingLeft  = false;
+                this.movingRight = true;
+            }
+        }
+        
+        if ( this.movingRight )
+        {
+            if ( this.style.x < relativePosition.x + this.getSuperView().style.width )
+            {
+                this.style.x    += 4;
+            }
+            else
+            {
+                this.movingLeft  = true;
+                this.movingRight = false;
+            }
+        }
+ 
     }
 });
