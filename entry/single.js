@@ -223,15 +223,16 @@ runner.shoot = function()
     runner.startAnimation(currentAnimation, { iterations:1 });
     
     var missile = new Missile
-        ({
-          acceleration:gameConfig._missileAcceleration,
-          width: 38 * gameConfig._spriteScale,
-          height:38 * gameConfig._spriteScale,
-          screenWidth:gameConfig._deviceWidth,
-          originX:runner.style.x + (runner.style.width/2),
-          originY:runner.style.y + (runner.style.height/2),
-          parent:mainView
-        });
+    ({
+        acceleration:gameConfig._missileAcceleration,
+        width: 38 * gameConfig._spriteScale,
+        height:38 * gameConfig._spriteScale,
+        screenWidth:gameConfig._deviceWidth,
+        originX:runner.style.x + (runner.style.width/2),
+        originY:runner.style.y + (runner.style.height/2),
+        parent:mainView
+    });
+    
     missile._floorManager   = floorManager;
     missile._runner         = runner;         
     missile._fired          = true;
@@ -348,9 +349,9 @@ mainView.tick = function(dt)
         {
             var enemy = enemies[i].getPosition(mainView);
             
-            if(runner.style.y + runner.style.height >= enemy.y + 3)
+            if(runner.style.y + runner.style.height > enemy.y)
             {
-                if(runner.style.x + runner.style.width/2 > enemy.x + 5 && runner.style.x < enemy.x + enemy.width - 5 )
+                if(runner.style.x + runner.style.width > enemy.x && runner.style.x < enemy.x + enemy.width )
                 {
                     if ( !enemies[i].deleteEnemy )
                     {

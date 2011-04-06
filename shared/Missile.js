@@ -30,15 +30,11 @@ var Missile = exports = Class(timestep.View, function(supr)
         
         this._acceleration = opts.acceleration;
          
-        this.style.x = 0;
-        this.style.y = 0;
+        this.style.x = opts.originX;
+        this.style.y = opts.originY;
         this._screenWidth = opts.screenWidth;
-        
-        this._red = Math.round(Math.random() * 255);
-        this._green = Math.round(Math.random() * 255);
-        this._blue = Math.round(Math.random() * 255);
-        this._fireball = [];
-        _runner = [];
+        this._fireball = {};
+        _runner        = {};
         this.drawMissile(opts);
     }
     
@@ -51,10 +47,10 @@ var Missile = exports = Class(timestep.View, function(supr)
     {
         this._fireball = new timestep.ImageView
        	({
-           	x:opts.originX,
-           	y:opts.originY,
-           	width:0,
-           	height:0,
+           	x:0,
+           	y:0,
+           	width:38,
+           	height:38,
            	image:'images/fireball.png',
            	parent:this,
            	zIndex:0
@@ -78,19 +74,21 @@ var Missile = exports = Class(timestep.View, function(supr)
         var platforms = this._floorManager.getPlatforms();
         for ( var i in platforms )
         {
-            var platform    = platforms[i];
-            for ( var e in platform.getEnemies() )
+            var enemies    = platforms[i].getEnemies(); 
+            for ( var e in enemies )
             {
-                
-                if ( (platform.getEnemies())[e] != undefined && 
-                    (this.style.x >= platform.style.x + (platform.getEnemies())[e].style.x + 32
-                    && this.style.x <= platform.style.x + (platform.getEnemies())[e].style.x + 32 + (platform.getEnemies())[e].style.width) && 
-                  this._erase == false &&
-                  (this._fireball.style.y >= platform.style.y + (platform.getEnemies())[e].style.y 
-                  && this._fireball.style.y <= platform.style.y + (platform.getEnemies())[e].style.y + (platform.getEnemies())[e].style.height) )
+                var enemy           = enemies[e];
+                var enemyPosition   = enemy.getPosition(this.getSuperView());
+                if (this.style.x + this.style.width/2 >= enemyPosition.x
+                    && (
+                            (this.style.y + 5 >= enemyPosition.y +5 && this.style.y + 5 < enemyPosition.y + enemy.style.height -5)
+                            ||
+                            (this.style.y + this.style.height - 5 >= enemyPosition.y + 5 && this.style.y + this.style.height-5 < enemyPosition.y + enemy.style.height - 5)
+                        )
+                    )
                 {
-                    (platform.getEnemies())[e].destroy();
-                    platform.getEnemies().splice(e, 1);
+                    enemy.destroy();
+                    enemies.splice(e, 1);
                     this._erase = true;
                     this._runner.killingScore += 1;
                 }
