@@ -10,8 +10,9 @@ jsio('import shared.GameConfig as GameConfig');
 var app = new GCApp();
 var keyListener = app.getKeyListener();
 var gameConfig = new GameConfig();
-app._opts.showFPS = true;
 var mainView = app.getView();
+
+app._opts.showFPS = gameConfig._showFPS;
 
 var floorManager;
 var missiles         = [];
@@ -45,11 +46,11 @@ scoreView.render = function(ctx)
 {
     if (ctx)
     {
-        ctx.font        = gameConfig._largeFontSize + "em Arial Black";
-        ctx.fillStyle   = "Yellow";
+        ctx.font        = gameConfig._largeFontSize + gameConfig._gameFont;
+        ctx.fillStyle   = gameConfig._textColor;
         ctx.fillText(runner.distanceScore+" m", gameConfig._scoreX, gameConfig._scoreY);
-        ctx.font        = gameConfig._smallFontSize + "em Arial Black";
-        ctx.fillStyle   = "Yellow";
+        ctx.font        = gameConfig._smallFontSize + gameConfig._gameFont;
+        ctx.fillStyle   = gameConfig._textColor;
         ctx.fillText(runner.killingScore+" kills", gameConfig._killsX, gameConfig._killsY);
     }
 }
@@ -115,8 +116,8 @@ var backgroundMountains = new ParallaxBackground({
 
 var runner = new timestep.Sprite
 ({
-  x:100,
-  y:100,
+  x:gameConfig._defaultRunnerPosition,
+  y:gameConfig._defaultRunnerPosition,
   width:64 * gameConfig._spriteScale,
   height:64 * gameConfig._spriteScale,
   animations:
@@ -499,7 +500,7 @@ function setGameOver()
 
   //Reset player position so we don't infinitely add more players
   //when gameOverScreen is clicked
-  runner.style.y = 100;
+  runner.style.y = gameConfig._defaultRunnerPosition;
   
   gameOverImage = new timestep.ImageView
   ({
@@ -523,15 +524,15 @@ function setGameOver()
   {
       if (ctx)
       {
-          ctx.font        = gameConfig._xlFontSize + "em Arial Black";
-          ctx.fillStyle   = "White";
+          ctx.font        = gameConfig._xlFontSize + gameConfig._gameFont;
+          ctx.fillStyle   = gameConfig._textColor;
           ctx.fillText(runner.distanceScore+" m", Math.round((30 * gameConfig._deviceWidth) / 800), 30);
 
-          ctx.font        = gameConfig._largeFontSize + "em Arial Black";
-          ctx.fillStyle   = "White";
+          ctx.font        = gameConfig._largeFontSize + gameConfig._gameFont;
+          ctx.fillStyle   = gameConfig._textColor;
           ctx.fillText(runner.killingScore + "", Math.round((400 * gameConfig._deviceWidth) / 800), 40);
       }
-  }  
+  }
 }
 
 function startGame()
@@ -547,9 +548,9 @@ function startGame()
 }
 
 //Init sound
-SoundManager.play({
-	src: 'sounds/bgmusic.mp3',
-	loop:true,
-	volume:0.4
-});
+//SoundManager.play({
+//	src: 'sounds/bgmusic.mp3',
+//	loop:true,
+//	volume:0.4
+//});
 
