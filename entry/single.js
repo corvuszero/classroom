@@ -224,9 +224,10 @@ runner.shoot = function()
     
     var missile = new Missile
         ({
-          acceleration:20,
-          width: 38,
-          height:38,
+          acceleration:gameConfig._missileAcceleration,
+          width: 38 * gameConfig._spriteScale,
+          height:38 * gameConfig._spriteScale,
+          screenWidth:gameConfig._deviceWidth,
           originX:runner.style.x + (runner.style.width/2),
           originY:runner.style.y + (runner.style.height/2),
           parent:mainView

@@ -24,6 +24,7 @@ var GameConfig = exports = Class(function()
         this._acceleration = 8;
         this._life = 3;
         this._spriteScale = this._deviceWidth > 500? 1:0.5;
+        this._missileAcceleration = 20;
         
         this._cameraShakeMagnitude = 5;
     }
