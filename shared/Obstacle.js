@@ -36,7 +36,7 @@ var Obstacle = exports = Class(timestep.View, function(supr)
     this.drawObstacle = function(opts)
     {
         var tempObstacle;
-        for ( var i = 1; i < this._spikeSize + 1; i++ )
+        for ( var i = 0; i < this._spikeSize + 1; i++ )
         {
             tempObstacle = new timestep.ImageView
            	({

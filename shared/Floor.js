@@ -127,22 +127,24 @@ var Floor = exports = Class(timestep.View, function(supr)
            	
            	var tempNumberOfSpikes  = Math.floor(Math.random() * 2);
            	
-           	for ( var spCounter = 0; spCounter < tempNumberOfSpikes; spCounter++ )
+           	if ( tempNumberOfSpikes > 0 )
            	{
-           	
-           	    var tempSpikeSize       = Math.floor(Math.random() * 4);
-                                
-                var obstacle = new Obstacle(
-                    {
-                        parent:this,
-                        originX:((this.style.width/3 * this._spriteScale) + Math.floor( Math.random() * this.style.width/9 )),
-                        originY:-42 * this._spriteScale,
-                        spriteScale:this._spriteScale,
-                        spikeSize:tempSpikeSize
-                    }
-                );
-                this._obstacles.push(obstacle);  	
-            
+               	for ( var spCounter = 0; spCounter < tempNumberOfSpikes; spCounter++ )
+               	{
+               	
+               	    var tempSpikeSize = Math.floor(Math.random() * 4) + 1;
+                                    
+                    var obstacle = new Obstacle(
+                        {
+                            parent:this,
+                            originX:((this.style.width/3 * this._spriteScale) + Math.floor( Math.random() * this.style.width/9 )),
+                            originY:-42 * this._spriteScale,
+                            spriteScale:this._spriteScale,
+                            spikeSize:tempSpikeSize
+                        }
+                    );
+                    this._obstacles.push(obstacle);  	
+                }
             }
        	}       	
 	}
