@@ -38,7 +38,7 @@ var GameConfig = exports = Class(function()
         this._defaultPlatformRows = 3;
         this._defaultExtraRows = 3;
         this._defaultMiddleTiles = 30;
-        this._minimumPlatformTiles = 10;
-        this._maximumPlatformTiles = 35;
+        this._minimumPlatformTiles = 25;
+        this._maximumPlatformTiles = 45;
     }
 });
