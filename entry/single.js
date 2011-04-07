@@ -202,6 +202,7 @@ currentAnimation = 'run';
 runner.startAnimation(currentAnimation);
 runner.isFalling        = true;
 runner.isJumping        = false;
+runner.isShooting       = false;
 runner.jumpHeight       = 0;
 runner.distanceScore    = 0;
 runner.killingScore     = 0;
@@ -231,35 +232,48 @@ runner.stopJump = function()
 
 runner.shoot = function()
 {
-    runner.stopAnimation();
-    currentAnimation = 'shoot';
-    runner.startAnimation(currentAnimation, { iterations:1 });
-    
-    var missile = new Missile
-    ({
-        acceleration:gameConfig._missileAcceleration,
-        width: 38 * gameConfig._spriteScale,
-        height:38 * gameConfig._spriteScale,
-        screenWidth:gameConfig._deviceWidth,
-        originX:runner.style.x + (runner.style.width/2),
-        originY:runner.style.y + (runner.style.height/2),
-        parent:mainView
-    });
-    
-    missile._floorManager   = floorManager;
-    missile._runner         = runner;         
-    missile._fired          = true;
-    missiles.push(missile);
-    
-    //CAMERASHAKE
-    cameraShake = 1;
-    
-    SoundManager.play({
-    	src: 'sounds/uzi.mp3',
-    	loop:false,
-    	volume:0.8
-    });
+
+    if ( !runner.isShooting )
+    {
+        runner.stopAnimation();
+        currentAnimation = 'shoot';
+        runner.startAnimation(currentAnimation, { iterations:1 });
+        
+        var missile = new Missile
+        ({
+            acceleration:gameConfig._missileAcceleration,
+            width: 38 * gameConfig._spriteScale,
+            height:38 * gameConfig._spriteScale,
+            screenWidth:gameConfig._deviceWidth,
+            originX:runner.style.x + (runner.style.width/2),
+            originY:runner.style.y + (runner.style.height/2),
+            parent:mainView
+        });
+        
+        missile._floorManager   = floorManager;
+        missile._runner         = runner;         
+        missile._fired          = true;
+        
+        runner.isShooting               = true;
+        runner.shootingTimeoutHandler   = setTimeout("unlockShooting()", 600); 
+        
+        missiles.push(missile);
+        
+        //CAMERASHAKE
+        cameraShake = 1;
+        
+        SoundManager.play({
+        	src: 'sounds/uzi.mp3',
+        	loop:false,
+        	volume:0.8
+        });
+    }
 };
+
+unlockShooting = function()
+{
+    runner.isShooting = false;
+}
 
 floorManager = new FloorManager
 ({
