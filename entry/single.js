@@ -290,158 +290,213 @@ mainView.tick = function(dt)
   }
       
 
-  if(!gameOver && !pause)
-  {
-    runner.distanceScore += 1;
+    if(!gameOver && !pause)
+    {
+        runner.distanceScore += 1;
 
-    //CameraShake
-    if(cameraShake == -1)
-    {
-      mainView.style.x += cameraShakeMagnitude;
-      mainView.style.y += cameraShakeMagnitude;      
-      cameraShake = 0;
-    }
-        
-    if(cameraShake)
-    {
-      mainView.style.x -= cameraShakeMagnitude;
-      mainView.style.y -= cameraShakeMagnitude;      
-      cameraShake = -1;
-    }
-    
-    //Update ParallaxScroll
-    backgroundMountains.update(runner.distanceScore);
-    backgroundClouds.update(runner.distanceScore);    
-      
-    //Platform generation
-    floorManager.checkFloors();
-
-  
-    //Platform Collision
-    var platforms = floorManager.getPlatforms();
-    var colliding = false;
-    
-    //Update Runner Gravity
-    if (runner.isJumping && gravity > -26 ) gravity -= 2;
-    if (runner.isJumping && gravity <= -26) runner.stopJump();
-    if (runner.isFalling && !runner.isJumping && gravity < 20)   gravity += 2;
-   
-   //Check for platform Collission
-    if(!runner.isJumping)
-    {
-      for (var i in platforms)
-      {
-	var floor = platforms[i];
-	if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
-	{
-	  if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
-	  {
-	      runner.style.y   = floor.style.y - runner.style.height;
-	      runner.isFalling = false;
-	      colliding        = true;
-	  }
-	  else 	runner.isFalling = true;
-	  
-	  var enemies = floor.getEnemies();
-	  
-	  if(!hit)
-	  {
-        for(var i in enemies)
+        //CameraShake
+        if(cameraShake == -1)
         {
-            var enemy = enemies[i].getPosition(mainView);
-            
-            if(colliding)
-            {
-                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
-                {
-                    if ( !enemies[i].deleteEnemy )
-                    {
-                        hit = true;
-                        hitCounter = 30;
-                        runner.stopAnimation();
-                        currentAnimation = 'hit';
-                        runner.startAnimation(currentAnimation, { iterations: 3 });
-                        hearts.pop().removeFromSuperview();
-                        life--;
-                        if(life == 0) setGameOver();
-                    }
-                }
-                else
-                {
-                    if(currentAnimation != 'run')
-                    {
-                        currentAnimation = 'run';
-                        runner.startAnimation(currentAnimation);
-                    }
-                }
-                break;
-            }
-            else
-            {
-                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
-                {
-                    if(runner.style.y + runner.style.height >= enemy.y && runner.style.y + runner.style.height < enemy.y + enemy.width/2)
-                    {
-                        //enemy dies!
-                        enemies[i].destroy();
-                        enemies.splice(i, 1);
-                        runner.killingScore += 1;
-                        gravity = -10;
-                    }
-                    else if(runner.style.y + runner.style.height >= enemy.y + enemy.width/2 && runner.style.y + runner.style.height < enemy.y + enemy.width)
-                    {
-                        //hit!
-                        hit = true;
-                        hitCounter = 30;
-                        runner.stopAnimation();
-                        currentAnimation = 'hit';
-                        runner.startAnimation(currentAnimation, { iterations: 3 });
-                        hearts.pop().removeFromSuperview();
-                        life--;
-                        if(life == 0) setGameOver();
-                    }
-                }
-            }
+            mainView.style.x += cameraShakeMagnitude;
+            mainView.style.y += cameraShakeMagnitude;      
+            cameraShake = 0;
         }
         
-        break;
-	  }
-	  else if(hitCounter > 0) hitCounter--;
-	  else
-	  {
-	    hitCounter = 0;
-	    hit = false;
-	  }
-	}
-      }
-
+        if(cameraShake)
+        {
+            mainView.style.x -= cameraShakeMagnitude;
+            mainView.style.y -= cameraShakeMagnitude;      
+            cameraShake = -1;
+        }
+        
+        //Update ParallaxScroll
+        backgroundMountains.update(runner.distanceScore);
+        backgroundClouds.update(runner.distanceScore);    
+          
+        //Platform generation
+        floorManager.checkFloors();
+  
+        //Platform Collision
+        var platforms = floorManager.getPlatforms();
+        var colliding = false;
+        
+        //Update Runner Gravity
+        if (runner.isJumping && gravity > -26 ) gravity -= 2;
+        if (runner.isJumping && gravity <= -26) runner.stopJump();
+        if (runner.isFalling && !runner.isJumping && gravity < 20)   gravity += 2;
+        
+        //Check for platform Collission
+        if(!runner.isJumping)
+        {
+            for (var i in platforms)
+            {
+                var floor = platforms[i];
+                
+                if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
+                {
+                    if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
+                    {
+                        runner.style.y   = floor.style.y - runner.style.height;
+                        runner.isFalling = false;
+                        colliding        = true;
+                    }
+                    else 	
+                    {
+                        runner.isFalling = true;
+                    }
+	  
+                    var enemies      = floor.getEnemies();
+                    var obstacles    = floor.getObstacles();
+                    
+                    if(!hit)
+                    {
+                        for(var i in enemies)
+                        {
+                            var enemy = enemies[i].getPosition(mainView);
+                        
+                            if(colliding)
+                            {
+                                if(runner.style.x + runner.style.width - 5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
+                                {
+                                    if ( !enemies[i].deleteEnemy )
+                                    {
+                                        hit = true;
+                                        hitCounter = 30;
+                                        runner.stopAnimation();
+                                        currentAnimation = 'hit';
+                                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        hearts.pop().removeFromSuperview();
+                                        life--;
+                                        if (life == 0) setGameOver();
+                                    }
+                                }
+                                else
+                                {
+                                    if(currentAnimation != 'run')
+                                    {
+                                        currentAnimation = 'run';
+                                        runner.startAnimation(currentAnimation);
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
+                                {
+                                    if(runner.style.y + runner.style.height >= enemy.y && runner.style.y + runner.style.height < enemy.y + enemy.width/2)
+                                    {
+                                        //enemy dies!
+                                        enemies[i].destroy();
+                                        enemies.splice(i, 1);
+                                        runner.killingScore += 1;
+                                        gravity = -10;
+                                    }
+                                    else if(runner.style.y + runner.style.height >= enemy.y + enemy.width/2 && runner.style.y + runner.style.height < enemy.y + enemy.width)
+                                    {
+                                        //hit!
+                                        hit = true;
+                                        hitCounter = 30;
+                                        runner.stopAnimation();
+                                        currentAnimation = 'hit';
+                                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        hearts.pop().removeFromSuperview();
+                                        life--;
+                                        if (life == 0) setGameOver();
+                                    }
+                                }
+                            }
+                        }
+                        
+                        for(var o in obstacles)
+                        {
+                            var obstacle = obstacles[o].getPosition(mainView);
+                        
+                            if(colliding)
+                            {
+                                if(runner.style.x + runner.style.width - 5 > obstacle.x + 5 && runner.style.x + 5 < obstacle.x + obstacle.width - 5 )
+                                {
+                                    if ( !obstacles[o].deleteEnemy )
+                                    {
+                                        hit = true;
+                                        hitCounter = 30;
+                                        runner.stopAnimation();
+                                        currentAnimation = 'hit';
+                                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        hearts.pop().removeFromSuperview();
+                                        life--;
+                                        if (life == 0) setGameOver();
+                                    }
+                                }
+                                else
+                                {
+                                    if(currentAnimation != 'run')
+                                    {
+                                        currentAnimation = 'run';
+                                        runner.startAnimation(currentAnimation);
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                if(runner.style.x + runner.style.width-5 > obstacle.x + 5 && runner.style.x + 5 < obstacle.x + obstacle.width - 5 )
+                                {
+                                    if(runner.style.y + runner.style.height >= obstacle.y + obstacle.width/2 && runner.style.y + runner.style.height < obstacle.y + obstacle.width)
+                                    {
+                                        //hit!
+                                        hit = true;
+                                        hitCounter = 30;
+                                        runner.stopAnimation();
+                                        currentAnimation = 'hit';
+                                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        hearts.pop().removeFromSuperview();
+                                        life--;
+                                        if (life == 0) setGameOver();
+                                    }
+                                }
+                            }
+                        }
+                        
+                        break;
+                    }
+                    else if (hitCounter > 0) 
+                    {
+                        hitCounter--;
+                    }
+                    else
+                    {
+                        hitCounter = 0;
+                        hit = false;
+                    }
+                }
+            }
+        
+        }
+        //Jump or Fall
+    
+        //Uncomment next line so yoshi can't fly while falling
+        //runner.isFalling  = !colliding;
+        runner.style.y   += (colliding) ? 0:(gravity); 
     }
-    //Jump or Fall
-    
-    //Uncomment next line so yoshi can't fly while falling
-    //runner.isFalling  = !colliding;
-    
-    runner.style.y   += (colliding) ? 0:(gravity); 
-  }
    
     
-  for (var m in missiles)
-  {
-      var missile = missiles[m];
-      missile._pause = false;
-      if(missile != undefined && missile._erase)
-      {
-	      missiles.splice(m, 1);        
-	      missile.removeFromSuperview();
-
-      }
-  }  
-  
-  //Game Over
-  if(runner.style.y >= gameConfig._deviceHeight && !gameOver)
-  {
-    setGameOver();
-  }
+    for (var m in missiles)
+    {
+        var missile = missiles[m];
+        missile._pause = false;
+        if(missile != undefined && missile._erase)
+        {
+            missiles.splice(m, 1);        
+            missile.removeFromSuperview();
+        }
+    }  
+    
+    //Game Over
+    if(runner.style.y >= gameConfig._deviceHeight && !gameOver)
+    {
+        setGameOver();
+    }
   
 };
 
