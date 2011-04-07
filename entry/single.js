@@ -24,7 +24,8 @@ var life = gameConfig._life;
 var hearts = [];
 
 var hit			= false;
-var hitCounter		= 0;
+var hitCounter	= 0;
+var hitJump     = false;
 
 var cameraShake   = 0;
 var cameraShakeMagnitude = gameConfig._cameraShakeMagnitude;
@@ -207,14 +208,15 @@ runner.killingScore     = 0;
 
 runner.jump = function()
 {
-    if ( !this.isJumping && !this.isFalling )
+    if ( (!this.isJumping && !this.isFalling) ||  hitJump)
     {
-	gravity 	= 0;
+        gravity 	= 0;
         this.isFalling  = false;
         this.isJumping  = true;
         this.stopAnimation();
         currentAnimation = 'jump';
         this.startAnimation(currentAnimation, { iterations: 5 });
+        hitJump = false;
     }
 };
 
@@ -342,7 +344,7 @@ mainView.tick = function(dt)
             {
                 var floor = platforms[i];
                 
-                if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
+                if(runner.style.x + runner.style.width - 5 >= floor.style.x && runner.style.x + runner.style.width/2 < floor.style.x+floor.style.width)
                 {
                     if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
                     {
@@ -400,6 +402,7 @@ mainView.tick = function(dt)
                                         enemies[i].destroy();
                                         enemies.splice(i, 1);
                                         runner.killingScore += 1;
+                                        hitJump = true;
                                         gravity = -10;
                                     }
                                     else if(runner.style.y + runner.style.height >= enemy.y + enemy.width/2 && runner.style.y + runner.style.height < enemy.y + enemy.width)
@@ -481,7 +484,6 @@ mainView.tick = function(dt)
                     }
                 }
             }
-        
         }
         //Jump or Fall
     
