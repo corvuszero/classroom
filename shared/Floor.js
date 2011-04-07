@@ -60,6 +60,11 @@ var Floor = exports = Class(timestep.View, function(supr)
 	   return this._enemies;
 	}
 	
+	this.getObstacles = function()
+	{
+	   return this._obstacles;
+	}
+	
 	this.createPlatform = function()
 	{
        	//Start
@@ -105,14 +110,14 @@ var Floor = exports = Class(timestep.View, function(supr)
        	       	
        	if(!this._originPoint)
        	{
-           	var numberOfEnemies = Math.floor(Math.random() * 3);
+           	var numberOfEnemies = Math.floor(Math.random() * 4);
            	
            	for (e = 0; e < numberOfEnemies; e++)
            	{
            	    var enemy = new Enemy(
                	    {
                         parent:this,
-                        originX:((this.style.width/2 * this._spriteScale) + Math.floor( ( Math.random() * (e+1) * (this._middleTiles/6) ) ) ),
+                        originX:((this.style.width/2 * this._spriteScale) + Math.floor( ( Math.random() * (e+1) * (this._middleTiles/7) ) ) ),
                         originY:-42 * this._spriteScale,
                         spriteScale:this._spriteScale
                	    }
@@ -120,17 +125,25 @@ var Floor = exports = Class(timestep.View, function(supr)
            	    this._enemies.push(enemy);
            	}
            	
-           	var spikeSize       = Math.floor(Math.random() * 7);
-           	var numberOfSpikes  = Math.floor(Math.random() * 3);
-            var obstacle = new Obstacle(
-                {
-                    parent:this,
-                    originX:((this.style.width/3 * this._spriteScale) + Math.floor( Math.random() * this.style.width/3 )),
-                    originY:-42 * this._spriteScale,
-                    spriteScale:this._spriteScale
-                }
-            );
-            this._obstacles.push(obstacle);  	
+           	var tempNumberOfSpikes  = Math.floor(Math.random() * 2);
+           	
+           	for ( var spCounter = 0; spCounter < tempNumberOfSpikes; spCounter++ )
+           	{
+           	
+           	    var tempSpikeSize       = Math.floor(Math.random() * 4);
+                                
+                var obstacle = new Obstacle(
+                    {
+                        parent:this,
+                        originX:((this.style.width/3 * this._spriteScale) + Math.floor( Math.random() * this.style.width/9 )),
+                        originY:-42 * this._spriteScale,
+                        spriteScale:this._spriteScale,
+                        spikeSize:tempSpikeSize
+                    }
+                );
+                this._obstacles.push(obstacle);  	
+            
+            }
        	}       	
 	}
 	

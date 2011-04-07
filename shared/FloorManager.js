@@ -45,7 +45,7 @@ var FloorManager = exports = Class(function()
            platforms.splice(0, 1);
 	   }
 	   
-	   this.platformCounter = 0;
+	   this._platformCounter = 0;
        this._levelCounter = 0;
        this._acceleration = this._originalAcceleration;
    	   this._pause = false;

@@ -14,14 +14,15 @@ var Obstacle = exports = Class(timestep.View, function(supr)
 		
         if (typeof opts.width != 'number') 
         {
-            this.style.width  = 50 * opts.spriteScale;
+            this.style.width  = 50 * opts.spriteScale * opts.spikeSize;
         }
         if (typeof opts.height != 'number') 
         { 
             this.style.height = 50 * opts.spriteScale;
         }
         
-        this._spriteScale = opts.spriteScale;
+        this._spikeSize         = opts.spikeSize;
+        this._spriteScale       = opts.spriteScale;
          
         this.style.x 		= opts.originX;
         this.style.y 		= opts.originY;
@@ -34,16 +35,20 @@ var Obstacle = exports = Class(timestep.View, function(supr)
     
     this.drawObstacle = function(opts)
     {
-        this.obstacle = new timestep.ImageView
-       	({
-           	x:0,
-           	y:0,
-           	width:50 * this._spriteScale,
-           	height:50 * this._spriteScale,
-           	image:'images/obstacle.png',
-            parent:this,
-            zIndex:-1
-       	});
+        var tempObstacle;
+        for ( var i = 1; i < this._spikeSize + 1; i++ )
+        {
+            tempObstacle = new timestep.ImageView
+           	({
+               	x:i * 50,
+               	y:0,
+               	width:50 * this._spriteScale,
+               	height:50 * this._spriteScale,
+               	image:'images/obstacle.png',
+                parent:this,
+                zIndex:-1
+           	});
+       	}
     };
     
     this.tick = function(dt) 

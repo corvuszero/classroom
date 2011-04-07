@@ -8,6 +8,7 @@ var GameConfig = exports = Class(function()
         this._showFPS = true;
         
         //Device
+        this._isIOS = timestep.device.isIOS;
         this._deviceWidth = timestep.device.width;
         this._deviceHeight = timestep.device.height;
         
