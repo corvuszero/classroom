@@ -445,8 +445,31 @@ mainView.tick = function(dt)
   
 };
 
+mainView.onInputStart = function(evt, pt)
+{
+    if(gameConfig._isIOS && !gameOver && !pause)
+    {
+      if(pt.x <= (gameConfig._deviceWidth / 2))
+      {
+          runner.jump();
+      }
+      else
+      {
+          runner.shoot();
+      }
+    }
+}
+
 mainView.onInputSelect = function(evt, pt)
 {
+    if(gameConfig._isIOS && !gameOver && !pause)
+    {
+      if(pt.x <= (gameConfig._deviceWidth / 2))
+      {        
+        runner.stopJump();
+      }
+    }
+    
     if(gameOver)
     {
         gameOverImage.removeFromSuperview();
