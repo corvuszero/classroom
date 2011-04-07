@@ -56,8 +56,17 @@ scoreView.render = function(ctx)
 }
 
 
-function resetLife(){
+function resetLife()
+{
   life = gameConfig._life;
+  
+  for(var h in hearts)
+  {
+    hearts[h].removeFromSuperview();  
+  }
+  
+  hearts = [];
+  
   for(var i = 1; i <= life; i++)
   {
     var heart = new timestep.ImageView
@@ -199,7 +208,7 @@ runner.jump = function()
 {
     if ( !this.isJumping && !this.isFalling )
     {
-	gravity 	= 0;
+        gravity 	= 0;
         this.isFalling  = false;
         this.isJumping  = true;
         this.stopAnimation();
@@ -243,7 +252,7 @@ runner.shoot = function()
     cameraShake = 1;
     
     SoundManager.play({
-    	src: 'sounds/uzi.mp3',
+        src: 'sounds/uzi.mp3',
     	loop:false,
     	volume:0.8
     });
@@ -251,198 +260,193 @@ runner.shoot = function()
 
 floorManager = new FloorManager
 ({
-  acceleration:acceleration,
-  speed:(this.speed*=2),
-  platformParent:runnerView,
-  gameConfig:gameConfig
+    acceleration:acceleration,
+    speed:(this.speed*=2),
+    platformParent:runnerView,
+    gameConfig:gameConfig
 });
 
 mainView.tick = function(dt)
 {
-  //Runner Logic
-  var events = keyListener.popEvents();
-  for (var i = 0; i < events.length; i++)
-  {
-    var event = events[i];
+    //Runner Logic
+    var events = keyListener.popEvents();
+    for (var i = 0; i < events.length; i++)
+    {
+        var event = events[i];
+        if(!gameOver && !pause)
+        {
+          // SHOOTING
+          if (event.code == keyListener.SPACE && event.lifted)
+          {
+            runner.shoot();
+          }
+          // JUMPING
+          else if (event.code == keyListener.UP && !event.lifted)
+          {
+            runner.jump();
+          }
+          else if (event.code == keyListener.UP && event.lifted)
+          {
+            runner.stopJump();
+          }
+        }
+        //Pause
+        if(!gameOver && event.code == 80 && !event.lifted)
+        {
+            setPause(!pause);
+        }
+    }
+      
+
     if(!gameOver && !pause)
     {
-      // SHOOTING
-      if (event.code == keyListener.SPACE && event.lifted)
-      {
-        runner.shoot();
-      }
-      // JUMPING
-      else if (event.code == keyListener.UP && !event.lifted)
-      {
-        runner.jump();
-      }
-      else if (event.code == keyListener.UP && event.lifted)
-      {
-        runner.stopJump();
-      }
-    }
-    
-    //Pause
-    if(!gameOver && event.code == 80 && !event.lifted)
-    {
-        setPause(!pause);
-    }
-  }
-      
-
-  if(!gameOver && !pause)
-  {
-    runner.distanceScore += 1;
-
-    //CameraShake
-    if(cameraShake == -1)
-    {
-      mainView.style.x += cameraShakeMagnitude;
-      mainView.style.y += cameraShakeMagnitude;      
-      cameraShake = 0;
-    }
-        
-    if(cameraShake)
-    {
-      mainView.style.x -= cameraShakeMagnitude;
-      mainView.style.y -= cameraShakeMagnitude;      
-      cameraShake = -1;
-    }
-    
-    //Update ParallaxScroll
-    backgroundMountains.update(runner.distanceScore);
-    backgroundClouds.update(runner.distanceScore);    
-      
-    //Platform generation
-    floorManager.checkFloors();
-
-  
-    //Platform Collision
-    var platforms = floorManager.getPlatforms();
-    var colliding = false;
-    
-    //Update Runner Gravity
-    if (runner.isJumping && gravity > -26 ) gravity -= 2;
-    if (runner.isJumping && gravity <= -26) runner.stopJump();
-    if (runner.isFalling && !runner.isJumping && gravity < 20)   gravity += 2;
-   
-   //Check for platform Collission
-    if(!runner.isJumping)
-    {
-      for (var i in platforms)
-      {
-	var floor = platforms[i];
-	if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
-	{
-	  if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
-	  {
-	      runner.style.y   = floor.style.y - runner.style.height;
-	      runner.isFalling = false;
-	      colliding        = true;
-	  }
-	  else 	runner.isFalling = true;
-	  
-	  var enemies = floor.getEnemies();
-	  
-	  if(!hit)
-	  {
-        for(var i in enemies)
+        runner.distanceScore += 1;
+        //CameraShake
+        if(cameraShake == -1)
         {
-            var enemy = enemies[i].getPosition(mainView);
+          mainView.style.x += cameraShakeMagnitude;
+          mainView.style.y += cameraShakeMagnitude;      
+          cameraShake = 0;
+        }
             
-            if(colliding)
+        if(cameraShake)
+        {
+          mainView.style.x -= cameraShakeMagnitude;
+          mainView.style.y -= cameraShakeMagnitude;      
+          cameraShake = -1;
+        }
+        
+        //Update ParallaxScroll
+        backgroundMountains.update(runner.distanceScore);
+        backgroundClouds.update(runner.distanceScore);    
+          
+        //Platform generation
+        floorManager.checkFloors();
+    
+      
+        //Platform Collision
+        var platforms = floorManager.getPlatforms();
+        var colliding = false;
+        
+        //Update Runner Gravity
+        if (runner.isJumping && gravity > -26 ) gravity -= 2;
+        if (runner.isJumping && gravity <= -26) runner.stopJump();
+        if (runner.isFalling && !runner.isJumping && gravity < 20)   gravity += 2;
+       
+       //Check for platform Collission
+        if(!runner.isJumping)
+        {
+            for (var i in platforms)
             {
-                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
+                var floor = platforms[i];
+                if(runner.style.x + runner.style.width >= floor.style.x && runner.style.x + runner.style.width/2 < (floor.style.x+floor.style.width))
                 {
-                    if ( !enemies[i].deleteEnemy )
+                    if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
                     {
-                        hit = true;
-                        hitCounter = 30;
-                        runner.stopAnimation();
-                        currentAnimation = 'hit';
-                        runner.startAnimation(currentAnimation, { iterations: 3 });
-                        hearts.pop().removeFromSuperview();
-                        life--;
-                        if(life == 0) setGameOver();
+                        runner.style.y   = floor.style.y - runner.style.height;
+                        runner.isFalling = false;
+                        colliding        = true;
                     }
-                }
-                else
-                {
-                    if(currentAnimation != 'run')
+                    else runner.isFalling = true;
+                    
+                    var enemies = floor.getEnemies();
+                    if(!hit)
                     {
-                        currentAnimation = 'run';
-                        runner.startAnimation(currentAnimation);
+                        for(var i in enemies)
+                        {
+                            var enemy = enemies[i].getPosition(mainView);
+                            
+                            if(colliding)
+                            {
+                                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
+                                {
+                                    if ( !enemies[i].deleteEnemy )
+                                    {
+                                        hit = true;
+                                        hitCounter = 30;
+                                        runner.stopAnimation();
+                                        currentAnimation = 'hit';
+                                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        hearts.pop().removeFromSuperview();
+                                        life--;
+                                        if(life == 0) setGameOver();
+                                    }
+                                }
+                                else
+                                {
+                                    if(currentAnimation != 'run')
+                                    {
+                                        currentAnimation = 'run';
+                                        runner.startAnimation(currentAnimation);
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
+                                {
+                                    if(runner.style.y + runner.style.height >= enemy.y && runner.style.y + runner.style.height < enemy.y + enemy.width/2)
+                                    {
+                                        //enemy dies!
+                                        enemies[i].destroy();
+                                        enemies.splice(i, 1);
+                                        runner.killingScore += 1;
+                                        gravity             = -10;
+                                        runner.isFalling    = false;
+                                    }
+                                    else if(runner.style.y + runner.style.height >= enemy.y + enemy.width/2 && runner.style.y + runner.style.height < enemy.y + enemy.width)
+                                    {
+                                        //hit!
+                                        hit = true;
+                                        hitCounter = 30;
+                                        runner.stopAnimation();
+                                        currentAnimation = 'hit';
+                                        runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        hearts.pop().removeFromSuperview();
+                                        life--;
+                                        if(life == 0) setGameOver();
+                                    }
+                                }
+                            }
+                        }
+                        break;
                     }
-                }
-                break;
-            }
-            else
-            {
-                if(runner.style.x + runner.style.width-5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
-                {
-                    if(runner.style.y + runner.style.height >= enemy.y && runner.style.y + runner.style.height < enemy.y + enemy.width/2)
+                    else if(hitCounter > 0) hitCounter--;
+                    else
                     {
-                        //enemy dies!
-                        enemies[i].destroy();
-                        enemies.splice(i, 1);
-                        runner.killingScore += 1;
-                        gravity = -10;
-                    }
-                    else if(runner.style.y + runner.style.height >= enemy.y + enemy.width/2 && runner.style.y + runner.style.height < enemy.y + enemy.width)
-                    {
-                        //hit!
-                        hit = true;
-                        hitCounter = 30;
-                        runner.stopAnimation();
-                        currentAnimation = 'hit';
-                        runner.startAnimation(currentAnimation, { iterations: 3 });
-                        hearts.pop().removeFromSuperview();
-                        life--;
-                        if(life == 0) setGameOver();
+                        hitCounter = 0;
+                        hit = false;
                     }
                 }
             }
         }
         
-        break;
-	  }
-	  else if(hitCounter > 0) hitCounter--;
-	  else
-	  {
-	    hitCounter = 0;
-	    hit = false;
-	  }
-	}
-      }
-
+        //Jump or Fall
+        
+        //Uncomment next line so yoshi can't fly while falling
+        //runner.isFalling  = !colliding;
+        
+        runner.style.y   += (colliding) ? 0:(gravity); 
     }
-    //Jump or Fall
-    
-    //Uncomment next line so yoshi can't fly while falling
-    //runner.isFalling  = !colliding;
-    
-    runner.style.y   += (colliding) ? 0:(gravity); 
-  }
-   
-    
-  for (var m in missiles)
-  {
-      var missile = missiles[m];
-      missile._pause = false;
-      if(missile != undefined && missile._erase)
-      {
-	      missiles.splice(m, 1);        
-	      missile.removeFromSuperview();
-
-      }
-  }  
+       
+        
+    for (var m in missiles)
+    {
+        var missile = missiles[m];
+        missile._pause = false;
+        if(missile != undefined && missile._erase)
+        {
+            missiles.splice(m, 1);        
+            missile.removeFromSuperview();
+        }
+    }     
   
-  //Game Over
-  if(runner.style.y >= gameConfig._deviceHeight && !gameOver)
-  {
-    setGameOver();
-  }
-  
+    //Game Over
+    if(runner.style.y >= gameConfig._deviceHeight && !gameOver)
+    {
+        setGameOver();
+    }
 };
 
 mainView.onInputSelect = function(evt, pt)
