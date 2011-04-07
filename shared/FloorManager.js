@@ -18,23 +18,7 @@ var FloorManager = exports = Class(function()
       this.platformParent = opts.platformParent;
       this._gameConfig = opts.gameConfig;
 
-      platforms.push
-      (
-        new Floor
-        ({
-          acceleration:this._acceleration,
-          originPoint:true,
-          defaultRows:(this._gameConfig)._defaultPlatformRows,
-          defaultExtraRows:(this._gameConfig)._defaultExtraRows,
-          defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
-          minimumTiles:(this._gameConfig)._minimumPlatformTiles,
-          maximumTiles:(this._gameConfig)._maximumPlatformTiles,
-          parent:this.platformParent,
-          spriteScale:(this._gameConfig)._spriteScale,
-          screenWidth:(this._gameConfig)._deviceWidth,
-          screenHeight:(this._gameConfig)._deviceHeight
-        })
-      );
+      platforms.push(this.getNewPlatform(true));
 	}
 	
 	this.restart = function()
@@ -50,23 +34,7 @@ var FloorManager = exports = Class(function()
        this._acceleration = this._originalAcceleration;
    	   this._pause = false;
 
-       platforms.push
-       (
-        new Floor
-        ({
-          acceleration:this._acceleration,
-          originPoint:true,
-          defaultRows:(this._gameConfig)._defaultPlatformRows,
-          defaultExtraRows:(this._gameConfig)._defaultExtraRows,
-          defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
-          minimumTiles:(this._gameConfig)._minimumPlatformTiles,
-          maximumTiles:(this._gameConfig)._maximumPlatformTiles,
-          parent:this.platformParent,
-          spriteScale:(this._gameConfig)._spriteScale,
-          screenWidth:(this._gameConfig)._deviceWidth,
-          screenHeight:(this._gameConfig)._deviceHeight
-        })
-       );
+       platforms.push(this.getNewPlatform(true));
 	}
 	
 	this.getPlatforms = function()
@@ -76,11 +44,12 @@ var FloorManager = exports = Class(function()
 	
 	this.setPause = function(value)
 	{
-   	this._pause = value;
-      for(i = 0; i < platforms.length; i++)
-      {
-        platforms[i]._pause = value;
-      }       	
+       	this._pause = value;
+       	var platformLength = platforms.length;
+        for(i = 0; i < platformLength; i++)
+        {
+            platforms[i]._pause = value;
+        }       	
 	}
 	
 	this.checkFloors = function()
@@ -95,19 +64,7 @@ var FloorManager = exports = Class(function()
              	if(platforms[i].style.x + platforms[i].style.width <= this._gameConfig._deviceWidth)
              	{
                  	platforms[i]._spawnNewPlatform = true;
-                 	platforms.push(new Floor
-                 	({
-                      acceleration:this._acceleration,
-                      defaultRows:(this._gameConfig)._defaultPlatformRows,
-                      defaultExtraRows:(this._gameConfig)._defaultExtraRows,
-                      defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
-                      minimumTiles:(this._gameConfig)._minimumPlatformTiles,
-                      maximumTiles:(this._gameConfig)._maximumPlatformTiles,
-                      parent:this.platformParent,
-                      spriteScale:(this._gameConfig)._spriteScale,
-                      screenWidth:(this._gameConfig)._deviceWidth,
-                      screenHeight:(this._gameConfig)._deviceHeight
-                 	}));
+                 	platforms.push(this.getNewPlatform(false));
                  	
                  	//Difficulty Increasing
                  	this._platformCounter++;
@@ -133,5 +90,24 @@ var FloorManager = exports = Class(function()
            	}
        	}
    	}
+	}
+	
+	this.getNewPlatform = function(isOriginPoint)
+	{
+	   return new Floor
+       ({
+            acceleration:this._acceleration,
+            originPoint:isOriginPoint,
+            defaultRows:(this._gameConfig)._defaultPlatformRows,
+            defaultExtraRows:(this._gameConfig)._defaultExtraRows,
+            defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
+            minimumTiles:(this._gameConfig)._minimumPlatformTiles,
+            maximumTiles:(this._gameConfig)._maximumPlatformTiles,
+            spikesMultiple:(this._gameConfig)._spikesMultiple,
+            parent:this.platformParent,
+            spriteScale:(this._gameConfig)._spriteScale,
+            screenWidth:(this._gameConfig)._deviceWidth,
+            screenHeight:(this._gameConfig)._deviceHeight
+       });
 	}	
 });
