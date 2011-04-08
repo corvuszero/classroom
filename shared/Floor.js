@@ -110,7 +110,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             zIndex:this._middleTiles
        	});
        	this._totalWidth += rightSide.style.width;
-       	       	
+       	
        	this.createEnemies();
        	this.createSpikes();
 	}
@@ -119,7 +119,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   if(!this._originPoint)
 	   {
-	       var occupiedPositions = [];
+            var occupiedPositions = [];
            	var numberOfEnemies = Math.floor(Math.random() * 4);
            	
            	for (e = 0; e < numberOfEnemies; e++)
@@ -138,9 +138,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	}
 	
 	/**
-    *
-    *   Funcion que crea los piquitos de las plataformas
-    *
+    * Spikes generation function
     **/
 	this.createSpikes = function()
 	{
