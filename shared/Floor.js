@@ -10,6 +10,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
         this._enemies       = [];
         this._obstacles     = [];
+        this._heart         = false;
         this._totalWidth    = 0;
            
 		opts = opts || {};
@@ -68,6 +69,11 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   return this._obstacles;
 	}
+    
+    this.getHeart = function()
+    {
+        return this._heart;
+    }
 	
 	this.createPlatform = function()
 	{
@@ -111,7 +117,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             zIndex:this._middleTiles
        	});
        	this._totalWidth += rightSide.style.width;
-       	       	
+       	
        	this.createEnemies();
        	this.createSpikes();
 	}
@@ -120,7 +126,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   if(!this._originPoint)
 	   {
-	       var occupiedPositions = [];
+            var occupiedPositions = [];
            	var numberOfEnemies = Math.floor(Math.random() * 4);
            	
            	for (e = 0; e < numberOfEnemies; e++)
@@ -139,9 +145,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	}
 	
 	/**
-    *
-    *   Funcion que crea los piquitos de las plataformas
-    *
+    * Spikes generation function
     **/
 	this.createSpikes = function()
 	{
@@ -174,6 +178,22 @@ var Floor = exports = Class(timestep.View, function(supr)
                     spikeSize:tempSpikeSize
                 });
                 this._obstacles.push(obstacle);  	
+            }
+            
+            
+            if (Math.floor(Math.random() * 100) > 90)
+            {
+                this._heart = new timestep.ImageView
+                ({
+                  x:(Math.floor( Math.random() * this.style.width * this._spriteScale) - 16),
+                  y:-100 *this._spriteScale,
+                  width:  32 * this._spriteScale,
+                  height: 28 * this._spriteScale,
+                  originPoint:false,
+                  image:'images/heart.png',
+                  parent:this,
+                  zIndex:1
+                });
             }
        	}       	
 	}

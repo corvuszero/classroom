@@ -233,7 +233,8 @@ runner.stopJump = function()
 runner.shoot = function()
 {
 
-    if ( !runner.isShooting )
+    //if ( !runner.isShooting )
+    if ( true )
     {
         runner.stopAnimation();
         currentAnimation = 'shoot';
@@ -500,7 +501,37 @@ mainView.tick = function(dt)
             }
         }
         //Jump or Fall
-    
+        
+        for (var i in platforms)
+        {
+            var floor = platforms[i];
+            var heart = floor.getHeart();
+            if(heart != false)
+            {
+                var heartPosition = heart.getPosition(mainView);
+                if((runner.style.x + runner.style.width - 5 >= heartPosition.x + 5) && (runner.style.x + 5 < heartPosition.x + heartPosition.width - 5))
+                {
+                    if((runner.style.y + runner.style.height - 5 >= heartPosition.y + 5) && (runner.style.y + 5 < heartPosition.y + heartPosition.height - 5))
+                    {
+                        hearts.push(new timestep.ImageView
+                            ({
+                              x:gameConfig._deviceWidth - ((hearts.length+1) * 32 * gameConfig._spriteScale) - ((hearts.length+1)*5),
+                              y:10,
+                              width:32 * gameConfig._spriteScale,
+                              height: 28 * gameConfig._spriteScale,
+                              originPoint:false,
+                              image:'images/heart.png',
+                              parent:mainView,
+                              zIndex:0
+                            })                            
+                        );
+                        life++;
+                        heart.removeFromSuperview();
+                        heart = false;
+                    }
+                }
+            }
+        }
         //Uncomment next line so yoshi can't fly while falling
         //runner.isFalling  = !colliding;
         runner.style.y   += (colliding) ? 0:(gravity); 
