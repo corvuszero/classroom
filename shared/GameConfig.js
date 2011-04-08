@@ -27,7 +27,7 @@ var GameConfig = exports = Class(function()
         
         //Control
         this._gravity = 10;
-        this._acceleration = 8;
+        this._acceleration = 10;
         this._life = 3;
         this._spriteScale = this._deviceWidth > 500? 1:0.5;
         this._missileAcceleration = 20;
@@ -40,7 +40,7 @@ var GameConfig = exports = Class(function()
         this._defaultMiddleTiles = 28;
         this._minimumPlatformTiles = 36;
         this._maximumPlatformTiles = 56;
-        this._platformSpikeDivision = 7; // >2, si no no sirve
-        this._spikesMultiple = 3;
+        this._platformSpikeDivision = 14; // >2, si no no sirve
+        this._spikesMultiple = 2;
     }
 });
