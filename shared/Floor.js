@@ -117,6 +117,13 @@ var Floor = exports = Class(timestep.View, function(supr)
 	
 	this.createEnemies = function()
 	{
+	   
+	   var occupiedPositions = [ 
+	           32 * this._spriteScale * this._middleTiles * 0.25, 
+	           32 * this._spriteScale * this._middleTiles *0.5, 
+	           32 * this._spriteScale * this._middleTiles * 0.75
+	       ];
+	       
 	   if(!this._originPoint)
 	   {
             var occupiedPositions = [];

@@ -233,8 +233,7 @@ runner.stopJump = function()
 runner.shoot = function()
 {
 
-    //if ( !runner.isShooting )
-    if ( true )
+    if ( !runner.isShooting )
     {
         runner.stopAnimation();
         currentAnimation = 'shoot';
