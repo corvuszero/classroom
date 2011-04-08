@@ -186,21 +186,6 @@ var Floor = exports = Class(timestep.View, function(supr)
                 this._obstacles.push(obstacle);
             }
             
-            
-            if (Math.floor(Math.random() * 100) > 90)
-            {
-                this._heart = new timestep.ImageView
-                ({
-                  x:(Math.floor( Math.random() * this.style.width * this._spriteScale) - 16),
-                  y:-100 *this._spriteScale,
-                  width:  32 * this._spriteScale,
-                  height: 28 * this._spriteScale,
-                  originPoint:false,
-                  image:'images/heart.png',
-                  parent:this,
-                  zIndex:1
-                });
-            }
        	}       	
 	}
 	

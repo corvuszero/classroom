@@ -59,31 +59,7 @@ scoreView.render = function(ctx)
 
 function resetLife()
 {
-  life = gameConfig._life;
-  
-  for(var h in hearts)
-  {
-    hearts[h].removeFromSuperview();
-    delete hearts[h];
-  }
-  
-  hearts = [];
-  
-  for(var i = 1; i <= life; i++)
-  {
-    var heart = new timestep.ImageView
-    ({
-      x:gameConfig._deviceWidth - (i * 32 * gameConfig._spriteScale) - (i*5),
-      y:10,
-      width:32 * gameConfig._spriteScale,
-      height: 28 * gameConfig._spriteScale,
-      originPoint:false,
-      image:'images/heart.png',
-      parent:mainView,
-      zIndex:0
-    });
-    hearts.push(heart);
-  }
+
 }
 
 resetLife();
@@ -387,13 +363,11 @@ mainView.tick = function(dt)
                                     if ( !enemies[i].deleteEnemy )
                                     {
                                         hit = true;
-                                        hitCounter = 30;
+                                        hitCounter = 15;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        hearts.pop().removeFromSuperview();
-                                        life--;
-                                        if (life == 0) setGameOver();
+                                        logger.log("Hit !!!");
                                     }
                                 }
                                 else
@@ -423,13 +397,11 @@ mainView.tick = function(dt)
                                     {
                                         //hit!
                                         hit = true;
-                                        hitCounter = 30;
+                                        hitCounter = 15;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        hearts.pop().removeFromSuperview();
-                                        life--;
-                                        if (life == 0) setGameOver();
+                                        logger.log("Hit !!!");
                                     }
                                 }
                             }
@@ -446,13 +418,11 @@ mainView.tick = function(dt)
                                     if ( !obstacles[o].deleteEnemy )
                                     {
                                         hit = true;
-                                        hitCounter = 30;
+                                        hitCounter = 15;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        hearts.pop().removeFromSuperview();
-                                        life--;
-                                        if (life == 0) setGameOver();
+                                        logger.log("Hit !!!");
                                     }
                                 }
                                 else
@@ -473,13 +443,11 @@ mainView.tick = function(dt)
                                     {
                                         //hit!
                                         hit = true;
-                                        hitCounter = 30;
+                                        hitCounter = 15;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        hearts.pop().removeFromSuperview();
-                                        life--;
-                                        if (life == 0) setGameOver();
+                                        logger.log("Hit !!!");
                                     }
                                 }
                             }

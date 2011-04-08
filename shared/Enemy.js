@@ -160,7 +160,7 @@ var Enemy = exports = Class(timestep.View, function(supr)
                     this.enemy._animationMirroredHorizontal = false;
                     if ( this.style.x > (this.getSuperView()._totalWidth * 0.05) )
                     {
-                        this.style.x   -= 3;
+                        this.style.x   -= 7;
                     }
                     else
                     {
@@ -175,7 +175,7 @@ var Enemy = exports = Class(timestep.View, function(supr)
                     this.enemy._animationMirroredHorizontal = true;
                     if ( this.style.x + this.style.width < (this.getSuperView()._totalWidth) * 0.95 )
                     {
-                        this.style.x    += 3;
+                        this.style.x    += 7;
                     }
                     else
                     {
