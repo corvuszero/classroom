@@ -163,7 +163,7 @@ var Floor = exports = Class(timestep.View, function(supr)
        	    var divisionUnit = 1 / mySpikeDivision;
        	    var occupiedPositions = [];
        	    var divisionCounter = 1;
-       	    for(divisionCounter; divisionCounter < mySpikeDivision; divisionCounter++)
+       	    for(divisionCounter; divisionCounter < mySpikeDivision; divisionCounter+=2)
        	    {
        	        var createdPosition = Math.floor(32 * this._spriteScale * this._middleTiles * divisionCounter * divisionUnit);
        	        occupiedPositions.push(createdPosition);
@@ -180,7 +180,7 @@ var Floor = exports = Class(timestep.View, function(supr)
                 var obstacle = new Obstacle
                 ({
                     parent:this,
-                    originX: obstaclePosition - (25 * this._spriteScale * tempSpikeSize),
+                    originX: 32 + obstaclePosition - (25 * this._spriteScale * tempSpikeSize),
                     originY:-42 * this._spriteScale,
                     spriteScale:this._spriteScale,
                     spikeSize:tempSpikeSize
