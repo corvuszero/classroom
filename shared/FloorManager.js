@@ -8,15 +8,15 @@ var FloorManager = exports = Class(function()
 {
 	this.init = function(opts) 
 	{
+      this._gameConfig = opts.gameConfig;
       this._platformCounter = 0;
       this._levelCounter = 0;
-      this._platformsToIncreaseLevel = 15;
+      this._platformsToIncreaseLevel = (this._gameConfig)._platformsToIncreaseLevel;
       this._acceleration = opts.acceleration;
    	  this._originalAcceleration = this._acceleration;
    	  this._pause = false;
       this.speed = opts.speed;
       this.platformParent = opts.platformParent;
-      this._gameConfig = opts.gameConfig;
 
       platforms.push(this.getNewPlatform(true));
 	}

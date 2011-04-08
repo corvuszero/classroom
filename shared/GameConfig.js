@@ -35,6 +35,7 @@ var GameConfig = exports = Class(function()
         
         this._cameraShakeMagnitude = 5;
 
+        this._platformsToIncreaseLevel = 5;
         this._defaultPlatformRows = 3;
         this._defaultExtraRows = 3;
         this._defaultMiddleTiles = 28;
