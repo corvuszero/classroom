@@ -32,19 +32,6 @@ var ParallaxBackground = exports = Class(timestep.View, function(supr)
         	zIndex: opts.zIndex
         });    		
       }
-
-      this.render = function(ctx) 
-      {
-    		ctx = ctx || {};
-    		supr(this, 'render', [ctx]);
-    		
-      }
-
-      this.tick = function(dt) 
-      {
-
-
-      }
       
       this.update = function(scroll)
       {        

@@ -10,6 +10,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
         this._enemies       = [];
         this._obstacles     = [];
+        this._heart         = false;
         this._totalWidth    = 0;
            
 		opts = opts || {};
@@ -26,6 +27,7 @@ var Floor = exports = Class(timestep.View, function(supr)
         this._spawnNewPlatform = false;
         this._defaultRows = opts.defaultRows;
         this._spikesMultiple = opts.spikesMultiple;
+        this._spikeDivision = opts.spikeDivision;
         this._tileDifference = opts.maximumTiles - opts.minimumTiles;
         
         if(!opts.originPoint) 
@@ -67,6 +69,11 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   return this._obstacles;
 	}
+    
+    this.getHeart = function()
+    {
+        return this._heart;
+    }
 	
 	this.createPlatform = function()
 	{
@@ -151,34 +158,49 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
        	if(!this._originPoint)
        	{
-       	    var occupiedPositions = [   32 * this._spriteScale * this._middleTiles * 0.25, 
-       	                                32 * this._spriteScale * this._middleTiles *0.5, 
-       	                                32 * this._spriteScale * this._middleTiles * 0.75
-       	                            ];
-       	                            
-           	var tempNumberOfSpikes  = Math.floor(Math.random() * 3);
-           	
-           	if ( tempNumberOfSpikes > 0 )
-           	{
-           	    var spCounter = 0;
-               	for (spCounter; spCounter < tempNumberOfSpikes; spCounter++ )
-               	{
-               	    var tempSpikeSize = (1 + Math.floor(Math.random() * (this._spikesMultiple - 1))) * 2;
-                    var position = Math.floor(Math.random() * (occupiedPositions.length - 1));
-                    var obstaclePosition = occupiedPositions[position];
-                    occupiedPositions.splice(position, 1);
-                    
-                    var obstacle = new Obstacle(
-                        {
-                            parent:this,
-                            originX: obstaclePosition,
-                            originY:-42 * this._spriteScale,
-                            spriteScale:this._spriteScale,
-                            spikeSize:tempSpikeSize
-                        }
-                    );
-                    this._obstacles.push(obstacle);  	
-                }
+       	    var mySpikeDivision = 2 + Math.floor(Math.random() * (this._spikeDivision - 2));
+       	    var divisionUnit = 1 / mySpikeDivision;
+       	    var occupiedPositions = [];
+       	    var divisionCounter = 1;
+       	    for(divisionCounter; divisionCounter < mySpikeDivision; divisionCounter++)
+       	    {
+       	        var createdPosition = Math.floor(32 * this._spriteScale * this._middleTiles * divisionCounter * divisionUnit);
+       	        occupiedPositions.push(createdPosition);
+       	    }
+       	    
+    	    var spCounter = 0;
+        	for (spCounter; spCounter < occupiedPositions.length; spCounter++ )
+        	{
+        	    var tempSpikeSize = (1 + Math.floor(Math.random() * (this._spikesMultiple - 1))) * 2;
+                var position = Math.floor(Math.random() * (occupiedPositions.length - 1));
+                var obstaclePosition = occupiedPositions[position];
+                occupiedPositions.splice(position, 1);                    
+            
+                var obstacle = new Obstacle
+                ({
+                    parent:this,
+                    originX: obstaclePosition - (25 * this._spriteScale * tempSpikeSize),
+                    originY:-42 * this._spriteScale,
+                    spriteScale:this._spriteScale,
+                    spikeSize:tempSpikeSize
+                });
+                this._obstacles.push(obstacle);  	
+            }
+            
+            
+            if (Math.floor(Math.random() * 100) > 90)
+            {
+                this._heart = new timestep.ImageView
+                ({
+                  x:(Math.floor( Math.random() * this.style.width * this._spriteScale) - 16),
+                  y:-100 *this._spriteScale,
+                  width:  32 * this._spriteScale,
+                  height: 28 * this._spriteScale,
+                  originPoint:false,
+                  image:'images/heart.png',
+                  parent:this,
+                  zIndex:1
+                });
             }
        	}       	
 	}

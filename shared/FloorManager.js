@@ -104,6 +104,7 @@ var FloorManager = exports = Class(function()
             minimumTiles:(this._gameConfig)._minimumPlatformTiles,
             maximumTiles:(this._gameConfig)._maximumPlatformTiles,
             spikesMultiple:(this._gameConfig)._spikesMultiple,
+            spikeDivision:(this._gameConfig)._platformSpikeDivision,
             parent:this.platformParent,
             spriteScale:(this._gameConfig)._spriteScale,
             screenWidth:(this._gameConfig)._deviceWidth,
