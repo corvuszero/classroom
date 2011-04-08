@@ -152,7 +152,7 @@ var Enemy = exports = Class(timestep.View, function(supr)
             {
                 if ( this.movingLeft )
                 {
-                    if ( this.style.x > 0 )
+                    if ( this.style.x > (this.getSuperView()._totalWidth * 0.05) )
                     {
                         this.style.x   -= 3;
                     }
@@ -165,7 +165,7 @@ var Enemy = exports = Class(timestep.View, function(supr)
                 
                 if ( this.movingRight )
                 {
-                    if ( this.style.x < this.getSuperView()._totalWidth )
+                    if ( this.style.x + this.style.width < (this.getSuperView()._totalWidth) * 0.95 )
                     {
                         this.style.x    += 3;
                     }

@@ -26,11 +26,13 @@ var Floor = exports = Class(timestep.View, function(supr)
 
         this._spawnNewPlatform = false;
         this._defaultRows = opts.defaultRows;
+        this._spikesMultiple = opts.spikesMultiple;
         this._tileDifference = opts.maximumTiles - opts.minimumTiles;
         
         if(!opts.originPoint) 
         {
             this._middleTiles = opts.minimumTiles + Math.round(Math.random() * this._tileDifference);
+            this._middleTiles = this._middleTiles % 2 == 0 ? this._middleTiles:this._middleTiles + 1;
             this._extraRows = Math.round(Math.random() * 10);
         }
         else 
@@ -53,6 +55,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             this.style.x = 0;
         
         this.style.y = this._screenHeight - (32 * this._spriteScale * (this._defaultRows + this._extraRows));
+       
         this.createPlatform();
 	}
 	
@@ -84,7 +87,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             parent:this,
             zIndex:0
        	});
-       	this._totalWidth += this._spriteScale;
+       	this._totalWidth += leftSide.style.width;
        	
        	var middleOfPlatform;
        	for(i = 1; i < this._middleTiles; i++)
@@ -100,7 +103,7 @@ var Floor = exports = Class(timestep.View, function(supr)
              	zIndex:i
            	});
         }
-        this._totalWidth += 32 * this._middleTiles * this._spriteScale;
+        this._totalWidth += (32 * this._middleTiles * this._spriteScale);
         
        	var rightSide = new timestep.ImageView
        	({
@@ -112,10 +115,17 @@ var Floor = exports = Class(timestep.View, function(supr)
             image:'images/rightPlatform.png',
             zIndex:this._middleTiles
        	});
-       	this._totalWidth += this._spriteScale;
-       	       	
-       	if(!this._originPoint)
-       	{
+       	this._totalWidth += rightSide.style.width;
+       	
+       	this.createEnemies();
+       	this.createSpikes();
+	}
+	
+	this.createEnemies = function()
+	{
+	   if(!this._originPoint)
+	   {
+            var occupiedPositions = [];
            	var numberOfEnemies = Math.floor(Math.random() * 4);
            	
            	for (e = 0; e < numberOfEnemies; e++)
@@ -130,19 +140,37 @@ var Floor = exports = Class(timestep.View, function(supr)
            	    );
            	    this._enemies.push(enemy);
            	}
-           	
-           	var tempNumberOfSpikes  = Math.floor(Math.random() * 2);
+	   }
+	}
+	
+	/**
+    * Spikes generation function
+    **/
+	this.createSpikes = function()
+	{
+       	if(!this._originPoint)
+       	{
+       	    var occupiedPositions = [   32 * this._spriteScale * this._middleTiles * 0.25, 
+       	                                32 * this._spriteScale * this._middleTiles *0.5, 
+       	                                32 * this._spriteScale * this._middleTiles * 0.75
+       	                            ];
+       	                            
+           	var tempNumberOfSpikes  = Math.floor(Math.random() * 3);
            	
            	if ( tempNumberOfSpikes > 0 )
            	{
-               	for ( var spCounter = 0; spCounter < tempNumberOfSpikes; spCounter++ )
+           	    var spCounter = 0;
+               	for (spCounter; spCounter < tempNumberOfSpikes; spCounter++ )
                	{
-               	    var tempSpikeSize = Math.floor(Math.random() * 4) + 1;
-                                    
+               	    var tempSpikeSize = (1 + Math.floor(Math.random() * (this._spikesMultiple - 1))) * 2;
+                    var position = Math.floor(Math.random() * (occupiedPositions.length - 1));
+                    var obstaclePosition = occupiedPositions[position];
+                    occupiedPositions.splice(position, 1);
+                    
                     var obstacle = new Obstacle(
                         {
                             parent:this,
-                            originX:((this.style.width/3 * this._spriteScale) + Math.floor( Math.random() * this.style.width/9 )),
+                            originX: obstaclePosition,
                             originY:-42 * this._spriteScale,
                             spriteScale:this._spriteScale,
                             spikeSize:tempSpikeSize

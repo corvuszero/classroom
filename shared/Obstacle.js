@@ -5,7 +5,6 @@ var Obstacle = exports = Class(timestep.View, function(supr)
 {
 
     this._pause     = false;
-    this.obstacle   = null;
 
     this.init = function(opts) 
     {
@@ -49,10 +48,5 @@ var Obstacle = exports = Class(timestep.View, function(supr)
                 zIndex:-1
            	});
        	}
-    };
-    
-    this.tick = function(dt) 
-    {
-    };
-    
+    };    
 });
