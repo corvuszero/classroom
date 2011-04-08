@@ -126,22 +126,23 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   
 	   var occupiedPositions = [ 
-	           32 * this._spriteScale * this._middleTiles * 0.25, 
-	           32 * this._spriteScale * this._middleTiles *0.5, 
-	           32 * this._spriteScale * this._middleTiles * 0.75
+	           32 * this._spriteScale * this._totalWidth * 0.25,
+	           32 * this._spriteScale * this._totalWidth * 0.5, 
+	           32 * this._spriteScale * this._totalWidth * 0.75
 	       ];
 	       
 	   if(!this._originPoint)
 	   {
-            var occupiedPositions = [];
-           	var numberOfEnemies = Math.floor(Math.random() * 4);
+           	var numberOfEnemies = Math.floor(Math.random() * 3);
            	
            	for (e = 0; e < numberOfEnemies; e++)
            	{
+           	    var position = (numberOfEnemies % 3);
+           	    numberOfEnemies++;
            	    var enemy = new Enemy(
                	    {
                         parent:this,
-                        originX:((this.style.width/2 * this._spriteScale) + Math.floor( ( Math.random() * (e+1) * (this._middleTiles/7) ) ) ),
+                        originX:position,
                         originY:-42 * this._spriteScale,
                         spriteScale:this._spriteScale
                	    }
@@ -184,7 +185,7 @@ var Floor = exports = Class(timestep.View, function(supr)
                     spriteScale:this._spriteScale,
                     spikeSize:tempSpikeSize
                 });
-                this._obstacles.push(obstacle);  	
+                this._obstacles.push(obstacle);
             }
             
             
