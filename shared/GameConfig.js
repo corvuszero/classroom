@@ -40,7 +40,7 @@ var GameConfig = exports = Class(function()
         this._defaultMiddleTiles = 28;
         this._minimumPlatformTiles = 36;
         this._maximumPlatformTiles = 56;
-        this._platformSpikeDivision = 8; // >2, si no no sirve
+        this._platformSpikeDivision = 7; // >2, si no no sirve
         this._spikesMultiple = 3;
     }
 });
