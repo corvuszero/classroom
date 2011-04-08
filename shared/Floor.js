@@ -125,24 +125,22 @@ var Floor = exports = Class(timestep.View, function(supr)
 	this.createEnemies = function()
 	{
 	   
-	   var occupiedPositions = [ 
-	           32 * this._spriteScale * this._totalWidth * 0.25,
-	           32 * this._spriteScale * this._totalWidth * 0.5, 
-	           32 * this._spriteScale * this._totalWidth * 0.75
-	       ];
+	   var occupiedPositions = [ this._totalWidth * 0.25, this._totalWidth * 0.5, this._totalWidth * 0.75];
 	       
 	   if(!this._originPoint)
 	   {
-           	var numberOfEnemies = Math.floor(Math.random() * 3);
+           	var numberOfEnemies     = Math.floor(Math.random() * 3);
+           	var numberOfEnemiesH    = numberOfEnemies;
            	
            	for (e = 0; e < numberOfEnemies; e++)
            	{
-           	    var position = (numberOfEnemies % 3);
-           	    numberOfEnemies++;
+           	    var position = (numberOfEnemiesH % 3);
+           	    numberOfEnemiesH++;
+           	    
            	    var enemy = new Enemy(
                	    {
                         parent:this,
-                        originX:position,
+                        originX:occupiedPositions[position],
                         originY:-42 * this._spriteScale,
                         spriteScale:this._spriteScale
                	    }
