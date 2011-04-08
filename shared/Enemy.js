@@ -137,6 +137,11 @@ var Enemy = exports = Class(timestep.View, function(supr)
         }
     };
     
+    this.flip = function(ctx)
+    {
+        ctx.scale(-1, 1);
+    }
+    
     this.tick = function(dt) 
     {
         if ( !this._pause )
@@ -152,12 +157,14 @@ var Enemy = exports = Class(timestep.View, function(supr)
             {
                 if ( this.movingLeft )
                 {
+                    this.enemy._animationMirroredHorizontal = false;
                     if ( this.style.x > (this.getSuperView()._totalWidth * 0.05) )
                     {
                         this.style.x   -= 3;
                     }
                     else
                     {
+                        this.enemy._animationMirroredHorizontal = true;
                         this.movingLeft  = false;
                         this.movingRight = true;
                     }
@@ -165,12 +172,14 @@ var Enemy = exports = Class(timestep.View, function(supr)
                 
                 if ( this.movingRight )
                 {
+                    this.enemy._animationMirroredHorizontal = true;
                     if ( this.style.x + this.style.width < (this.getSuperView()._totalWidth) * 0.95 )
                     {
                         this.style.x    += 3;
                     }
                     else
                     {
+                        this.enemy._animationMirroredHorizontal = false;
                         this.movingLeft  = true;
                         this.movingRight = false;
                     }
