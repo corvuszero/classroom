@@ -102,13 +102,23 @@ var FloorManager = exports = Class(function()
             originPoint:isOriginPoint,
             parent:this.platformParent,
        });
-	}	
+	}
+	
+	this.decreaseAcceleration = function()
+    {
+        this._acceleration *= 0.85;
+        this._originalAcceleration *= 0.85;
+        
+        for ( var i in platforms )
+        {
+            platforms[i]._acceleration = this._acceleration;
+        }
+    }
+    
 });
 
 /**
-*
-*   Se pone al final porque arriba se asigna exports a la clase FloorManager
-*
+* Se pone al final porque arriba se asigna exports a la clase FloorManager
 **/
 exports.get = function(opts)
 {

@@ -226,16 +226,23 @@ runner.shoot = function()
             parent:mainView
         });
         
-        missile._floorManager   = floorManager;
-        missile._runner         = runner;         
-        missile._fired          = true;
+        missile.setFloorManagerOptions(
+            {
+                acceleration: acceleration,
+                speed: (this.speed*=2),
+                platformParent: runnerView,
+            }
+        );
+        missile._runner                 = runner;         
+        missile._fired                  = true;
         
         runner.isShooting               = true;
         runner.shootingTimeoutHandler   = setTimeout("unlockShooting()", 600); 
         
         missiles.push(missile);
         
-        //CAMERASHAKE
+        // CAMERASHAKE
+        // MILKSHAKE
         cameraShake = 1;
         
         SoundManager.play({
@@ -366,7 +373,9 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        floorManager.decreaseAcceleration();
                                     }
                                 }
                                 else
@@ -400,7 +409,9 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        floorManager.decreaseAcceleration();
                                     }
                                 }
                             }
@@ -421,7 +432,9 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        floorManager.decreaseAcceleration();
                                     }
                                 }
                                 else
@@ -446,7 +459,9 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        floorManager.decreaseAcceleration();
                                     }
                                 }
                             }
