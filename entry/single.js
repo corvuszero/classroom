@@ -367,7 +367,11 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        //floorManager._acceleration *= 0.5;
+                                        //floorManager._originalAcceleration *= 0.5;
+                                        //floor._acceleration = floorManager._acceleration;
                                     }
                                 }
                                 else
@@ -401,7 +405,11 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        //floorManager._acceleration *= 0.5;
+                                        //floorManager._originalAcceleration *= 0.5;
+                                        //floor._acceleration = floorManager._acceleration;
                                     }
                                 }
                             }
@@ -422,7 +430,11 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        //floorManager._acceleration *= 0.5;
+                                        //floorManager._originalAcceleration *= 0.5;
+                                        //floor._acceleration = floorManager._acceleration;
                                     }
                                 }
                                 else
@@ -447,7 +459,11 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        
                                         logger.log("Hit !!!");
+                                        //floorManager._acceleration *= 0.5;
+                                        //floorManager._originalAcceleration *= 0.5;
+                                        //floor._acceleration = floorManager._acceleration;
                                     }
                                 }
                             }
