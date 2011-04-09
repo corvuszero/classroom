@@ -100,17 +100,7 @@ var FloorManager = exports = Class(function()
        ({
             acceleration:this._acceleration,
             originPoint:isOriginPoint,
-            defaultRows:(this._gameConfig)._defaultPlatformRows,
-            defaultExtraRows:(this._gameConfig)._defaultExtraRows,
-            defaultMiddleTiles:(this._gameConfig)._defaultMiddleTiles,
-            minimumTiles:(this._gameConfig)._minimumPlatformTiles,
-            maximumTiles:(this._gameConfig)._maximumPlatformTiles,
-            spikesMultiple:(this._gameConfig)._spikesMultiple,
-            spikeDivision:(this._gameConfig)._platformSpikeDivision,
             parent:this.platformParent,
-            spriteScale:(this._gameConfig)._spriteScale,
-            screenWidth:(this._gameConfig)._deviceWidth,
-            screenHeight:(this._gameConfig)._deviceHeight
        });
 	}	
 });

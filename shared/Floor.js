@@ -122,6 +122,7 @@ var Floor = exports = Class(timestep.View, function(supr)
        	
        	this.createEnemies();
        	this.createSpikes();
+       	this.createItems();
 	}
 	
 	this.createEnemies = function()
@@ -188,7 +189,17 @@ var Floor = exports = Class(timestep.View, function(supr)
                 this._obstacles.push(obstacle);
             }
             
-       	}       	
+       	}
+	}
+	
+	this.createItems = function()
+	{
+	   var diceRoll = Math.random();
+	   
+	   if(diceRoll > 0.5)
+	   {
+	       
+	   }
 	}
 	
 	this.tick = function(dt) 
