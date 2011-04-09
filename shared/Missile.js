@@ -9,7 +9,6 @@ var Missile = exports = Class(timestep.View, function(supr)
 
     this._pause             = false;
     this._erase             = false;
-    this._floorManager      = [];
     this._enemyIndex        = 0;
     this._fireball          = [];
     this._floorManagerOpts  = {};
