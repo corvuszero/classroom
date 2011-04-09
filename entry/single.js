@@ -9,7 +9,7 @@ jsio('import shared.GameConfig as GameConfig');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
-var gameConfig = new GameConfig();
+var gameConfig = GameConfig.get();
 var mainView = app.getView();
 
 app._opts.showFPS = gameConfig._showFPS;
@@ -251,12 +251,11 @@ unlockShooting = function()
     runner.isShooting = false;
 }
 
-floorManager = new FloorManager
+floorManager = FloorManager.get
 ({
   acceleration:acceleration,
   speed:(this.speed*=2),
   platformParent:runnerView,
-  gameConfig:gameConfig
 });
 
 mainView.tick = function(dt)
