@@ -9,7 +9,7 @@ jsio('import shared.GameConfig as GameConfig');
 
 var app = new GCApp();
 var keyListener = app.getKeyListener();
-var gameConfig = new GameConfig();
+var gameConfig = GameConfig.get();
 var mainView = app.getView();
 
 app._opts.showFPS = gameConfig._showFPS;
@@ -228,16 +228,23 @@ runner.shoot = function()
             parent:mainView
         });
         
-        missile._floorManager   = floorManager;
-        missile._runner         = runner;         
-        missile._fired          = true;
+        missile.setFloorManagerOptions(
+            {
+                acceleration: acceleration,
+                speed: (this.speed*=2),
+                platformParent: runnerView,
+            }
+        );
+        missile._runner                 = runner;         
+        missile._fired                  = true;
         
         runner.isShooting               = true;
         runner.shootingTimeoutHandler   = setTimeout("unlockShooting()", 600); 
         
         missiles.push(missile);
         
-        //CAMERASHAKE
+        // CAMERASHAKE
+        // MILKSHAKE
         cameraShake = 1;
         
         SoundManager.play({
@@ -253,12 +260,11 @@ unlockShooting = function()
     runner.isShooting = false;
 }
 
-floorManager = new FloorManager
+floorManager = FloorManager.get
 ({
   acceleration:acceleration,
   speed:(this.speed*=2),
   platformParent:runnerView,
-  gameConfig:gameConfig
 });
 
 mainView.tick = function(dt)
@@ -372,6 +378,7 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        floorManager.decreaseAcceleration();
                                     }
                                 }
                                 else
@@ -406,6 +413,7 @@ mainView.tick = function(dt)
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
+                                        floorManager.decreaseAcceleration();
                                     }
                                 }
                             }
@@ -424,6 +432,7 @@ mainView.tick = function(dt)
                                     runner.stopAnimation();
                                     currentAnimation = 'hit';
                                     runner.startAnimation(currentAnimation, { iterations: 3 });
+                                    floorManager.decreaseAcceleration();
                                 }
                             }
                             else

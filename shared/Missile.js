@@ -7,11 +7,11 @@ var _runner;
 var Missile = exports = Class(timestep.View, function(supr) 
 {
 
-    this._pause         = false;
-    this._erase         = false;
-    this._floorManager  = [];
-    this._enemyIndex    = 0;
-    this._fireball      = [];
+    this._pause             = false;
+    this._erase             = false;
+    this._enemyIndex        = 0;
+    this._fireball          = [];
+    this._floorManagerOpts  = {};
 
     this.init = function(opts) 
     {
@@ -30,11 +30,12 @@ var Missile = exports = Class(timestep.View, function(supr)
         this.zIndex         = 4;    
         this._acceleration  = opts.acceleration;
          
-        this.style.x = opts.originX;
-        this.style.y = opts.originY;
-        this._screenWidth = opts.screenWidth;
-        this._fireball = {};
-        _runner        = {};
+        this.style.x            = opts.originX;
+        this.style.y            = opts.originY;
+        this._screenWidth       = opts.screenWidth;
+        this._fireball          = {};
+        this._floorManagerOpts  = {};
+        _runner                 = {};
         this.drawMissile(opts);
     }
     
@@ -57,6 +58,29 @@ var Missile = exports = Class(timestep.View, function(supr)
        	});
     }
     
+    this.setFloorManagerOptions = function(opts)
+    {
+        this._floorManagerOpts = opts;
+    }
+    
+    this.getFloorManagerInstance = function()
+    {
+        var floorManager = {};
+        
+        if ( this._floorManagerOpts != null )
+        {
+            floorManager = FloorManager.get(
+                {
+                    acceleration:this._floorManagerOpts.acceleration,
+                    speed:this._floorManagerOpts.speed,
+                    platformParent:this._floorManagerOpts.runnerView
+                }
+            );
+        }
+        
+        return floorManager;
+    }
+    
     this.tick = function(dt) 
     {
         if ( this._fired && !this._pause )
@@ -71,7 +95,7 @@ var Missile = exports = Class(timestep.View, function(supr)
             }            
         }
         
-        var platforms = this._floorManager.getPlatforms();
+        var platforms = this.getFloorManagerInstance().getPlatforms();
         for ( var i in platforms )
         {
             var enemies    = platforms[i].getEnemies(); 

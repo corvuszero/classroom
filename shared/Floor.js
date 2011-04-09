@@ -2,12 +2,14 @@ jsio('import timestep.View');
 jsio('import timestep.ImageView');
 jsio('import shared.Enemy as Enemy');
 jsio('import shared.Obstacle as Obstacle');
+jsio('import shared.GameConfig as GameConfig');
 
 var Floor = exports = Class(timestep.View, function(supr) 
 {
 	
 	this.init = function(opts) 
 	{
+	   var gameConfig = GameConfig.get();
         this._enemies       = [];
         this._obstacles     = [];
         this._heart         = false;
@@ -20,26 +22,26 @@ var Floor = exports = Class(timestep.View, function(supr)
 		if (typeof opts.originPoint != 'boolean') { opts.originPoint = false; }
 		if (typeof opts.acceleration != 'number') { opts.acceleration = 4; }
       
-        this._screenWidth = opts.screenWidth;
-        this._screenHeight = opts.screenHeight;
-        this._spriteScale = opts.spriteScale;
+        this._screenWidth = gameConfig._deviceWidth;
+        this._screenHeight = gameConfig._deviceHeight;
+        this._spriteScale = gameConfig._spriteScale;
 
         this._spawnNewPlatform = false;
-        this._defaultRows = opts.defaultRows;
-        this._spikesMultiple = opts.spikesMultiple;
-        this._spikeDivision = opts.spikeDivision;
-        this._tileDifference = opts.maximumTiles - opts.minimumTiles;
+        this._defaultRows = gameConfig._defaultPlatformRows;
+        this._spikesMultiple = gameConfig._spikesMultiple;
+        this._spikeDivision = gameConfig._platformSpikeDivision;
+        this._tileDifference = gameConfig._maximumPlatformTiles - gameConfig._minimumPlatformTiles;
         
         if(!opts.originPoint) 
         {
-            this._middleTiles = opts.minimumTiles + Math.round(Math.random() * this._tileDifference);
+            this._middleTiles = gameConfig._minimumPlatformTiles + Math.round(Math.random() * this._tileDifference);
             this._middleTiles = this._middleTiles % 2 == 0 ? this._middleTiles:this._middleTiles + 1;
             this._extraRows = Math.round(Math.random() * 10);
         }
         else 
         {
-            this._middleTiles = opts.defaultMiddleTiles;
-            this._extraRows = opts.defaultExtraRows;
+            this._middleTiles = gameConfig._defaultMiddleTiles;
+            this._extraRows = gameConfig._defaultExtraRows;
         }
             
         

@@ -1,5 +1,7 @@
 jsio('import shared.Floor as Floor');
+jsio('import shared.GameConfig as GameConfig');
 
+var instance = null;
 var platforms = [];
 var speed;
 var platformParent;
@@ -8,17 +10,18 @@ var FloorManager = exports = Class(function()
 {
 	this.init = function(opts) 
 	{
-      this._gameConfig = opts.gameConfig;
-      this._platformCounter = 0;
-      this._levelCounter = 0;
-      this._platformsToIncreaseLevel = (this._gameConfig)._platformsToIncreaseLevel;
-      this._acceleration = opts.acceleration;
-   	  this._originalAcceleration = this._acceleration;
-   	  this._pause = false;
-      this.speed = opts.speed;
-      this.platformParent = opts.platformParent;
+        this._gameConfig = GameConfig.get();
+        this._platformCounter = 0;
+        this._levelCounter = 0;
+        this._platformsToIncreaseLevel = (this._gameConfig)._platformsToIncreaseLevel;
+        this._acceleration = opts.acceleration;
+        this._originalAcceleration  = this._acceleration;
+        this._restartAcceleration   = this._acceleration;
+        this._pause = false;
+        this.speed = opts.speed;
+        this.platformParent = opts.platformParent;
 
-      platforms.push(this.getNewPlatform(true));
+        platforms.push(this.getNewPlatform(true));
 	}
 	
 	this.restart = function()
@@ -31,7 +34,7 @@ var FloorManager = exports = Class(function()
 	   
 	   this._platformCounter = 0;
        this._levelCounter = 0;
-       this._acceleration = this._originalAcceleration;
+       this._acceleration = this._restartAcceleration;
    	   this._pause = false;
 
        platforms.push(this.getNewPlatform(true));
@@ -110,5 +113,28 @@ var FloorManager = exports = Class(function()
             screenWidth:(this._gameConfig)._deviceWidth,
             screenHeight:(this._gameConfig)._deviceHeight
        });
-	}	
+	}
+	
+	this.decreaseAcceleration = function()
+    {
+        this._acceleration *= 0.85;
+        this._originalAcceleration *= 0.85;
+        
+        for ( var i in platforms )
+        {
+            platforms[i]._acceleration = this._acceleration;
+        }
+    }
+    
 });
+
+/**
+* Se pone al final porque arriba se asigna exports a la clase FloorManager
+**/
+exports.get = function(opts)
+{
+    if(instance) return instance;
+    else instance = new FloorManager(opts);
+    
+    return instance;
+}

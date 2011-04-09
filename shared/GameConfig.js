@@ -1,5 +1,7 @@
 jsio('import timestep.device');
 
+var instance = null;
+
 var GameConfig = exports = Class(function()
 {
     this.init = function()
@@ -45,3 +47,11 @@ var GameConfig = exports = Class(function()
         this._spikesMultiple = 2;
     }
 });
+
+exports.get = function()
+{
+    if(instance) return instance;
+    else instance = new GameConfig();
+    
+    return instance;
+}
