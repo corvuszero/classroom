@@ -173,17 +173,17 @@ var Floor = exports = Class(timestep.View, function(supr)
         	    var tempSpikeSize = (1 + Math.floor(Math.random() * (this._spikesMultiple - 1))) * 2;
                 var position = Math.floor(Math.random() * (occupiedPositions.length - 1));
                 var obstaclePosition = occupiedPositions[position];
-                occupiedPositions.splice(position, 1);                    
-            
-                var obstacle = new Obstacle
-                ({
-                    parent:this,
-                    originX: 32 + obstaclePosition - (25 * this._spriteScale * tempSpikeSize),
-                    originY:-42 * this._spriteScale,
-                    spriteScale:this._spriteScale,
-                    spikeSize:tempSpikeSize
-                });
-                this._obstacles.push(obstacle);
+                occupiedPositions.splice(position, 1);
+                
+                this._obstacles.push(new Obstacle
+                    ({
+                        parent:this,
+                        originX: 32 + obstaclePosition - (25 * this._spriteScale * tempSpikeSize),
+                        originY:-42 * this._spriteScale,
+                        spriteScale:this._spriteScale,
+                        spikeSize:tempSpikeSize
+                    })
+                );
             }
             
        	}       	

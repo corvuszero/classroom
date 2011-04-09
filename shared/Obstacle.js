@@ -3,9 +3,8 @@ jsio('import timestep.View');
 
 var Obstacle = exports = Class(timestep.View, function(supr) 
 {
-
     this._pause     = false;
-
+	
     this.init = function(opts) 
     {
         opts = opts || {};
@@ -13,7 +12,7 @@ var Obstacle = exports = Class(timestep.View, function(supr)
 		
         if (typeof opts.width != 'number') 
         {
-            this.style.width  = 50 * opts.spriteScale * opts.spikeSize;
+            this.style.width  = 50 * opts.spriteScale * (opts.spikeSize+1);
         }
         if (typeof opts.height != 'number') 
         { 
