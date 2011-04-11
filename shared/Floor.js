@@ -1,6 +1,8 @@
 jsio('import timestep.View');
 jsio('import timestep.ImageView');
+jsio('import timestep.Sprite as Sprite');
 jsio('import shared.Enemy as Enemy');
+jsio('import shared.Booster as Booster');
 jsio('import shared.Obstacle as Obstacle');
 jsio('import shared.GameConfig as GameConfig');
 
@@ -10,10 +12,11 @@ var Floor = exports = Class(timestep.View, function(supr)
 	this.init = function(opts) 
 	{
 	   var gameConfig = GameConfig.get();
-        this._enemies       = [];
-        this._obstacles     = [];
-        this._heart         = false;
-        this._totalWidth    = 0;
+	   this._item          = null; //Booter o lo que se nos ocurra en el futuro
+       this._enemies       = [];
+       this._obstacles     = [];
+       this._heart         = false;
+       this._totalWidth    = 0;
            
 		opts = opts || {};
 		supr(this, 'init', [opts]);
@@ -46,7 +49,7 @@ var Floor = exports = Class(timestep.View, function(supr)
             
         
         this.style.width = 32 * this._spriteScale * (this._middleTiles + 2);
-        this.style.height = 416;
+        this.style.height = 416 * this._spriteScale;
         
         this._originPoint = opts.originPoint;
         this._acceleration = opts.acceleration;
@@ -71,11 +74,11 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   return this._obstacles;
 	}
-    
-    this.getHeart = function()
-    {
-        return this._heart;
-    }
+	
+	this.getHeart = function()
+	{
+	   return this._heart;   
+	}
 	
 	this.createPlatform = function()
 	{
@@ -196,9 +199,14 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   var diceRoll = Math.random();
 	   
-	   if(diceRoll > 0.5)
+	   if(true || diceRoll > 0.5)
 	   {
-	       
+	       this._item = new Booster
+	       ({
+	           parent:this,
+	           x:this.style.width / 2,
+	           y:-60 * this._spriteScale,
+	       });
 	   }
 	}
 	
