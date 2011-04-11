@@ -77,7 +77,12 @@ var Floor = exports = Class(timestep.View, function(supr)
 	
 	this.getHeart = function()
 	{
-	   return this._heart;   
+	   return this._heart;
+	}
+	
+	this.getItem = function()
+	{
+	   return this._item;   
 	}
 	
 	this.createPlatform = function()
@@ -199,7 +204,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   var diceRoll = Math.random();
 	   
-	   if(true || diceRoll > 0.5)
+	   if(diceRoll > 0.5)
 	   {
 	       this._item = new Booster
 	       ({
