@@ -26,6 +26,7 @@ var hearts = [];
 var hit			= false;
 var hitCounter	= 0;
 var hitJump     = false;
+var hits        = 0;
 
 var cameraShake   = 0;
 var cameraShakeMagnitude = gameConfig._cameraShakeMagnitude;
@@ -54,7 +55,7 @@ scoreView.render = function(ctx)
         ctx.fillText(runner.distanceScore+" m", gameConfig._scoreX, gameConfig._scoreY);
         ctx.font        = gameConfig._smallFontSize + gameConfig._gameFont;
         ctx.fillStyle   = gameConfig._textColor;
-        ctx.fillText(runner.killingScore+" kills", gameConfig._killsX, gameConfig._killsY);
+        ctx.fillText(runner.killingScore+" kills!", gameConfig._killsX, gameConfig._killsY);
     }
 }
 
@@ -232,7 +233,7 @@ runner.shoot = function()
             {
                 acceleration: acceleration,
                 speed: (this.speed*=2),
-                platformParent: runnerView,
+                platformParent: runnerView
             }
         );
         missile._runner                 = runner;         
@@ -264,7 +265,7 @@ floorManager = FloorManager.get
 ({
   acceleration:acceleration,
   speed:(this.speed*=2),
-  platformParent:runnerView,
+  platformParent:runnerView
 });
 
 mainView.tick = function(dt)
@@ -374,6 +375,7 @@ mainView.tick = function(dt)
                                     {
                                         hit = true;
                                         hitCounter = 30;
+                                        hits++;
                                         //runner.style.x -= hitCounter;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
@@ -409,6 +411,7 @@ mainView.tick = function(dt)
                                         //hit!
                                         hit = true;
                                         hitCounter = 30;
+                                        hits++;
                                         //runner.style.x -= hitCounter;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
@@ -428,6 +431,7 @@ mainView.tick = function(dt)
                                 {
                                     hit = true;
                                     hitCounter = 30;
+                                    hits++;
                                     //runner.style.x -= hitCounter;
                                     runner.stopAnimation();
                                     currentAnimation = 'hit';
@@ -443,17 +447,26 @@ mainView.tick = function(dt)
                                     runner.startAnimation(currentAnimation);
                                 }
                             }
-                        }                  
+                        }
+                        
                         break;
                     }
                     else if (hitCounter > 0) 
                     {
                         hitCounter--;
+                        if(currentAnimation != "hit")
+                        {
+                            runner.stopAnimation();
+                            currentAnimation = 'hit';
+                            runner.startAnimation(currentAnimation, { iterations: 3 });
+                        }
                     }
                     else
                     {
                         hitCounter = 0;
                         hit = false;
+                        currentAnimation = 'run';
+                        runner.startAnimation(currentAnimation);
                     }
                 }
             }
