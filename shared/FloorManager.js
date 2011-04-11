@@ -127,7 +127,7 @@ var FloorManager = exports = Class(function()
 	
 	this.decreaseAcceleration = function()
     {
-        if ( (this._acceleration * this._decelerationRadio >= this._originalAcceleration * 0.5 ) )
+        if ( (this._acceleration * this._decelerationRadio >= this._originalAcceleration * 0.66 ) )
         {
             this._decelerationRadio *= 0.85; 
             this._acceleration      *= this._decelerationRadio;
