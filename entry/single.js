@@ -229,13 +229,6 @@ runner.shoot = function()
             parent:mainView
         });
         
-        missile.setFloorManagerOptions(
-            {
-                acceleration: acceleration,
-                speed: (this.speed*=2),
-                platformParent: runnerView
-            }
-        );
         missile._runner                 = runner;         
         missile._fired                  = true;
         
@@ -381,6 +374,7 @@ mainView.tick = function(dt)
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
                                         floorManager.decreaseAcceleration();
+                                        logger.log("Hit A!!");
                                     }
                                 }
                                 else
@@ -417,6 +411,7 @@ mainView.tick = function(dt)
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
                                         floorManager.decreaseAcceleration();
+                                        logger.log("Hit B!!");
                                     }
                                 }
                             }

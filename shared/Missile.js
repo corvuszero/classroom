@@ -66,18 +66,7 @@ var Missile = exports = Class(timestep.View, function(supr)
     this.getFloorManagerInstance = function()
     {
         var floorManager = {};
-        
-        if ( this._floorManagerOpts != null )
-        {
-            floorManager = FloorManager.get(
-                {
-                    acceleration:this._floorManagerOpts.acceleration,
-                    speed:this._floorManagerOpts.speed,
-                    platformParent:this._floorManagerOpts.runnerView
-                }
-            );
-        }
-        
+        floorManager = FloorManager.get();
         return floorManager;
     }
     
