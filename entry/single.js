@@ -229,13 +229,6 @@ runner.shoot = function()
             parent:mainView
         });
         
-        missile.setFloorManagerOptions(
-            {
-                acceleration: acceleration,
-                speed: (this.speed*=2),
-                platformParent: runnerView
-            }
-        );
         missile._runner                 = runner;         
         missile._fired                  = true;
         
