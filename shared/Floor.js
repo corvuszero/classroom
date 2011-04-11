@@ -204,7 +204,7 @@ var Floor = exports = Class(timestep.View, function(supr)
 	{
 	   var diceRoll = Math.random();
 	   
-	   if(diceRoll > 0.5)
+	   if(!this._originPoint && diceRoll > 0.5)
 	   {
 	       this._item = new Booster
 	       ({

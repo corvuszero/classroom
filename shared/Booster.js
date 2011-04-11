@@ -1,4 +1,5 @@
 jsio('import shared.GameConfig as GameConfig');
+jsio('import shared.FloorManager as FloorManager');
 jsio('import timestep.View');
 jsio('import timestep.Sprite');
 
@@ -9,6 +10,7 @@ var Booster = exports = Class(timestep.View, function(supr)
 		opts = opts || {};
         supr(this, 'init', [opts]);
         this._gameConfig = GameConfig.get();
+        this._floorManager = FloorManager.get();
 		
 		this.style.width = 32 * (this._gameConfig)._spriteScale;
 		this.style.height = 30 * (this._gameConfig)._spriteScale;
@@ -52,6 +54,13 @@ var Booster = exports = Class(timestep.View, function(supr)
 
     this.executeItemLogic = function()
     {
-        logger.log('execute BOOSTER logic!');
+        var accelerationModifier = {};
+        accelerationModifier.property = "acceleration";
+        accelerationModifier.previousAcceleration = this._floorManager._acceleration;
+        accelerationModifier.magnitude = 1;
+        accelerationModifier.peakAcceleration = this._gameConfig._acceleration * 20;
+        accelerationModifier.accelerationInterval = 0.5;
+        
+        this._floorManager._accelerationModifier = accelerationModifier;
     }    
 });

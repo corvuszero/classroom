@@ -10,18 +10,23 @@ var FloorManager = exports = Class(function()
 {
 	this.init = function(opts) 
 	{
-        this._gameConfig = GameConfig.get();
-        this._platformCounter = 0;
-        this._levelCounter = 0;
-        this._platformsToIncreaseLevel = (this._gameConfig)._platformsToIncreaseLevel;
-        this._acceleration = opts.acceleration;
-        this._originalAcceleration  = this._acceleration;
-        this._decelerationRadio = 1;
-        this._pause = false;
-        this.speed = opts.speed;
-        this.platformParent = opts.platformParent;
-
-        platforms.push(this.getNewPlatform(true));
+	   if(!instance)
+	   {
+            this._gameConfig = GameConfig.get();
+            this._platformCounter = 0;
+            this._levelCounter = 0;
+            this._platformsToIncreaseLevel = (this._gameConfig)._platformsToIncreaseLevel;
+            this._accelerationModifier = null;
+            this._acceleration = opts.acceleration;
+            this._originalAcceleration  = this._acceleration;
+            this._decelerationRadio = 1;
+            this._pause = false;
+            this.speed = opts.speed;
+            this.platformParent = opts.platformParent;
+    
+            platforms.push(this.getNewPlatform(true));
+	       
+	   }else throw "Already Initialized";
 	}
 	
 	this.restart = function()
@@ -75,6 +80,7 @@ var FloorManager = exports = Class(function()
                  	this._levelCounter = Math.round(this._platformCounter / this._platformsToIncreaseLevel);
                  	var previousAcceleration = this._acceleration;
                  	this._acceleration = this._originalAcceleration + this._levelCounter;
+                 	this.executeItemLogic();
                  	
                  	/*if ( this._deccelerationRadio <= 1 )
                  	{
@@ -129,6 +135,51 @@ var FloorManager = exports = Class(function()
         }
     }
     
+    this.executeItemLogic = function()
+    {
+        if(this._accelerationModifier != null)
+        {
+            switch(this._accelerationModifier.property)
+            {
+                case 'acceleration':
+                    if(this._acceleration != this._accelerationModifier.peakAcceleration)
+                    {
+                        this._acceleration += this._accelerationModifier._magnitude * this._accelerationModifier.accelerationInterval;
+                        
+                        //Va subiendo y lo queremos bajar
+                        if( this._accelerationModifier.magnitude == 1 && 
+                            this._accelerationModifier.peakAcceleration < this._acceleration)
+                        {
+                            this._accelerationModifier.magnitude = -1;
+                        }
+                        //Va bajando y lo queremos subir
+                        if( this._accelerationModifier.magnitude == -1 &&
+                            this._accelerationModifier.peakAcceleration > this._acceleration)
+                        {
+                            this._accelerationModifier.magnitude = 1;
+                        }
+                        
+                        if( this._accelerationModifier.magnitude == -1 &&
+                            this._acceleration <= this._accelerationModifier.previousAcceleration)
+                        {
+                            this._acceleration = this._accelerationModifier.previousAcceleration;
+                            this._accelerationModifier = null;    
+                        }
+                        
+                        if( this._accelerationModifier.magnitude == 1 && 
+                            this._acceleration >= this._accelerationModifier.previousAcceleration)
+                        {
+                            this._acceleration = this._accelerationModifier.previousAcceleration;
+                            this._accelerationModifier = null;
+                        }
+                    }
+                break;
+                
+                default:
+            }
+        }
+    }
+    
 });
 
 /**
@@ -136,8 +187,10 @@ var FloorManager = exports = Class(function()
 **/
 exports.get = function(opts)
 {
-    if(instance) return instance;
-    else instance = new FloorManager(opts);
-    
+    if(instance){ 
+           return instance;
+    } else {
+        instance = new FloorManager(opts);
+    }
     return instance;
 }
