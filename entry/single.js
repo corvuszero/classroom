@@ -379,6 +379,7 @@ mainView.tick = function(dt)
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
                                         floorManager.decreaseAcceleration();
+                                        logger.log("Hit A!!");
                                     }
                                 }
                                 else
@@ -414,6 +415,7 @@ mainView.tick = function(dt)
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
                                         floorManager.decreaseAcceleration();
+                                        logger.log("Hit B!!");
                                     }
                                 }
                             }
