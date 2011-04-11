@@ -16,7 +16,7 @@ var FloorManager = exports = Class(function()
         this._platformsToIncreaseLevel = (this._gameConfig)._platformsToIncreaseLevel;
         this._acceleration = opts.acceleration;
         this._originalAcceleration  = this._acceleration;
-        this._restartAcceleration   = this._acceleration;
+        this._decelerationRadio = 1;
         this._pause = false;
         this.speed = opts.speed;
         this.platformParent = opts.platformParent;
@@ -34,7 +34,8 @@ var FloorManager = exports = Class(function()
 	   
 	   this._platformCounter = 0;
        this._levelCounter = 0;
-       this._acceleration = this._restartAcceleration;
+       this._acceleration = this._originalAcceleration;
+       this._decelerationRadio = 1;
    	   this._pause = false;
 
        platforms.push(this.getNewPlatform(true));
@@ -75,6 +76,15 @@ var FloorManager = exports = Class(function()
                  	var previousAcceleration = this._acceleration;
                  	this._acceleration = this._originalAcceleration + this._levelCounter;
                  	
+                 	/*if ( this._deccelerationRadio <= 1 )
+                 	{
+                        this._deccelerationRadio += 0.01;
+                 	}
+                 	else
+                 	{
+                        this._deccelerationRadio = 1;
+                 	}*/
+                 	
                  	if(previousAcceleration != this._acceleration)
                  	{
                      	for(j = 0; j < platforms.length; j++)
@@ -107,12 +117,15 @@ var FloorManager = exports = Class(function()
 	
 	this.decreaseAcceleration = function()
     {
-        this._acceleration *= 0.85;
-        this._originalAcceleration *= 0.85;
-        
-        for ( var i in platforms )
+        if ( (this._acceleration * this._decelerationRadio >= this._originalAcceleration * 0.5 ) )
         {
-            platforms[i]._acceleration = this._acceleration;
+            //this._decelerationRadio -= 0.03; 
+            this._acceleration      *= this._decelerationRadio;
+            
+            for ( var i in platforms )
+            {
+                platforms[i]._acceleration = this._acceleration;
+            }
         }
     }
     

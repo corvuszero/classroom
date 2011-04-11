@@ -8,7 +8,7 @@ jsio('import shared.GameConfig as GameConfig');
 
 var Floor = exports = Class(timestep.View, function(supr) 
 {
-	
+		
 	this.init = function(opts) 
 	{
 	   var gameConfig = GameConfig.get();

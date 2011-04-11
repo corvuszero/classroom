@@ -374,7 +374,7 @@ mainView.tick = function(dt)
                                     {
                                         hit = true;
                                         hitCounter = 30;
-                                        runner.style.x -= hitCounter;
+                                        //runner.style.x -= hitCounter;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
@@ -409,7 +409,7 @@ mainView.tick = function(dt)
                                         //hit!
                                         hit = true;
                                         hitCounter = 30;
-                                        runner.style.x -= hitCounter;
+                                        //runner.style.x -= hitCounter;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
@@ -428,7 +428,7 @@ mainView.tick = function(dt)
                                 {
                                     hit = true;
                                     hitCounter = 30;
-                                    runner.style.x -= hitCounter;
+                                    //runner.style.x -= hitCounter;
                                     runner.stopAnimation();
                                     currentAnimation = 'hit';
                                     runner.startAnimation(currentAnimation, { iterations: 3 });
