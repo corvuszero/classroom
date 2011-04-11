@@ -34,6 +34,8 @@ var pause = false;
 var gameOver = false;
 var gameOverImage;
 
+var currentPlatform = false;
+
 var scoreView = new timestep.View
 ({
         x:0,
@@ -301,7 +303,6 @@ mainView.tick = function(dt)
     if(!gameOver && !pause)
     {
         runner.distanceScore += 1;
-
         //CameraShake
         if(cameraShake == -1)
         {
@@ -342,9 +343,11 @@ mainView.tick = function(dt)
                 
                 if(runner.style.x + runner.style.width - 5 >= floor.style.x && runner.style.x + runner.style.width/2 < floor.style.x+floor.style.width)
                 {
+                    currentPlatform = floor;
+                    
                     if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
                     {
-                        runner.style.y   = floor.style.y - runner.style.height;
+                        runner.style.y   = floor.style.y - runner.style.height + 3;
                         runner.isFalling = false;
                         colliding        = true;
                     }
@@ -358,10 +361,11 @@ mainView.tick = function(dt)
                     
                     if(!hit)
                     {
+                        if (runner.style.x < 100) runner.style.x += 1;
+                        
                         for(var i in enemies)
                         {
                             var enemy = enemies[i].getPosition(mainView);
-                        
                             if(colliding)
                             {
                                 if(runner.style.x + runner.style.width - 5 > enemy.x + 5 && runner.style.x + 5 < enemy.x + enemy.width - 5 )
@@ -369,12 +373,11 @@ mainView.tick = function(dt)
                                     if ( !enemies[i].deleteEnemy )
                                     {
                                         hit = true;
-                                        hitCounter = 15;
+                                        hitCounter = 30;
+                                        runner.style.x -= hitCounter;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        
-                                        logger.log("Hit !!!");
                                         floorManager.decreaseAcceleration();
                                     }
                                 }
@@ -405,12 +408,11 @@ mainView.tick = function(dt)
                                     {
                                         //hit!
                                         hit = true;
-                                        hitCounter = 15;
+                                        hitCounter = 30;
+                                        runner.style.x -= hitCounter;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        
-                                        logger.log("Hit !!!");
                                         floorManager.decreaseAcceleration();
                                     }
                                 }
@@ -420,53 +422,28 @@ mainView.tick = function(dt)
                         for(var o in obstacles)
                         {
                             var obstacle = obstacles[o].getPosition(mainView);
-                        
-                            if(colliding)
+                            if(runner.style.x + runner.style.width - 5 > obstacle.x + 5 && runner.style.x + 5 < obstacle.x + obstacle.width - 5 )
                             {
-                                if(runner.style.x + runner.style.width - 5 > obstacle.x + 5 && runner.style.x + 5 < obstacle.x + obstacle.width - 5 )
+                                if(runner.style.y + runner.style.height - 5 > obstacle.y + 5 && runner.style.y + 5 < obstacle.y + obstacle.height - 5 )
                                 {
-                                    if ( !obstacles[o].deleteEnemy )
-                                    {
-                                        hit = true;
-                                        hitCounter = 15;
-                                        runner.stopAnimation();
-                                        currentAnimation = 'hit';
-                                        runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        
-                                        logger.log("Hit !!!");
-                                        floorManager.decreaseAcceleration();
-                                    }
+                                    hit = true;
+                                    hitCounter = 30;
+                                    runner.style.x -= hitCounter;
+                                    runner.stopAnimation();
+                                    currentAnimation = 'hit';
+                                    runner.startAnimation(currentAnimation, { iterations: 3 });
+                                    floorManager.decreaseAcceleration();
                                 }
-                                else
-                                {
-                                    if(currentAnimation != 'run')
-                                    {
-                                        currentAnimation = 'run';
-                                        runner.startAnimation(currentAnimation);
-                                    }
-                                }
-                                break;
                             }
                             else
                             {
-                                if(runner.style.x + runner.style.width-5 > obstacle.x + 5 && runner.style.x + 5 < obstacle.x + obstacle.width - 5 )
+                                if(currentAnimation != 'run')
                                 {
-                                    if(runner.style.y + runner.style.height >= obstacle.y + obstacle.width/2 && runner.style.y + runner.style.height < obstacle.y + obstacle.width)
-                                    {
-                                        //hit!
-                                        hit = true;
-                                        hitCounter = 15;
-                                        runner.stopAnimation();
-                                        currentAnimation = 'hit';
-                                        runner.startAnimation(currentAnimation, { iterations: 3 });
-                                        
-                                        logger.log("Hit !!!");
-                                        floorManager.decreaseAcceleration();
-                                    }
+                                    currentAnimation = 'run';
+                                    runner.startAnimation(currentAnimation);
                                 }
                             }
-                        }
-                        
+                        }                  
                         break;
                     }
                     else if (hitCounter > 0) 
@@ -572,9 +549,8 @@ mainView.onInputSelect = function(evt, pt)
 
 function setPause(value)
 {
-    pause = value;
-    
-    if (pause) 
+    pause = value;    
+    if (pause)
         runner.pauseAnimation();
     else 
         runner.startAnimation(currentAnimation);
@@ -605,7 +581,6 @@ function setPause(value)
             }
         }
     }
-
 }
 
 function setGameOver()
