@@ -272,6 +272,7 @@ mainView.tick = function(dt)
 {
   //Runner Logic
   var events = keyListener.popEvents();
+  var jumpEvent = false;
   for (var i = 0; i < events.length; i++)
   {
     var event = events[i];
@@ -286,6 +287,7 @@ mainView.tick = function(dt)
       else if (event.code == keyListener.UP && !event.lifted)
       {
         runner.jump();
+        jumpEvent = event;
       }
       else if (event.code == keyListener.UP && event.lifted)
       {
@@ -348,9 +350,11 @@ mainView.tick = function(dt)
                     
                     if(runner.style.y + runner.style.height < floor.style.y + 11 && runner.style.y + runner.style.height > floor.style.y -11)
                     {
-                        runner.style.y   = floor.style.y - runner.style.height + 3;
                         runner.isFalling = false;
+                        runner.style.y   = floor.style.y - runner.style.height + 5;
                         colliding        = true;
+                        events = keyListener.popEvents();
+                        if(jumpEvent)runner.jump();
                     }
                     else 	
                     {
@@ -376,7 +380,7 @@ mainView.tick = function(dt)
                                         hit = true;
                                         hitCounter = 30;
                                         hits++;
-                                        //runner.style.x -= hitCounter;
+                                        cameraShake = 1;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
@@ -412,7 +416,7 @@ mainView.tick = function(dt)
                                         hit = true;
                                         hitCounter = 30;
                                         hits++;
-                                        //runner.style.x -= hitCounter;
+                                        cameraShake = 1;
                                         runner.stopAnimation();
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
@@ -432,7 +436,7 @@ mainView.tick = function(dt)
                                     hit = true;
                                     hitCounter = 30;
                                     hits++;
-                                    //runner.style.x -= hitCounter;
+                                    cameraShake = 1;
                                     runner.stopAnimation();
                                     currentAnimation = 'hit';
                                     runner.startAnimation(currentAnimation, { iterations: 3 });
