@@ -229,13 +229,6 @@ runner.shoot = function()
             parent:mainView
         });
         
-        missile.setFloorManagerOptions(
-            {
-                acceleration: acceleration,
-                speed: (this.speed*=2),
-                platformParent: runnerView
-            }
-        );
         missile._runner                 = runner;         
         missile._fired                  = true;
         
@@ -385,6 +378,7 @@ mainView.tick = function(dt)
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
                                         floorManager.decreaseAcceleration();
+                                        logger.log("Hit A!!");
                                     }
                                 }
                                 else
@@ -421,6 +415,7 @@ mainView.tick = function(dt)
                                         currentAnimation = 'hit';
                                         runner.startAnimation(currentAnimation, { iterations: 3 });
                                         floorManager.decreaseAcceleration();
+                                        logger.log("Hit B!!");
                                     }
                                 }
                             }
@@ -503,6 +498,22 @@ mainView.tick = function(dt)
                         life++;
                         heart.removeFromSuperview();
                         heart = false;
+                    }
+                }
+            }
+            
+            var item = floor.getItem();
+            
+            if(item)
+            {
+                var itemPosition = item.getPosition(mainView);
+                if((runner.style.x + runner.style.width - 5 >= itemPosition.x + 5) && (runner.style.x + 5 < itemPosition.x + itemPosition.width - 5))
+                {
+                    if((runner.style.y + runner.style.height - 5 >= itemPosition.y + 5) && (runner.style.y + 5 < itemPosition.y + itemPosition.height - 5))
+                    {
+                        item.executeItemLogic();
+                        item.removeFromSuperview();
+                        item = null;
                     }
                 }
             }
